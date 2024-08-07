@@ -1,0 +1,80 @@
+---
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster"
+import { ToastAction } from "@/components/ui/toast"
+import ToastButtonComponent from "@/components/custom/ToastButtonComponent";
+const { title } = Astro.props;
+
+---
+
+
+  <div class="flex flex-col items-center justify-center w-full h-screen">
+    <h1 class="text-3xl font-bold underline">Hello world!</h1>
+
+    <Button variant="destructive">Button</Button>
+    <p class="text-4xl text-blue-500 group-hover:text-red-500">Astro</p>
+
+    <Card className="w-[1000px]">
+      <CardHeader>
+        <CardTitle>Create project</CardTitle>
+        <CardDescription>Deploy your new project in one-click.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form>
+          <div class="grid items-center w-full gap-4">
+            <div class="flex flex-col space-y-1.5">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" placeholder="Name of your project" />
+            </div>
+            <div class="flex flex-col space-y-1.5">
+              <Label htmlFor="framework">Framework</Label>
+            </div>
+          </div>
+        </form>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Button variant="outline">Cancel</Button>
+        <Button>Deploy</Button>
+      </CardFooter>
+    </Card>
+    <div
+      class="px-6 py-8 bg-white rounded-lg shadow-xl dark:bg-slate-800 ring-1 ring-slate-900/5"
+    >
+      <div>
+        <span
+          class="inline-flex items-center justify-center p-2 bg-indigo-500 rounded-md shadow-lg"
+        >
+          <svg
+            class="w-6 h-6 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"><!-- ... --></svg
+          >
+        </span>
+      </div>
+      <h3
+        class="mt-5 text-base font-medium tracking-tight text-slate-900 dark:text-white"
+      >
+        Writes Upside-Down
+      </h3>
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        The Zero Gravity Pen can be used to write in any orientation, including
+        upside-down. It even works in outer space.
+      </p>
+    </div>
+    <Toaster client:load />
+    <ToastButtonComponent client:load />
+  </div>

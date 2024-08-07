@@ -1,0 +1,153 @@
+---
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
+import { ModeToggle } from "@/components/custom/ModeToggle";
+import AvatarComponent from "@/components/custom/AvatarComponent";
+import { MenuItems } from "astro-navbar";
+import { Astronav } from "astro-navbar";
+import Dropdown from "@/components/dropdown.astro";
+import LoginModal from "@/components/custom/LoginModal";
+import HeaderClientScript from "@/components/custom/HeaderClientScript";
+import LoginButtons from "@/components/custom/LoginButtons";
+
+const menuitems = [
+  {
+    title: "Features",
+    path: "#",
+    children: [
+      { title: "Action", path: "/" },
+      { title: "Another action", path: "#" },
+      { title: "Dropdown Submenu", path: "#" },
+      { title: "404 Page", path: "/404" },
+    ],
+  },
+  { title: "Pricing", path: "/about" },
+  { title: "About", path: "/about" },
+  { title: "Blog", path: "/about" },
+  { title: "Contact", path: "/about" },
+  {
+    title: "Pro Version",
+    badge: true,
+    path: "https://astroship-pro.web3templates.com/",
+  },
+];
+
+const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = () => {
+    const usernameCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("username="));
+    if (usernameCookie) {
+      const loggedInUsername = usernameCookie.split("=")[1];
+      setIsLoggedIn(true);
+      setUsername(loggedInUsername);
+      updateWelcomeMessage(loggedInUsername);
+    }
+  };
+
+  const updateWelcomeMessage = (name: string) => {
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    if (welcomeMessage) {
+      welcomeMessage.textContent = name ? `Welcome ${name}` : "Welcome User";
+    }
+  };
+
+  const handleLoginSuccess = (loggedInUsername: string) => {
+    setIsLoggedIn(true);
+    setUsername(loggedInUsername);
+    updateWelcomeMessage(loggedInUsername);
+  };
+
+  const handleLogout = () => {
+    document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie = "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie = "username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    setIsLoggedIn(false);
+    setUsername("");
+    updateWelcomeMessage("");
+    window.location.href = "/";
+  };
+};
+---
+
+<header class="w-full bg-gray-100 shadow-md dark:bg-gray-900">
+  <div class="container px-4 mx-auto">
+    <div class="flex items-center justify-between h-16">
+      {/* Logo */}
+      <div class="flex-shrink-0">
+        <a href="/"><img
+          id="themeLogo"
+          class="w-auto h-10"
+          src="../images/logo.svg"
+          alt="Logo"
+        /></a>
+      </div>
+      
+      {/* Desktop Menu */}
+      <div class="hidden md:block">
+        <div class="flex items-baseline ml-10 space-x-4">
+          <Astronav>
+            <MenuItems class="hidden w-full mt-2 lg:w-auto lg:flex lg:mt-0">
+              <ul class="flex flex-col lg:flex-row lg:gap-3">
+                {menuitems.map((item, index) => (
+                  <>
+                    {item.children && (
+                      <Dropdown 
+                        title={item.title}
+                        children={item.children}
+                        lastItem={index === menuitems.length - 1}
+                      />
+                    )}
+                    {!item.children && (
+                      <li>
+                        <a
+                          href={item.path}
+                          class="px-3 py-2 text-sm font-medium text-gray-800 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700">
+                          <span>{item.title}</span>
+                          {item.badge && (
+                            <span class="ml-1 px-2 py-0.5 text-[10px] animate-pulse font-semibold uppercase text-white bg-indigo-600 rounded-full">
+                              New
+                            </span>
+                          )}
+                        </a>
+                      </li>
+                    )}
+                  </>
+                ))}
+              </ul>
+            </MenuItems>
+          </Astronav>
+        </div>
+      </div>
+
+      {/* Right side items */}
+      <div class="items-center hidden space-x-8 md:flex">
+        <AvatarComponent client:load />
+        <LoginButtons client:load />
+        <div><ModeToggle client:load /></div>
+      </div>
+
+      {/* Mobile menu button */}
+      <div class="flex items-center md:hidden">
+        <Button variant="ghost" size="icon">
+          <Menu className="h-6 w-6" />
+        </Button>
+      </div>
+    </div>
+  </div>
+  <Astronav />
+</header>
+
+<div id="welcomeMessage" class="px-3 py-2 text-sm font-medium text-gray-800 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700">
+  
+</div>
+
+<HeaderClientScript client:load />
