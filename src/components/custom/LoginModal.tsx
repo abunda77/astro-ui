@@ -121,7 +121,7 @@ const LoginModal: React.FC<{ onLoginSuccess: (username: string) => void }> = ({
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          className="hover:bg-gray-300 dark:outline-gray-200"
+          className="mx-2 hover:bg-gray-300 dark:outline-gray-200"
           onClick={() => setIsOpen(true)}
         >
           Login

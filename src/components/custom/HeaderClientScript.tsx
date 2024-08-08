@@ -58,7 +58,9 @@ const HeaderClientScript = () => {
     const updateWelcomeMessage = (name: string) => {
       const welcomeMessage = document.getElementById("welcomeMessage");
       if (welcomeMessage) {
-        welcomeMessage.textContent = name ? `Welcome ${name}` : "Welcome User";
+        welcomeMessage.textContent = name
+          ? `Welcome, ${name}`
+          : "Hello, Guest!";
       }
     };
 

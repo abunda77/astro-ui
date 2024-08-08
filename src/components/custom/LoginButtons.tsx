@@ -66,14 +66,14 @@ const LoginButtons = () => {
         <>
           <Button
             variant="secondary"
-            className="hover:bg-gray-300 dark:hover:bg-gray-700"
+            className="mx-2 hover:bg-gray-300 dark:hover:bg-gray-700"
             onClick={() => (window.location.href = "/dashboard")}
           >
             Dashboard
           </Button>
           <Button
             variant="secondary"
-            className="hover:bg-gray-300 dark:hover:bg-gray-700"
+            className="text-gray-200 bg-gray-900 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-500"
             onClick={handleLogout}
           >
             Logout
@@ -83,7 +83,7 @@ const LoginButtons = () => {
         <>
           <LoginModal onLoginSuccess={handleLoginSuccess} />
           <Button
-            className="text-white bg-green-500 hover:bg-green-600"
+            className="text-white bg-green-500 dark:text-white hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600"
             onClick={() => (window.location.href = "/auth/register")}
           >
             Register

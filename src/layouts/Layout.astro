@@ -1,7 +1,7 @@
 ---
 import Header01 from "@/layouts/Header01.astro";
-import { Toaster } from "@/components/ui/toaster"
-import CarouselDemo from "@/components/custom/CarouselDemo";
+import { Toaster } from "@/components/ui/toaster";
+
 const { title } = Astro.props;
 
 export interface Props {
@@ -11,8 +11,6 @@ export interface Props {
 const makeTitle = title
   ? title + " | " + "Bosqu Properti"
   : "Bosqu Properti - Properti Ideaal Buat Siapa Saja";
-
-
 ---
 
 <!doctype html>
@@ -28,8 +26,7 @@ const makeTitle = title
   <body>
     <Toaster client:load />
     <Header01 />
-    
-   
+
     <slot />
     <style is:global>
       /* Improve Page speed */
