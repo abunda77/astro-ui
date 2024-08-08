@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "@/styles/globals.css";
+import { createClient } from "pexels";
+import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +14,21 @@ import {
 } from "@/components/ui/card";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+const PEXELS_API_KEY =
+  "qx8GVjVSbbbIzugyU7YdcWvufPqQBjFed1CeoV0exEfksFiKWoSVmV9g";
+const PEXELS_QUERY = ["real estate", "home decor", "property"][
+  Math.floor(Math.random() * 3)
+];
+
+const client = createClient(PEXELS_API_KEY);
 
 const RegisterForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +36,25 @@ const RegisterForm: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [carouselImages, setCarouselImages] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCarouselImages = async () => {
+      try {
+        const response = await client.photos.search({
+          query: PEXELS_QUERY,
+          per_page: 5,
+          size: "small",
+          orientation: "portrait",
+        });
+        const photos = "photos" in response ? response.photos : []; // Check if 'photos' exists
+        setCarouselImages(photos);
+      } catch (error) {
+        console.error("Error fetching carousel images:", error);
+      }
+    };
+    fetchCarouselImages();
+  }, []);
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,6 +105,7 @@ const RegisterForm: React.FC = () => {
         name: "Invalid name",
         password: "Invalid password",
       });
+
       toast({
         title: "Registration Failed",
         description: errorMessage, // Menggunakan errorMessage yang sudah ditangani
@@ -79,21 +116,47 @@ const RegisterForm: React.FC = () => {
       setIsLoading(false);
     }
   };
-
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
   return (
-    <div className="w-full lg:grid lg:h-screen lg:grid-cols-2 xl:min-h-[800px]">
+    <div className="w-full h-full m-0 lg:grid lg:grid-cols-2">
       <div className="hidden bg-muted lg:block">
-        <img
-          src="/images/login.jpg"
-          alt="Image"
-          width="1920"
-          height="1900"
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
+        <Carousel
+          plugins={[plugin.current]}
+          className="w-full h-full"
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
+        >
+          <CarouselContent>
+            {carouselImages.map((image) => (
+              <CarouselItem key={image.id}>
+                <div className="relative p-0">
+                  <Card>
+                    <CardContent className="flex items-center justify-center p-0">
+                      <img
+                        src={image.src.large2x}
+                        alt={image.alt}
+                        className="object-cover w-full h-screen"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <p className="text-4xl font-semibold text-white">
+                          {image.alt}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
 
       <div className="flex items-center justify-center py-12">
-        <Card className="mx-auto w-[350px]">
+        <Card className="mx-auto w-[350px] shadow-2xl opacity-100">
           <CardHeader>
             <CardTitle className="text-3xl font-bold">Register</CardTitle>
             <CardDescription>

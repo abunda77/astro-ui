@@ -1,63 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import "@/styles/globals.css";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { createClient } from "pexels";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 
-interface Props {
+const PEXELS_API_KEY =
+  "qx8GVjVSbbbIzugyU7YdcWvufPqQBjFed1CeoV0exEfksFiKWoSVmV9g";
+const PEXELS_QUERY = ["real estate", "home decor", "property"][
+  Math.floor(Math.random() * 3)
+];
+
+const client = createClient(PEXELS_API_KEY);
+
+const LoginForm: React.FC<{
   onLoginSuccess?: (username: string) => void;
-}
-
-interface FormErrors {
-  username: string;
-  password: string;
-}
-
-const LoginForm: React.FC<Props> = ({ onLoginSuccess }) => {
+}> = ({ onLoginSuccess }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({
-    username: "",
-    password: "",
-  });
-  const [username, setUsername] = useState(""); // Added this line to declare username
-  const [password, setPassword] = useState(""); // Added this line to declare password
+  const [carouselImages, setCarouselImages] = useState<any[]>([]);
 
-  const validateForm = (username: string, password: string): boolean => {
-    const newErrors: FormErrors = { username: "", password: "" };
-    let isValid = true;
+  useEffect(() => {
+    const fetchCarouselImages = async () => {
+      try {
+        const response = await client.photos.search({
+          query: PEXELS_QUERY,
+          per_page: 5,
+          size: "small",
+          orientation: "portrait",
+        });
+        const photos = "photos" in response ? response.photos : []; // Check if 'photos' exists
+        setCarouselImages(photos);
+      } catch (error) {
+        console.error("Error fetching carousel images:", error);
+      }
+    };
+    fetchCarouselImages();
+  }, []);
 
-    if (!username.trim()) {
-      newErrors.username = "Username is required";
-      isValid = false;
-    }
-    if (!password.trim()) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const username = (form.elements.namedItem("username") as HTMLInputElement)
-      .value;
-    const password = (form.elements.namedItem("password") as HTMLInputElement)
-      .value;
-
-    if (!validateForm(username, password)) return;
-
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateForm()) return;
     setIsLoading(true);
 
     try {
@@ -109,33 +112,84 @@ const LoginForm: React.FC<Props> = ({ onLoginSuccess }) => {
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
+
+      console.log("Logging in:", { username, password });
     } catch (error) {
       console.error("Login error:", error);
-      toast({
-        title: "Login Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      setErrors({
+        username: "Invalid username",
+        password: "Invalid password",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <div className="w-full lg:grid lg:h-screen lg:grid-cols-2 xl:min-h-[800px]">
-      <div className="hidden bg-muted lg:block">
-        <img
-          src="/images/login.jpg"
-          alt="Image"
-          width="1920"
-          height="1900"
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
-      </div>
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setIsLoading(true);
 
-      <div className="flex items-center justify-center py-12">
-        <Card className="mx-auto w-[350px]">
+    try {
+      // Implement registration logic here
+      console.log("Registering:", { username, password });
+    } catch (error) {
+      console.error("Registration error:", error);
+      setErrors({
+        username: "Invalid username",
+        password: "Invalid password",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const validateForm = () => {
+    // Implement form validation logic here
+    return true;
+  };
+
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
+
+  return (
+    <div className="w-full h-full m-0 lg:grid lg:grid-cols-2">
+      <div className="hidden bg-muted lg:block">
+        <Carousel
+          plugins={[plugin.current]}
+          className="w-full h-full"
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
+        >
+          <CarouselContent>
+            {carouselImages.map((image) => (
+              <CarouselItem key={image.id}>
+                <div className="relative p-0">
+                  <Card>
+                    <CardContent className="flex items-center justify-center p-0">
+                      <img
+                        src={image.src.large2x}
+                        alt={image.alt}
+                        className="object-cover w-full h-screen"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <p className="text-4xl font-semibold text-white">
+                          {image.alt}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
+      <div className="flex items-center justify-center py-12 ">
+        <Card className="mx-auto w-[350px] shadow-2xl opacity-100">
           <CardHeader>
             <CardTitle className="text-3xl font-bold">Login</CardTitle>
             <CardDescription>
@@ -195,6 +249,7 @@ const LoginForm: React.FC<Props> = ({ onLoginSuccess }) => {
                 Login with Google
               </Button>
             </form>
+
             <div className="mt-4 text-sm text-center">
               Don&apos;t have an account?{" "}
               <a href="/auth/register" className="underline">
