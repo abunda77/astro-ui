@@ -50,21 +50,24 @@ const LoginModal: React.FC<{ onLoginSuccess: (username: string) => void }> = ({
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/json",
-        },
-        body: new URLSearchParams({
-          username,
-          password,
-          grant_type: "",
-          scope: "",
-          client_id: "",
-          client_secret: "",
-        }),
-      });
+      const response = await fetch(
+        "https://fastapi.serverdata.my.id/api/v1/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json",
+          },
+          body: new URLSearchParams({
+            username,
+            password,
+            grant_type: "",
+            scope: "",
+            client_id: "",
+            client_secret: "",
+          }),
+        }
+      );
 
       const data = await response.json();
 
