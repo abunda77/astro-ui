@@ -24,6 +24,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 
 const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
+const AUTH_LOGIN_ENDPOINT = import.meta.env.PUBLIC_AUTH_LOGIN_ENDPOINT;
 // console.log("PEXELS_API_KEY", PEXELS_API_KEY);
 
 const PEXELS_QUERY = ["home decor"][Math.floor(Math.random() * 3)];
@@ -63,24 +64,21 @@ const LoginForm: React.FC<{
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://fastapi.serverdata.my.id/api/v1/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json",
-          },
-          body: new URLSearchParams({
-            username,
-            password,
-            grant_type: "",
-            scope: "",
-            client_id: "",
-            client_secret: "",
-          }),
-        }
-      );
+      const response = await fetch(AUTH_LOGIN_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+        },
+        body: new URLSearchParams({
+          username,
+          password,
+          grant_type: "",
+          scope: "",
+          client_id: "",
+          client_secret: "",
+        }),
+      });
 
       const data = await response.json();
 
