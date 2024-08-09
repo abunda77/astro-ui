@@ -188,7 +188,93 @@ const LoginForm: React.FC<{
           <CarouselNext />
         </Carousel>
       </div>
-      <div className="flex items-center justify-center py-12 ">
+
+      {/* Versi Mobile */}
+      <div className="flex items-center justify-center min-h-screen px-2 py-8 sm:px-4 lg:hidden">
+        <Card className="w-full max-w-4xl p-12 bg-white rounded-lg shadow-2xl">
+          <CardHeader>
+            <CardTitle className="text-6xl font-bold text-center">
+              Login Mobile
+            </CardTitle>
+            <CardDescription className="text-4xl text-center">
+              Enter your username and password below to login to your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="grid gap-12" onSubmit={handleLogin}>
+              <div className="grid gap-6">
+                <Label htmlFor="username" className="text-4xl font-medium">
+                  Username
+                </Label>
+                <Input
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className={`w-full h-28 text-5xl px-8 border ${
+                    errors.username
+                      ? "border-red-500"
+                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
+                  } rounded-lg`}
+                  aria-invalid={errors.username ? "true" : "false"}
+                />
+                {errors.username && (
+                  <p className="text-xl text-red-500">{errors.username}</p>
+                )}
+              </div>
+              <div className="grid gap-6">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-4xl font-medium">
+                    Password
+                  </Label>
+                  <a
+                    href="/auth/forgot-password"
+                    className="text-4xl text-blue-600 underline"
+                  >
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`w-full h-28 text-5xl px-8 border ${
+                    errors.password
+                      ? "border-red-500"
+                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
+                  } rounded-lg`}
+                  aria-invalid={errors.password ? "true" : "false"}
+                />
+                {errors.password && (
+                  <p className="text-xl text-red-500">{errors.password}</p>
+                )}
+              </div>
+              <Button
+                type="submit"
+                className="w-full text-5xl bg-green-500 rounded-lg h-28"
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging in..." : "Login"}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full text-4xl border-2 border-green-500 rounded-lg h-28"
+              >
+                Login with Google
+              </Button>
+            </form>
+            <div className="mt-6 text-4xl text-center">
+              Don't have an account?{" "}
+              <a href="/auth/register" className="text-blue-600 underline">
+                Sign up
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Bagian Kanan (Form Versi Desktop) */}
+      <div className="items-center justify-center hidden py-12 lg:flex ">
         <Card className="mx-auto w-[350px] shadow-2xl opacity-100">
           <CardHeader>
             <CardTitle className="text-3xl font-bold">Login</CardTitle>
