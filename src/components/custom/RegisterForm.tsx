@@ -165,7 +165,7 @@ const RegisterForm: React.FC = () => {
             <CardTitle className="text-6xl font-bold text-center">
               Register Mobile
             </CardTitle>
-            <CardDescription className="text-2xl text-center">
+            <CardDescription className="text-4xl text-center">
               Enter your name, email, and password below to register your
               account
             </CardDescription>
@@ -173,14 +173,14 @@ const RegisterForm: React.FC = () => {
           <CardContent>
             <form className="grid gap-12" onSubmit={handleRegister}>
               <div className="grid gap-6">
-                <Label htmlFor="name" className="text-2xl font-medium">
+                <Label htmlFor="name" className="text-4xl font-medium">
                   Name
                 </Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`w-full h-28 text-2xl px-8 border ${
+                  className={`w-full h-28 text-5xl px-8 border ${
                     errors.name
                       ? "border-red-500"
                       : "bg-slate-200 border-green-500 dark:bg-slate-300"
@@ -192,7 +192,7 @@ const RegisterForm: React.FC = () => {
                 )}
               </div>
               <div className="grid gap-6">
-                <Label htmlFor="email" className="text-2xl font-medium">
+                <Label htmlFor="email" className="text-4xl font-medium">
                   Email
                 </Label>
                 <Input
@@ -200,7 +200,7 @@ const RegisterForm: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full h-28 text-2xl px-8 border ${
+                  className={`w-full h-28 text-5xl px-8 border ${
                     errors.name
                       ? "border-red-500"
                       : "bg-slate-200 border-green-500 dark:bg-slate-300"
@@ -210,12 +210,12 @@ const RegisterForm: React.FC = () => {
               </div>
               <div className="grid gap-6">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-2xl font-medium">
+                  <Label htmlFor="password" className="text-4xl font-medium">
                     Password
                   </Label>
                   <a
                     href="/auth/forgot-password"
-                    className="text-lg text-blue-600 underline"
+                    className="text-4xl text-blue-600 underline"
                   >
                     Forgot your password?
                   </a>
@@ -225,7 +225,7 @@ const RegisterForm: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-28 text-2xl px-8 border ${
+                  className={`w-full h-28 text-5xl px-8 border ${
                     errors.password
                       ? "border-red-500"
                       : "bg-slate-200 border-green-500 dark:bg-slate-300"
@@ -238,19 +238,19 @@ const RegisterForm: React.FC = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full text-2xl bg-green-500 rounded-lg h-28"
+                className="w-full text-5xl bg-green-500 rounded-lg h-28"
                 disabled={isLoading}
               >
                 {isLoading ? "Registering..." : "Register"}
               </Button>
               <Button
                 variant="outline"
-                className="w-full text-2xl border-2 border-green-500 rounded-lg h-28"
+                className="w-full text-4xl border-2 border-green-500 rounded-lg h-28"
               >
                 Register with Google
               </Button>
             </form>
-            <div className="mt-6 text-2xl text-center">
+            <div className="mt-6 text-4xl text-center">
               Already have an account?{" "}
               <a href="/auth/login" className="text-blue-600 underline">
                 Sign in
