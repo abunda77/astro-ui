@@ -13,6 +13,8 @@ import {
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 
+const AUTH_LOGIN_ENDPOINT = import.meta.env.PUBLIC_AUTH_LOGIN_ENDPOINT;
+
 interface LoginModalProps {
   onLoginSuccess?: (username: string) => void;
 }
@@ -50,24 +52,21 @@ const LoginModal: React.FC<{ onLoginSuccess: (username: string) => void }> = ({
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://fastapi.serverdata.my.id/api/v1/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json",
-          },
-          body: new URLSearchParams({
-            username,
-            password,
-            grant_type: "",
-            scope: "",
-            client_id: "",
-            client_secret: "",
-          }),
-        }
-      );
+      const response = await fetch(AUTH_LOGIN_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+        },
+        body: new URLSearchParams({
+          username,
+          password,
+          grant_type: "",
+          scope: "",
+          client_id: "",
+          client_secret: "",
+        }),
+      });
 
       const data = await response.json();
 
