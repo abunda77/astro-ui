@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
 import "@/styles/globals.css";
+
+import React, { useState, useEffect } from "react";
+
 import { createClient } from "pexels";
 import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
@@ -24,9 +26,7 @@ import {
 
 const PEXELS_API_KEY =
   "qx8GVjVSbbbIzugyU7YdcWvufPqQBjFed1CeoV0exEfksFiKWoSVmV9g";
-const PEXELS_QUERY = ["real estate", "home decor", "property"][
-  Math.floor(Math.random() * 3)
-];
+const PEXELS_QUERY = ["real estate"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
 
@@ -256,6 +256,11 @@ const RegisterForm: React.FC = () => {
                 Sign in
               </a>
             </div>
+            <div className="mt-6 text-4xl text-center">
+              <a href="/" className="text-blue-600 underline">
+                Back to Home
+              </a>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -345,6 +350,11 @@ const RegisterForm: React.FC = () => {
               <a href="/auth/login" className="underline">
                 {" "}
                 Sign in{" "}
+              </a>
+            </div>
+            <div className="mt-6 text-sm text-center">
+              <a href="/" className="text-blue-600 underline">
+                Back to Home
               </a>
             </div>
           </CardContent>

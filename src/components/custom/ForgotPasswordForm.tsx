@@ -25,16 +25,16 @@ import { toast } from "@/components/ui/use-toast";
 
 const PEXELS_API_KEY =
   "qx8GVjVSbbbIzugyU7YdcWvufPqQBjFed1CeoV0exEfksFiKWoSVmV9g";
-const PEXELS_QUERY = ["home decor"][Math.floor(Math.random() * 3)];
+const PEXELS_QUERY = ["property"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
 
-const LoginForm: React.FC<{
-  onLoginSuccess?: (username: string) => void;
-}> = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ username: "", password: "" });
+const ForgotPasswordForm: React.FC<{
+  onForgotPasswordSuccess?: (email: string) => void;
+}> = ({ onForgotPasswordSuccess }) => {
+  const [email, setEmail] = useState("");
+
+  const [errors, setErrors] = useState({ email: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [carouselImages, setCarouselImages] = useState<any[]>([]);
 
@@ -56,14 +56,14 @@ const LoginForm: React.FC<{
     fetchCarouselImages();
   }, []);
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsLoading(true);
 
     try {
       const response = await fetch(
-        "https://fastapi.serverdata.my.id/api/v1/auth/login",
+        "https://fastapi.serverdata.my.id//api/v1/auth/forgot-password",
         {
           method: "POST",
           headers: {
@@ -71,8 +71,8 @@ const LoginForm: React.FC<{
             Accept: "application/json",
           },
           body: new URLSearchParams({
-            username,
-            password,
+            email,
+
             grant_type: "",
             scope: "",
             client_id: "",
@@ -85,17 +85,17 @@ const LoginForm: React.FC<{
 
       if (response.ok) {
         // Set cookies
-        document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; secure; samesite=strict`;
-        document.cookie = `user_id=${data.user_id}; path=/; max-age=3600; secure; samesite=strict`;
-        document.cookie = `username=${username}; path=/; max-age=3600; secure; samesite=strict`;
+        // document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; secure; samesite=strict`;
+        // document.cookie = `user_id=${data.user_id}; path=/; max-age=3600; secure; samesite=strict`;
+        // document.cookie = `username=${username}; path=/; max-age=3600; secure; samesite=strict`;
 
         toast({
-          title: "Login Successful",
-          description: `Welcome back, ${username}!`,
+          title: "Request Password Successful Sent",
+          description: `Email has been sent to, ${email}!`,
         });
 
-        if (onLoginSuccess) {
-          onLoginSuccess(username);
+        if (onForgotPasswordSuccess) {
+          onForgotPasswordSuccess(email);
         }
 
         // Redirect to home page
@@ -104,38 +104,36 @@ const LoginForm: React.FC<{
         }, 1000);
       } else {
         toast({
-          title: "Login Failed",
+          title: "Request Password Failed",
           description: data.detail || "An error occurred. Please try again.",
           variant: "destructive",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
 
-      console.log("Logging in:", { username, password });
+      console.log("Emaiil in:", { email });
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Request Password error:", error);
       setErrors({
-        username: "Invalid username",
-        password: "Invalid password",
+        email: "Invalid email",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsLoading(true);
 
     try {
       // Implement registration logic here
-      console.log("Registering:", { username, password });
+      console.log("Req Password:", { email });
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Req Password error:", error);
       setErrors({
-        username: "Invalid username",
-        password: "Invalid password",
+        email: "Invalid email",
       });
     } finally {
       setIsLoading(false);
@@ -199,54 +197,28 @@ const LoginForm: React.FC<{
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="grid gap-12" onSubmit={handleLogin}>
+            <form className="grid gap-12" onSubmit={handleForgotPassword}>
               <div className="grid gap-6">
-                <Label htmlFor="username" className="text-4xl font-medium">
-                  Username
+                <Label htmlFor="email" className="text-4xl font-medium">
+                  Your Email
                 </Label>
                 <Input
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className={`w-full h-28 text-5xl px-8 border ${
-                    errors.username
+                    errors.email
                       ? "border-red-500"
                       : "bg-slate-200 border-green-500 dark:bg-slate-300"
                   } rounded-lg`}
-                  aria-invalid={errors.username ? "true" : "false"}
+                  aria-invalid={errors.email ? "true" : "false"}
                 />
-                {errors.username && (
-                  <p className="text-xl text-red-500">{errors.username}</p>
+                {errors.email && (
+                  <p className="text-xl text-red-500">{errors.email}</p>
                 )}
               </div>
-              <div className="grid gap-6">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-4xl font-medium">
-                    Password
-                  </Label>
-                  <a
-                    href="/auth/forgot-password"
-                    className="text-4xl text-blue-600 underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-28 text-5xl px-8 border ${
-                    errors.password
-                      ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  } rounded-lg`}
-                  aria-invalid={errors.password ? "true" : "false"}
-                />
-                {errors.password && (
-                  <p className="text-xl text-red-500">{errors.password}</p>
-                )}
-              </div>
+
               <Button
                 type="submit"
                 className="w-full text-5xl bg-green-500 rounded-lg h-28"
@@ -254,22 +226,11 @@ const LoginForm: React.FC<{
               >
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
-              <Button
-                variant="outline"
-                className="w-full text-4xl border-2 border-green-500 rounded-lg h-28"
-              >
-                Login with Google
-              </Button>
             </form>
             <div className="mt-6 text-4xl text-center">
               Don't have an account?{" "}
               <a href="/auth/register" className="text-blue-600 underline">
                 Sign up
-              </a>
-            </div>
-            <div className="mt-6 text-4xl text-center">
-              <a href="/" className="text-blue-600 underline">
-                Back to Home
               </a>
             </div>
           </CardContent>
@@ -280,53 +241,32 @@ const LoginForm: React.FC<{
       <div className="items-center justify-center hidden py-12 lg:flex ">
         <Card className="mx-auto w-[350px] shadow-2xl opacity-100">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold">Login</CardTitle>
-            <CardDescription>
-              Enter your username and password below to login to your account
-            </CardDescription>
+            <CardTitle className="text-3xl font-bold">
+              Forgot Password
+            </CardTitle>
+            <CardDescription>Enter your Email</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="grid gap-4" onSubmit={handleLogin}>
+            <form className="grid gap-4" onSubmit={handleForgotPassword}>
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Email</Label>
                 <Input
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className={`w-full border ${
-                    errors.username
+                    errors.email
                       ? "border-red-500"
                       : "bg-slate-200 border-green-500 dark:bg-slate-300"
                   }`}
-                  aria-invalid={errors.username ? "true" : "false"}
+                  aria-invalid={errors.email ? "true" : "false"}
                 />
-                {errors.username && (
-                  <p className="text-xs text-red-500">{errors.username}</p>
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email}</p>
                 )}
               </div>
-              <div className="grid gap-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <a href="/auth/forgot-password" className="text-sm underline">
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full border ${
-                    errors.password
-                      ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  }`}
-                  aria-invalid={errors.password ? "true" : "false"}
-                />
-                {errors.password && (
-                  <p className="text-xs text-red-500">{errors.password}</p>
-                )}
-              </div>
+
               <Button
                 type="submit"
                 className="w-full bg-green-500"
@@ -346,11 +286,6 @@ const LoginForm: React.FC<{
                 Sign up{" "}
               </a>
             </div>
-            <div className="mt-6 text-sm text-center">
-              <a href="/" className="text-blue-600 underline">
-                Back to Home
-              </a>
-            </div>
           </CardContent>
         </Card>
       </div>
@@ -358,4 +293,4 @@ const LoginForm: React.FC<{
   );
 };
 
-export default LoginForm;
+export default ForgotPasswordForm;
