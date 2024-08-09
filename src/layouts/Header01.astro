@@ -130,6 +130,15 @@ const menuitems = [
     }
   }
 
+  @keyframes horizontal-move {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
   .animate-marquee {
     animation: marquee 5s linear infinite;
   }
@@ -138,6 +147,10 @@ const menuitems = [
     .animate-marquee {
       animation: marquee-mobile 15s linear infinite;
     }
+  }
+
+  .animate-horizontal-move {
+    animation: horizontal-move 10s linear infinite;
   }
 </style>
 

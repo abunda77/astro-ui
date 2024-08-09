@@ -121,6 +121,7 @@ const RegisterForm: React.FC = () => {
   );
   return (
     <div className="w-full h-full m-0 lg:grid lg:grid-cols-2">
+      {/* Bagian Kiri (Carousel) */}
       <div className="hidden bg-muted lg:block">
         <Carousel
           plugins={[plugin.current]}
@@ -155,12 +156,119 @@ const RegisterForm: React.FC = () => {
         </Carousel>
       </div>
 
-      <div className="flex items-center justify-center py-12">
-        <Card className="mx-auto w-[350px] shadow-2xl opacity-100">
+      {/* Bagian Kanan (Form Register) */}
+
+      {/* Versi Mobile */}
+      <div className="flex items-center justify-center min-h-screen px-2 py-8 sm:px-4 lg:hidden">
+        <Card className="w-full max-w-4xl p-6 bg-white rounded-lg shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold">Register</CardTitle>
-            <CardDescription>
-              Enter your name, email, and password below to register to your
+            <CardTitle className="text-6xl font-bold text-center">
+              Register Mobile
+            </CardTitle>
+            <CardDescription className="text-2xl text-center">
+              Enter your name, email, and password below to register your
+              account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="grid gap-12" onSubmit={handleRegister}>
+              <div className="grid gap-6">
+                <Label htmlFor="name" className="text-2xl font-medium">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={`w-full h-28 text-2xl px-8 border ${
+                    errors.name
+                      ? "border-red-500"
+                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
+                  } rounded-lg`}
+                  aria-invalid={errors.name ? "true" : "false"}
+                />
+                {errors.name && (
+                  <p className="text-xl text-red-500">{errors.name}</p>
+                )}
+              </div>
+              <div className="grid gap-6">
+                <Label htmlFor="email" className="text-2xl font-medium">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`w-full h-28 text-2xl px-8 border ${
+                    errors.name
+                      ? "border-red-500"
+                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
+                  } rounded-lg`}
+                  aria-invalid={errors.name ? "true" : "false"}
+                />
+              </div>
+              <div className="grid gap-6">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-2xl font-medium">
+                    Password
+                  </Label>
+                  <a
+                    href="/auth/forgot-password"
+                    className="text-lg text-blue-600 underline"
+                  >
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`w-full h-28 text-2xl px-8 border ${
+                    errors.password
+                      ? "border-red-500"
+                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
+                  } rounded-lg`}
+                  aria-invalid={errors.password ? "true" : "false"}
+                />
+                {errors.password && (
+                  <p className="text-xl text-red-500">{errors.password}</p>
+                )}
+              </div>
+              <Button
+                type="submit"
+                className="w-full text-2xl bg-green-500 rounded-lg h-28"
+                disabled={isLoading}
+              >
+                {isLoading ? "Registering..." : "Register"}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full text-2xl border-2 border-green-500 rounded-lg h-28"
+              >
+                Register with Google
+              </Button>
+            </form>
+            <div className="mt-6 text-2xl text-center">
+              Already have an account?{" "}
+              <a href="/auth/login" className="text-blue-600 underline">
+                Sign in
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Versi Desktop */}
+      <div className="items-center justify-center hidden px-8 py-12 lg:flex">
+        <Card className="w-full max-w-md p-8 bg-white rounded-lg shadow-2xl">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold text-center">
+              Register
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter your name, email, and password below to register your
               account
             </CardDescription>
           </CardHeader>
