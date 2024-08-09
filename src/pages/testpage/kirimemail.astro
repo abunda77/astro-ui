@@ -1,0 +1,16 @@
+---
+import SendMail from "@/components/custom/SendMail";
+import { Toaster } from "@/components/ui/toaster";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Send Email</title>
+  </head>
+  <body class="max-w-lg p-6 mx-auto">
+    <h1 class="mb-4 text-2xl font-bold">Send Email</h1>
+    <SendMail />
+    <Toaster client:load />
+  </body>
+</html>

@@ -24,8 +24,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-const PEXELS_API_KEY =
-  "qx8GVjVSbbbIzugyU7YdcWvufPqQBjFed1CeoV0exEfksFiKWoSVmV9g";
+const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 const PEXELS_QUERY = ["real estate"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
@@ -177,7 +176,7 @@ const RegisterForm: React.FC = () => {
                   Name
                 </Label>
                 <Input
-                  id="name"
+                  id="name1"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={`w-full h-28 text-5xl px-8 border ${
@@ -196,7 +195,7 @@ const RegisterForm: React.FC = () => {
                   Email
                 </Label>
                 <Input
-                  id="email"
+                  id="email1"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -221,7 +220,7 @@ const RegisterForm: React.FC = () => {
                   </a>
                 </div>
                 <Input
-                  id="password"
+                  id="password1"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

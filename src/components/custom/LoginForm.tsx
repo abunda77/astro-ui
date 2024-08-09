@@ -23,8 +23,9 @@ import { Label } from "@/components/ui/label";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 
-const PEXELS_API_KEY =
-  "qx8GVjVSbbbIzugyU7YdcWvufPqQBjFed1CeoV0exEfksFiKWoSVmV9g";
+const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
+// console.log("PEXELS_API_KEY", PEXELS_API_KEY);
+
 const PEXELS_QUERY = ["home decor"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
@@ -205,7 +206,7 @@ const LoginForm: React.FC<{
                   Username
                 </Label>
                 <Input
-                  id="username"
+                  id="username1"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className={`w-full h-28 text-5xl px-8 border ${
@@ -232,7 +233,7 @@ const LoginForm: React.FC<{
                   </a>
                 </div>
                 <Input
-                  id="password"
+                  id="password1"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -290,7 +291,7 @@ const LoginForm: React.FC<{
               <div className="grid gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
-                  id="username"
+                  id="username2"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className={`w-full border ${
@@ -312,7 +313,7 @@ const LoginForm: React.FC<{
                   </a>
                 </div>
                 <Input
-                  id="password"
+                  id="password2"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
