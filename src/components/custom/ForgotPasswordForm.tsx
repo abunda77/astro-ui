@@ -193,20 +193,20 @@ const ForgotPasswordForm: React.FC<{
       </div>
 
       {/* Versi Mobile */}
-      <div className="flex items-center justify-center min-h-screen px-2 py-8 sm:px-4 lg:hidden">
-        <Card className="w-full max-w-4xl p-12 bg-white rounded-lg shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-6xl font-bold text-center">
-              Login Mobile
+      <div className="flex items-center justify-center min-h-screen px-4 py-6 lg:hidden">
+        <Card className="w-full max-w-sm bg-white rounded-lg shadow-lg">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-2xl font-bold text-center">
+              Forgot Password
             </CardTitle>
-            <CardDescription className="text-4xl text-center">
-              Enter your username and password below to login to your account
+            <CardDescription className="text-sm text-center">
+              Enter your email address to reset your password
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="grid gap-12" onSubmit={handleForgotPassword}>
-              <div className="grid gap-6">
-                <Label htmlFor="email" className="text-4xl font-medium">
+            <form className="space-y-6" onSubmit={handleForgotPassword}>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">
                   Your Email
                 </Label>
                 <Input
@@ -214,30 +214,34 @@ const ForgotPasswordForm: React.FC<{
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full h-28 text-5xl px-8 border ${
+                  className={`w-full h-10 text-base px-3 border ${
                     errors.email
                       ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  } rounded-lg`}
+                      : "bg-slate-200 border-gray-300 dark:bg-slate-700"
+                  } rounded-md`}
                   aria-invalid={errors.email ? "true" : "false"}
                 />
                 {errors.email && (
-                  <p className="text-xl text-red-500">{errors.email}</p>
+                  <p className="text-xs text-red-500">{errors.email}</p>
                 )}
               </div>
-
               <Button
                 type="submit"
-                className="w-full text-5xl bg-green-500 rounded-lg h-28"
+                className="w-full h-10 text-sm bg-green-500 rounded-md"
                 disabled={isLoading}
               >
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? "Sending..." : "Reset Password"}
               </Button>
             </form>
-            <div className="mt-6 text-4xl text-center">
-              Don't have an account?{" "}
-              <a href="/auth/register" className="text-blue-600 underline">
-                Sign up
+            <div className="mt-4 text-xs text-center">
+              Remember your password?{" "}
+              <a href="/auth/login" className="text-blue-600 underline">
+                Sign in
+              </a>
+            </div>
+            <div className="mt-2 text-xs text-center">
+              <a href="/" className="text-blue-600 underline">
+                Back to Home
               </a>
             </div>
           </CardContent>

@@ -198,45 +198,45 @@ const LoginForm: React.FC<{
       </div>
 
       {/* Versi Mobile */}
-      <div className="flex items-center justify-center min-h-screen px-2 py-8 sm:px-4 lg:hidden">
-        <Card className="w-full max-w-4xl p-12 bg-white rounded-lg shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-6xl font-bold text-center">
+      <div className="flex items-center justify-center min-h-screen px-4 py-6">
+        <Card className="w-full max-w-sm bg-white rounded-lg shadow-lg">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-2xl font-bold text-center">
               Login Mobile
             </CardTitle>
-            <CardDescription className="text-4xl text-center">
+            <CardDescription className="text-sm text-center">
               Enter your username and password below to login to your account
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="grid gap-12" onSubmit={handleLogin}>
-              <div className="grid gap-6">
-                <Label htmlFor="username" className="text-4xl font-medium">
+            <form className="space-y-6" onSubmit={handleLogin}>
+              <div className="space-y-2">
+                <Label htmlFor="username" className="text-sm font-medium">
                   Username
                 </Label>
                 <Input
                   id="username1"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className={`w-full h-28 text-5xl px-8 border ${
+                  className={`w-full h-10 text-base px-3 border ${
                     errors.username
                       ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  } rounded-lg`}
+                      : "bg-slate-200  border-green-500 dark:bg-slate-700"
+                  } rounded-md`}
                   aria-invalid={errors.username ? "true" : "false"}
                 />
                 {errors.username && (
-                  <p className="text-xl text-red-500">{errors.username}</p>
+                  <p className="text-xs text-red-500">{errors.username}</p>
                 )}
               </div>
-              <div className="grid gap-6">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-4xl font-medium">
+                  <Label htmlFor="password" className="text-sm font-medium">
                     Password
                   </Label>
                   <a
                     href="/auth/forgot-password"
-                    className="text-4xl text-blue-600 underline"
+                    className="text-xs text-blue-600 underline"
                   >
                     Forgot your password?
                   </a>
@@ -246,38 +246,38 @@ const LoginForm: React.FC<{
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-28 text-5xl px-8 border ${
+                  className={`w-full h-10 text-base px-3 border ${
                     errors.password
                       ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  } rounded-lg`}
+                      : "bg-slate-200 border-green-500 dark:bg-slate-700"
+                  } rounded-md`}
                   aria-invalid={errors.password ? "true" : "false"}
                 />
                 {errors.password && (
-                  <p className="text-xl text-red-500">{errors.password}</p>
+                  <p className="text-xs text-red-500">{errors.password}</p>
                 )}
               </div>
               <Button
                 type="submit"
-                className="w-full text-5xl bg-green-500 rounded-lg h-28"
+                className="w-full h-10 text-sm bg-green-500 rounded-md"
                 disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
               <Button
                 variant="outline"
-                className="w-full text-4xl border-2 border-green-500 rounded-lg h-28"
+                className="w-full h-10 text-sm border border-green-500 rounded-md"
               >
                 Login with Google
               </Button>
             </form>
-            <div className="mt-6 text-4xl text-center">
+            <div className="mt-4 text-xs text-center">
               Don't have an account?{" "}
               <a href="/auth/register" className="text-blue-600 underline">
                 Sign up
               </a>
             </div>
-            <div className="mt-6 text-4xl text-center">
+            <div className="mt-2 text-xs text-center">
               <a href="/" className="text-blue-600 underline">
                 Back to Home
               </a>

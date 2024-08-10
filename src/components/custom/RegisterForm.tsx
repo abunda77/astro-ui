@@ -168,40 +168,40 @@ const RegisterForm: React.FC = () => {
       {/* Bagian Kanan (Form Register) */}
 
       {/* Versi Mobile */}
-      <div className="flex items-center justify-center min-h-screen px-2 py-8 sm:px-4 lg:hidden">
-        <Card className="w-full max-w-4xl p-6 bg-white rounded-lg shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-6xl font-bold text-center">
+      <div className="flex items-center justify-center min-h-screen px-4 py-6 lg:hidden">
+        <Card className="w-full max-w-sm bg-white rounded-lg shadow-2xl">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-2xl font-bold text-center">
               Register Mobile
             </CardTitle>
-            <CardDescription className="text-4xl text-center">
+            <CardDescription className="text-sm text-center">
               Enter your name, email, and password below to register your
               account
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="grid gap-12" onSubmit={handleRegister}>
-              <div className="grid gap-6">
-                <Label htmlFor="name" className="text-4xl font-medium">
+            <form className="space-y-6" onSubmit={handleRegister}>
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium">
                   Name
                 </Label>
                 <Input
                   id="name1"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`w-full h-28 text-5xl px-8 border ${
+                  className={`w-full h-10 text-base px-3 border ${
                     errors.name
                       ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  } rounded-lg`}
+                      : "bg-slate-200 border-green-500 dark:bg-slate-700"
+                  } rounded-md`}
                   aria-invalid={errors.name ? "true" : "false"}
                 />
                 {errors.name && (
-                  <p className="text-xl text-red-500">{errors.name}</p>
+                  <p className="text-xs text-red-500">{errors.name}</p>
                 )}
               </div>
-              <div className="grid gap-6">
-                <Label htmlFor="email" className="text-4xl font-medium">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">
                   Email
                 </Label>
                 <Input
@@ -209,63 +209,58 @@ const RegisterForm: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full h-28 text-5xl px-8 border ${
+                  className={`w-full h-10 text-base px-3 border ${
                     errors.name
                       ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  } rounded-lg`}
+                      : "bg-slate-200 border-green-500 dark:bg-slate-700"
+                  } rounded-md`}
                   aria-invalid={errors.name ? "true" : "false"}
                 />
+                {errors.name && (
+                  <p className="text-xs text-red-500">{errors.name}</p>
+                )}
               </div>
-              <div className="grid gap-6">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-4xl font-medium">
-                    Password
-                  </Label>
-                  <a
-                    href="/auth/forgot-password"
-                    className="text-4xl text-blue-600 underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </Label>
                 <Input
                   id="password1"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full h-28 text-5xl px-8 border ${
+                  className={`w-full h-10 text-base px-3 border ${
                     errors.password
                       ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  } rounded-lg`}
+                      : "bg-slate-200 border-green-500 dark:bg-slate-700"
+                  } rounded-md`}
                   aria-invalid={errors.password ? "true" : "false"}
                 />
                 {errors.password && (
-                  <p className="text-xl text-red-500">{errors.password}</p>
+                  <p className="text-xs text-red-500">{errors.password}</p>
                 )}
               </div>
               <Button
                 type="submit"
-                className="w-full text-5xl bg-green-500 rounded-lg h-28"
+                className="w-full h-10 text-sm bg-green-500 rounded-md"
                 disabled={isLoading}
               >
                 {isLoading ? "Registering..." : "Register"}
               </Button>
               <Button
                 variant="outline"
-                className="w-full text-4xl border-2 border-green-500 rounded-lg h-28"
+                className="w-full h-10 text-sm border border-green-500 rounded-md"
               >
                 Register with Google
               </Button>
             </form>
-            <div className="mt-6 text-4xl text-center">
+            <div className="mt-4 text-xs text-center">
               Already have an account?{" "}
               <a href="/auth/login" className="text-blue-600 underline">
                 Sign in
               </a>
             </div>
-            <div className="mt-6 text-4xl text-center">
+            <div className="mt-2 text-xs text-center">
               <a href="/" className="text-blue-600 underline">
                 Back to Home
               </a>

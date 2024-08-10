@@ -2,10 +2,10 @@ import React from "react";
 import "@/styles/globals.css";
 const AttractiveLoadingAnimation = () => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-200">
-      <div className="relative w-16 h-16 opacity-0 sm:w-24 sm:h-24 md:w-64 md:h-64 animate-fadeIn">
+    <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+      <div className="w-32 h-32 opacity-0 sm:w-16 sm:h-16 md:w-32 md:h-32 animate-fadeIn">
         <svg
-          className="w-64 h-64"
+          className="w-32 h-32"
           viewBox="0 0 100 100"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -27,11 +27,11 @@ const AttractiveLoadingAnimation = () => {
             d="M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0"
           />
         </svg>
-        {/* <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-bold text-gray-800 text-1xl animate-bounce">
-            Tunggu sebentar ...
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-bold text-gray-800 animate-bounce">
+            Please Wait ...
           </span>
-        </div> */}
+        </div>
       </div>
     </div>
   );
