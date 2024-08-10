@@ -1,8 +1,10 @@
 ---
 import "@/styles/globals.css";
+import Layout02 from "@/layouts/Layout02.astro";
 import { Toaster } from "@/components/ui/toaster";
 import RegisterForm from "@/components/custom/RegisterForm";
 ---
 
+<Layout02 title="Halaman registrasi." />
 <RegisterForm client:load />
 <Toaster client:load />

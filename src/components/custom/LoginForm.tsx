@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
+import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 
 const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 const AUTH_LOGIN_ENDPOINT = import.meta.env.PUBLIC_AUTH_LOGIN_ENDPOINT;
@@ -39,6 +40,7 @@ const LoginForm: React.FC<{
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [carouselImages, setCarouselImages] = useState<any[]>([]);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     const fetchCarouselImages = async () => {
@@ -53,10 +55,15 @@ const LoginForm: React.FC<{
         setCarouselImages(photos);
       } catch (error) {
         console.error("Error fetching carousel images:", error);
+      } finally {
+        // Simulate a minimum loading time of 1 second
+        setTimeout(() => setIsPageLoading(false), 2000);
       }
     };
     fetchCarouselImages();
   }, []);
+
+  // ... (rest of the component code remains the same)
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -149,6 +156,10 @@ const LoginForm: React.FC<{
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
+
+  if (isPageLoading) {
+    return <AttractiveLoadingAnimation />;
+  }
 
   return (
     <div className="w-full h-full m-0 lg:grid lg:grid-cols-2">

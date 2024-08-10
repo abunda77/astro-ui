@@ -23,6 +23,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 
 const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 const PEXELS_QUERY = ["real estate"][Math.floor(Math.random() * 3)];
@@ -36,6 +37,7 @@ const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [carouselImages, setCarouselImages] = useState<any[]>([]);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     const fetchCarouselImages = async () => {
@@ -50,6 +52,9 @@ const RegisterForm: React.FC = () => {
         setCarouselImages(photos);
       } catch (error) {
         console.error("Error fetching carousel images:", error);
+      } finally {
+        // Simulate a minimum loading time of 1 second
+        setTimeout(() => setIsPageLoading(false), 1000);
       }
     };
     fetchCarouselImages();
@@ -118,6 +123,11 @@ const RegisterForm: React.FC = () => {
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
+
+  if (isPageLoading) {
+    return <AttractiveLoadingAnimation />;
+  }
+
   return (
     <div className="w-full h-full m-0 lg:grid lg:grid-cols-2">
       {/* Bagian Kiri (Carousel) */}

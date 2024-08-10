@@ -77,6 +77,7 @@ const ResetPassword: React.FC = () => {
     }
   };
 
+  // Render the form
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>

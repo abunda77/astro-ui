@@ -1,8 +1,11 @@
 ---
 import "@/styles/globals.css";
+
+import Layout02 from "@/layouts/Layout02.astro";
 import { Toaster } from "@/components/ui/toaster";
 import LoginForm from "@/components/custom/LoginForm";
 ---
 
-<LoginForm client:load />
+<Layout02 title="Halaman Login" />
 <Toaster client:load />
+<LoginForm client:load />

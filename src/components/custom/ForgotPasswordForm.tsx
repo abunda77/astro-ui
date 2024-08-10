@@ -22,9 +22,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
+import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 
-const PEXELS_API_KEY =
-  "qx8GVjVSbbbIzugyU7YdcWvufPqQBjFed1CeoV0exEfksFiKWoSVmV9g";
+const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 const PEXELS_QUERY = ["property"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
@@ -37,6 +37,7 @@ const ForgotPasswordForm: React.FC<{
   const [errors, setErrors] = useState({ email: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [carouselImages, setCarouselImages] = useState<any[]>([]);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     const fetchCarouselImages = async () => {
@@ -51,6 +52,9 @@ const ForgotPasswordForm: React.FC<{
         setCarouselImages(photos);
       } catch (error) {
         console.error("Error fetching carousel images:", error);
+      } finally {
+        // Simulate a minimum loading time of 1 second
+        setTimeout(() => setIsPageLoading(false), 1000);
       }
     };
     fetchCarouselImages();
@@ -149,6 +153,9 @@ const ForgotPasswordForm: React.FC<{
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
 
+  if (isPageLoading) {
+    return <AttractiveLoadingAnimation />;
+  }
   return (
     <div className="w-full h-full m-0 lg:grid lg:grid-cols-2">
       <div className="hidden bg-muted lg:block">
