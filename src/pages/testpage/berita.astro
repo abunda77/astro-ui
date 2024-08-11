@@ -1,0 +1,56 @@
+---
+import "@/styles/globals.css";
+import RunningText from "@/components/custom/RunningText";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title></title>
+  </head>
+  <body>
+    <h1>Tampilan</h1>
+    <RunningText client:load />
+
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  @keyframes marquee {
+    0% {
+      transform: translateX(200%);
+    }
+    100% {
+      transform: translateX(80%);
+    }
+  }
+
+  @keyframes marquee-mobile {
+    0% {
+      transform: translateX(80%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 5s linear infinite;
+  }
+
+  @media (max-width: 640px) {
+    .animate-marquee {
+      animation: marquee-mobile 15s linear infinite;
+    }
+  }
+
+  .animate-horizontal-move {
+    animation: horizontal-move 10s linear infinite;
+  }
+</style>

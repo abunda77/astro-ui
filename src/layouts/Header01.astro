@@ -7,6 +7,7 @@ import Dropdown from "@/components/dropdown.astro";
 import LoginButtons from "@/components/custom/LoginButtons";
 import HeaderClientScript from "@/components/custom/HeaderClientScript";
 import HeaderMenu from "@/components/custom/HeaderMenu";
+import RunningText from "@/components/custom/RunningText";
 
 const menuitems = [
   {
@@ -104,8 +105,10 @@ const menuitems = [
   </div>
   <Astronav />
 </header>
+
 {/* Running Text */}
-<div class="w-screen overflow-hidden bg-gray-300 dark:bg-gray-800">
+<RunningText client:load />
+<!-- <div class="w-screen overflow-hidden bg-gray-300 dark:bg-gray-800">
   <div class="container mx-auto">
     <div
       class="py-2 text-sm font-medium text-gray-800 dark:text-gray-300 whitespace-nowrap"
@@ -115,8 +118,8 @@ const menuitems = [
       >
     </div>
   </div>
-</div>
-<style>
+</div> -->
+<style is:global>
   @keyframes marquee {
     0% {
       transform: translateX(200%);

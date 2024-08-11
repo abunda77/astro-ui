@@ -1,0 +1,43 @@
+---
+// import { Toaster } from "@/components/ui/toaster";
+// import RegisterForm from "@/components/custom/RegisterForm";
+import Header01 from "@/layouts/Header01.astro";
+import { Toaster } from "@/components/ui/toaster";
+const { title } = Astro.props;
+
+export interface Props {
+  title: string;
+}
+
+const makeTitle = title
+  ? title + " | " + "Bosqu Properti"
+  : "Bosqu Properti - Properti Ideaal Buat Siapa Saja";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <Header01 />
+
+    <!-- <RegisterForm client:load />
+    <Toaster client:load /> -->
+
+    <slot />
+    <style is:global>
+      /* Improve Page speed */
+      /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
+      img {
+        content-visibility: auto;
+      }
+    </style>
+  </body>
+</html>
+<!-- <style is:global> -->

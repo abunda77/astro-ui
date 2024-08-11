@@ -26,6 +26,7 @@ import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAni
 
 const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 const PEXELS_QUERY = ["property"][Math.floor(Math.random() * 3)];
+const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 
 const client = createClient(PEXELS_API_KEY);
 
@@ -66,24 +67,21 @@ const ForgotPasswordForm: React.FC<{
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://fastapi.serverdata.my.id//api/v1/auth/forgot-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json",
-          },
-          body: new URLSearchParams({
-            email,
+      const response = await fetch(FASTAPI_ENDPOINT + "/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+        },
+        body: new URLSearchParams({
+          email,
 
-            grant_type: "",
-            scope: "",
-            client_id: "",
-            client_secret: "",
-          }),
-        }
-      );
+          grant_type: "",
+          scope: "",
+          client_id: "",
+          client_secret: "",
+        }),
+      });
 
       const data = await response.json();
 
@@ -295,6 +293,11 @@ const ForgotPasswordForm: React.FC<{
               <a href="/auth/register" className="underline">
                 {" "}
                 Sign up{" "}
+              </a>
+            </div>
+            <div className="mt-6 text-sm text-center">
+              <a href="/" className="text-blue-600 underline">
+                Back to Home
               </a>
             </div>
           </CardContent>

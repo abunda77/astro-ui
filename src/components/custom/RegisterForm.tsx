@@ -29,7 +29,7 @@ const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 const PEXELS_QUERY = ["real estate"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
-
+const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const RegisterForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ name: "", password: "" });
@@ -65,23 +65,20 @@ const RegisterForm: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://fastapi.serverdata.my.id/api/v1/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            password,
-            role: "customer",
-            is_active: true,
-          }),
-        }
-      );
+      const response = await fetch(FASTAPI_ENDPOINT + "/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          role: "customer",
+          is_active: true,
+        }),
+      });
 
       if (!response.ok) {
         const data = await response.json();

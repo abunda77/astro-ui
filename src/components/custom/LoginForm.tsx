@@ -25,13 +25,14 @@ import { toast } from "@/components/ui/use-toast";
 import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 
 const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
-const AUTH_LOGIN_ENDPOINT = import.meta.env.PUBLIC_AUTH_LOGIN_ENDPOINT;
+// const AUTH_LOGIN_ENDPOINT = import.meta.env.PUBLIC_AUTH_LOGIN_ENDPOINT;
+
 // console.log("PEXELS_API_KEY", PEXELS_API_KEY);
 
 const PEXELS_QUERY = ["home decor"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
-
+const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const LoginForm: React.FC<{
   onLoginSuccess?: (username: string) => void;
 }> = ({ onLoginSuccess }) => {
@@ -71,7 +72,7 @@ const LoginForm: React.FC<{
     setIsLoading(true);
 
     try {
-      const response = await fetch(AUTH_LOGIN_ENDPOINT, {
+      const response = await fetch(FASTAPI_LOGIN + "/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

@@ -21,6 +21,7 @@ export default defineConfig({
       'import.meta.env.MAIL_ENCRYPTION': JSON.stringify(process.env.MAIL_ENCRYPTION),
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.MAIL_FROM_ADDRESS),
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.PEXELS_API_KEY),
+      'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.API_NEWS),
     },
   },
 

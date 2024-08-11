@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import "@/styles/globals.css";
-
+const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const ResetPassword: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,19 +39,16 @@ const ResetPassword: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/auth/reset-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-            new_password: password,
-          }),
-        }
-      );
+      const response = await fetch(FASTAPI_ENDPOINT + "/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+          new_password: password,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to reset password");

@@ -1,4 +1,5 @@
 ---
+import { TypewriterEffectSmoothDemo } from "@/components/custom/HeroSection";
 const { title } = Astro.props;
 ---
 
@@ -8,9 +9,10 @@ const { title } = Astro.props;
   <div class="container relative z-10 px-6 mx-auto">
     <div class="max-w-4xl mx-auto text-center text-white">
       <h2 class="mb-4 text-2xl">The #1 Professional AI Headshot Generator</h2>
-      <h1 class="mb-4 text-4xl font-bold sm:text-6xl gradient-text">
+      <TypewriterEffectSmoothDemo client:load />
+      <!-- <h1 class="mb-4 text-4xl font-bold sm:text-6xl gradient-text">
         Professional business headshots, without a physical photo shoot
-      </h1>
+      </h1> -->
       <p class="mb-8 text-xl">
         Get professional business headshots in minutes with our AI-photographer.
         Upload photos, pick your styles & receive 120+ headshots.

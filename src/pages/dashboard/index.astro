@@ -1,12 +1,11 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import Layout03 from "@/layouts/Layout03.astro";
 import Dashboard from "@/components/custom/Dashboard";
 import "@/styles/globals.css";
 ---
 
-<Layout title="Dashboard">
-  <Dashboard client:load />
-</Layout>
+<Layout03 title="Dashboard" />
+<Dashboard client:load />
 
 <script>
   import { isAuthenticated } from "@/utils/auth";
