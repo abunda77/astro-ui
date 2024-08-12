@@ -5,19 +5,19 @@ import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 export function TypewriterEffectSmoothDemo() {
   const words = [
     {
-      text: "Build",
+      text: "Temukan",
     },
     {
-      text: "awesome",
+      text: "Hunian",
     },
     {
-      text: "apps",
+      text: "Idaman Anda",
     },
     {
-      text: "with",
+      text: "bersama",
     },
     {
-      text: "Aceternity.",
+      text: "Bosqu Properti.",
       className: "text-blue-500 dark:text-blue-500",
     },
   ];

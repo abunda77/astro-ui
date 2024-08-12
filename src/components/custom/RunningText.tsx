@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 interface NewsItem {
   title: string;
-  url: string;
+  link: string;
 }
 
 const RunningText: React.FC = () => {
@@ -11,14 +11,12 @@ const RunningText: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const apiToken = import.meta.env.PUBLIC_API_NEWS;
+      const apitoken = import.meta.env.PUBLIC_API_NEWS;
 
       const params = {
-        api_token: apiToken,
-        categories: "",
-        search: "suku bunga kpr",
-        limit: "3",
-        language: "id",
+        apikey: apitoken,
+        q: "suku bunga",
+        // language: "id",
       };
 
       const esc = encodeURIComponent;
@@ -26,7 +24,7 @@ const RunningText: React.FC = () => {
         .map((k) => `${esc(k)}=${esc(params[k as keyof typeof params])}`)
         .join("&");
 
-      const url = `https://api.thenewsapi.com/v1/news/all?${query}`;
+      const url = `https://newsdata.io/api/1/latest?${query}`;
 
       const requestOptions: RequestInit = {
         method: "GET",
@@ -43,11 +41,15 @@ const RunningText: React.FC = () => {
         const result = await response.json();
         console.log("API Response:", result);
 
-        if (result.data && Array.isArray(result.data)) {
+        if (
+          result.status === "success" &&
+          result.results &&
+          Array.isArray(result.results)
+        ) {
           setNews(
-            result.data.map((item: any) => ({
+            result.results.slice(0, 3).map((item: any) => ({
               title: item.title,
-              url: item.url,
+              link: item.link,
             }))
           );
         } else {
@@ -61,11 +63,11 @@ const RunningText: React.FC = () => {
     fetchData();
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % news.length);
-    }, 5000);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % 5);
+    }, 2000);
 
     return () => clearInterval(interval);
-  }, [news.length]);
+  }, []);
 
   if (news.length === 0) {
     return <div>Loading...</div>;
@@ -75,14 +77,19 @@ const RunningText: React.FC = () => {
     <div className="w-screen overflow-hidden bg-gray-300 dark:bg-gray-800">
       <div className="container mx-auto">
         <div className="py-2 text-sm font-medium text-gray-800 dark:text-gray-300 whitespace-nowrap">
-          <a
-            href={news[currentIndex]?.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block animate-marquee"
-          >
-            {news[currentIndex]?.title}
-          </a>
+          {news.map((item, index) => (
+            <a
+              key={index}
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-block animate-marquee mr-8 ${
+                index === currentIndex ? "opacity-100" : "opacity-0"
+              } transition-opacity duration-2000`}
+            >
+              {item.title}
+            </a>
+          ))}
         </div>
       </div>
     </div>
