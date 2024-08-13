@@ -64,7 +64,16 @@ const RunningText: React.FC = () => {
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % 5);
-    }, 2000);
+
+      // Setelah mengubah currentIndex, pastikan item baru berada di tengah (opsional)
+      setTimeout(() => {
+        const marqueeElement = document.querySelector(".animate-marquee");
+        if (marqueeElement) {
+          marqueeElement.scrollTop =
+            (marqueeElement.scrollHeight - marqueeElement.clientHeight) / 2;
+        }
+      }, 0);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
@@ -74,22 +83,32 @@ const RunningText: React.FC = () => {
   }
 
   return (
-    <div className="w-screen overflow-hidden bg-gray-300 dark:bg-gray-800">
-      <div className="container mx-auto">
-        <div className="py-2 text-sm font-medium text-gray-800 dark:text-gray-300 whitespace-nowrap">
-          {news.map((item, index) => (
-            <a
-              key={index}
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`inline-block animate-marquee mr-8 ${
-                index === currentIndex ? "opacity-100" : "opacity-0"
-              } transition-opacity duration-2000`}
-            >
-              {item.title}
-            </a>
-          ))}
+    <div className="flex items-center w-auto h-8 overflow-hidden bg-gray-300 dark:bg-gray-800">
+      {" "}
+      {/* Tambahkan flex dan items-center */}
+      <div className="container h-full mx-auto">
+        {" "}
+        {/* Tambahkan h-full */}
+        <div className="relative h-full py-2 text-sm font-medium text-gray-800 dark:text-gray-300 whitespace-nowrap">
+          {" "}
+          {/* Tambahkan relative dan h-full */}
+          <div className="absolute top-0 left-0 flex flex-col justify-center w-full h-full animate-marquee">
+            {" "}
+            {/* Tambahkan absolute, flex-col, dan justify-center */}
+            {news.map((item, index) => (
+              <a
+                key={index}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-block mr-8 ${
+                  index === currentIndex ? "opacity-100" : "opacity-0"
+                } transition-opacity duration-2000`}
+              >
+                {item.title}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </div>

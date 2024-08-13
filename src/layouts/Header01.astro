@@ -122,29 +122,31 @@ const menuitems = [
 <style is:global>
   @keyframes marquee {
     0% {
-      transform: translateX(80%);
+      transform: translateX(75%);
     }
     100% {
-      transform: translateX(-100%);
+      transform: translateX(20%);
     }
   }
 
-  @keyframes marquee-mobile {
+  @keyframes vertical-move {
     0% {
-      transform: translateX(80%);
+      transform: translateY(100%); /* Mulai dari bawah layar */
     }
     100% {
-      transform: translateX(-100%);
+      transform: translateY(-100%); /* Berakhir di atas layar */
     }
   }
 
   .animate-marquee {
-    animation: marquee 15s linear infinite;
+    animation: vertical-move 5s linear infinite; /* Gunakan animasi vertikal */
+    display: inline-flex; /* Untuk menengahkan secara horizontal */
+    align-items: center; /* Untuk menengahkan secara vertikal */
   }
 
   @media (max-width: 640px) {
     .animate-marquee {
-      animation: marquee-mobile 15s linear infinite;
+      animation: vertical-move 15s linear infinite; /* Animasi yang sama untuk mobile */
     }
   }
 
