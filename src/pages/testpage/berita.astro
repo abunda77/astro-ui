@@ -1,6 +1,7 @@
 ---
 import "@/styles/globals.css";
 import RunningText from "@/components/custom/RunningText";
+import BlurIn from "@/components/magicui/blur-in";
 ---
 
 <!doctype html>
@@ -16,6 +17,12 @@ import RunningText from "@/components/custom/RunningText";
   <body>
     <h1>Tampilan</h1>
     <RunningText client:load />
+    <BlurIn
+      word={"Hello World"}
+      className="text-green-600"
+      duration={2}
+      client:load
+    />
 
     <slot />
   </body>

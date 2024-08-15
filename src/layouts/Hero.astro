@@ -1,14 +1,17 @@
 ---
 import { TypewriterEffectSmoothDemo } from "@/components/custom/HeroSection";
+import { BorderBeam } from "@/components/magicui/border-beam.tsx";
 const { title } = Astro.props;
 ---
 
 {/* Hero Section */}
 
 <div class="relative py-20 overflow-hidden hero-background overlay">
+  <BorderBeam />
   <div class="container relative z-10 px-6 mx-auto">
     <div class="max-w-4xl mx-auto text-center text-white">
       <h2 class="mb-4 text-2xl">The #1 Professional Property Agent</h2>
+
       <TypewriterEffectSmoothDemo client:load />
       <!-- <h1 class="mb-4 text-4xl font-bold sm:text-6xl gradient-text">
         Professional business headshots, without a physical photo shoot
@@ -87,7 +90,7 @@ const { title } = Astro.props;
         rgba(17, 24, 39, 0.8)
       ),
       url("images/banner01.jpg");
-    background-size: 50% auto;
+    background-size: 90% 100%;
     background-position: center;
     animation: backgroundMove 50s ease infinite !important;
   }

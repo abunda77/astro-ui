@@ -41,6 +41,11 @@ export default {
          		 '0%': { opacity: 0 },
          		 '100%': { opacity: 1 },
      		  },
+			   "border-beam": {
+				"100%": {
+				  "offset-distance": "100%",
+				},
+			  },
 			
 			},
 			animation: {
@@ -50,6 +55,7 @@ export default {
         	  'dash': 'dash 1.5s ease-in-out infinite',
         		'bounce': 'bounce 1s infinite',
 				'fadeIn': 'fadeIn 0.5s ease-out forwards',
+				"border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
 			},
 		  },
 		},
