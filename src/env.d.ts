@@ -1,4 +1,5 @@
 /// <reference types="astro/client" />
+/// <reference types="astro-icon" />
 interface ImportMetaEnv {
     readonly DB_PASSWORD: string;
     readonly PUBLIC_POKEAPI: string;

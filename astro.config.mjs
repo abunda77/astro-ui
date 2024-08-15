@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import react from "@astrojs/react";
+import icon from "astro-icon";
 
 
 import tailwind from "@astrojs/tailwind";
@@ -9,6 +10,10 @@ export default defineConfig({
   integrations: [react(), tailwind({
     configFile: 'tailwind.config.mjs',
     applyBaseStyles: false,
+  }),icon({
+    include: {
+      mdi: ["*"] // This includes all icons from the MDI set
+    }
   })],
 
   vite: {

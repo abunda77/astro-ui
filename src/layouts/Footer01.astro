@@ -5,99 +5,113 @@ import GooglePlay from "@/layouts/GooglePlay.astro";
 import AppleStore from "@/layouts/AppleStore.astro";
 import Qrcode from "@/layouts/qrcode.astro";
 import HeaderClientScript2 from "@/components/custom/HeaderClientScript";
+import { Icon } from "astro-icon/components";
 ---
 
-<footer class="py-8 bg-gray-200 dark:bg-gray-800">
-  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 gap-8 justify-items-center md:grid-cols-4">
-      <div class="space-y-1">
-        <div class="flex justify-center">
-          <a href="/" class="block">
-            <img
-              id="themeLogo"
-              class="w-48 h-auto"
-              alt="Logo"
-              src="/images/white-logo.png"
-            />
-          </a>
+<footer
+  class="px-4 py-8 text-gray-700 bg-gray-300 dark:bg-gray-700 dark:text-gray-300 md:px-8"
+>
+  <div class="container mx-auto">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
+      <div class="col-span-1">
+        <div class="flex items-center mb-4">
+          <Icon name="mdi:home" class="w-6 h-6 mr-2" />
+          <h2 class="text-xl font-bold">Bosqu Properti</h2>
         </div>
-        <div class="flex flex-col space-y-1">
-          <div class="flex space-x-4">
-            <a
-              href="#"
-              class="text-gray-500 hover:text-gray-900 dark:hover:text-white"
-            >
-              <GooglePlay class="w-auto h-10" />
-              <span class="sr-only">Google Play Store</span>
-            </a>
-
-            <a
-              href="#"
-              class="text-gray-500 hover:text-gray-900 dark:hover:text-white"
-            >
-              <AppleStore class="w-auto h-10" />
-              <span class="sr-only">Apple App Store</span>
-            </a>
-          </div>
-          <div class="flex justify-center">
-            <div>
-              <a
-                href="#"
-                class="text-gray-700 dark:text-gray-200 hover:text-gray-300 dark:hover:text-gray-500"
-              >
-                <Qrcode />
-              </a>
-            </div>
+        <p class="mb-4 text-sm">
+          Rumah123 adalah situs teknologi jual beli properti terdepan di
+          Indonesia yang telah melayani jutaan orang sejak 2007, dan kini hadir
+          untuk membuat "Jual Beli Properti Lebih Mudah" dengan dukungan
+          developer serta agen profesional.
+        </p>
+        <div class="mb-4">
+          <h3 class="mb-2 font-semibold">Download Aplikasi Rumah123</h3>
+          <div class="flex space-x-2">
+            <GooglePlay />
+            <AppleStore />
           </div>
         </div>
+        <Qrcode />
       </div>
 
-      <div class="space-y-4">
-        <h2
-          class="text-sm font-semibold text-gray-900 uppercase dark:text-white"
-        >
-          Resources
-        </h2>
-        <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-          <li><a href="#" class="hover:underline">Home</a></li>
-          <li><a href="#" class="hover:underline">About</a></li>
-          <li><a href="#" class="hover:underline">Services</a></li>
-          <li><a href="#" class="hover:underline">Contact</a></li>
+      <div>
+        <h3 class="mb-4 font-semibold">Perusahaan</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:underline">Tentang Kami</a></li>
+          <li><a href="#" class="hover:underline">Produk & Layanan</a></li>
+          <li><a href="#" class="hover:underline">Partner</a></li>
+          <li><a href="#" class="hover:underline">Karir</a></li>
+          <li><a href="#" class="hover:underline">Pressroom</a></li>
         </ul>
       </div>
 
-      <div class="space-y-4">
-        <h2
-          class="text-sm font-semibold text-gray-900 uppercase dark:text-white"
-        >
-          Follow us
-        </h2>
-        <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-          <li><a href="#" class="hover:underline">Facebook</a></li>
-          <li><a href="#" class="hover:underline">Instagram</a></li>
-          <li><a href="#" class="hover:underline">Twitter</a></li>
+      <div>
+        <h3 class="mb-4 font-semibold">Layanan</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:underline">Iklankan Properti</a></li>
+          <li><a href="#" class="hover:underline">KPR</a></li>
         </ul>
-      </div>
 
-      <div class="space-y-4">
-        <h2
-          class="text-sm font-semibold text-gray-900 uppercase dark:text-white"
-        >
-          Contact
-        </h2>
-        <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-          <li>123 Main St, City, Country</li>
+        <h3 class="mt-6 mb-4 font-semibold">Dukungan</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:underline">Kebijakan Privasi</a></li>
+          <li><a href="#" class="hover:underline">Syarat Penggunaan</a></li>
           <li>
-            <a href="mailto:info@example.com" class="hover:underline"
-              >info@example.com</a
-            >
-          </li>
-          <li>
-            <a href="https://www.example.com" class="hover:underline"
-              >www.example.com</a
-            >
+            <a href="#" class="hover:underline">Syarat Penggunaan Agen</a>
           </li>
         </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4 font-semibold">Alamat Perusahaan</h3>
+        <p class="text-sm">
+          PT Bosqu Indonesia <br />
+          Jl. Jend. Sudirman No. 1 <br />
+          Jakarta, Indonesia <br />
+          Telp: (021) 123-4567 <br />
+          Email: info@bosqu.com
+        </p>
+      </div>
+    </div>
+
+    <div class="pt-8 mt-8 border-t border-gray-700 dark:border-gray-300">
+      <div class="flex flex-col items-center justify-between md:flex-row">
+        <div class="mb-4 md:mb-0">
+          <p class="text-sm">
+            &copy; 99.co 2024 — 2024 Bosqu Properti (PT Bosqu Indonesia)
+            merupakan bagian dari 99 Group.
+          </p>
+        </div>
+        <div class="flex space-x-4">
+          <a
+            href="#"
+            class="text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500"
+            ><Icon name="mdi:facebook" class="w-6 h-6" /></a
+          >
+          <a
+            href="#"
+            class="text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500"
+            ><Icon name="mdi:twitter" class="w-6 h-6" /></a
+          >
+          <a
+            href="#"
+            class="text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500"
+            ><Icon name="mdi:instagram" class="w-6 h-6" /></a
+          >
+          <a
+            href="#"
+            class="text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500"
+            ><Icon name="mdi:youtube" class="w-6 h-6" /></a
+          >
+          <a
+            href="#"
+            class="text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500"
+            ><Icon name="mdi:linkedin" class="w-6 h-6" /></a
+          >
+          <!-- <a href="#" class="text-white hover:text-gray-300"
+            ><Icon name="mdi:tiktok" class="w-6 h-6" /></a
+          > -->
+        </div>
       </div>
     </div>
   </div>
