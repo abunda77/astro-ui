@@ -3,6 +3,7 @@ import Header01 from "@/layouts/Header01.astro";
 import { Toaster } from "@/components/ui/toaster";
 import Hero from "@/layouts/Hero.astro";
 import Footer01 from "@/layouts/Footer01.astro";
+import Section01 from "@/layouts/Section01.astro";
 
 const { title } = Astro.props;
 
@@ -28,6 +29,7 @@ const makeTitle = title
   <body>
     <Header01 />
     <Hero />
+    <Section01 />
 
     <slot />
     <style is:global>
