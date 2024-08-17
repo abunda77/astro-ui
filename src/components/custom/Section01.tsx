@@ -32,14 +32,14 @@ const Section01 = () => {
     <section className="px-4 py-12 bg-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* As seen on logos */}
-        <div className="flex justify-center mb-12 space-x-8">
+        <div className="flex flex-wrap justify-center mb-12 space-x-4 sm:space-x-0 sm:space-y-4">
           <p className="self-center text-gray-500">As seen on:</p>
           {brands.map((brand) => (
             <img
               key={brand.name}
               src={brand.logo}
               alt={`${brand.name} logo`}
-              className="object-contain h-8"
+              className="object-contain h-8 sm:w-1/2 sm:mb-4"
             />
           ))}
         </div>
@@ -120,7 +120,7 @@ const Section01 = () => {
         </div>
 
         {/* Customer logos */}
-        <div className="flex items-center justify-center mt-12 space-x-8">
+        <div className="flex flex-wrap items-center justify-center mt-12 space-x-4 space-y-4">
           {customerLogos.map((customer) => (
             <img
               key={customer.name}
@@ -130,7 +130,7 @@ const Section01 = () => {
             />
           ))}
         </div>
-        <div className="flex items-center justify-center mt-12 space-x-8">
+        <div className="flex flex-wrap items-center justify-center mt-12 space-x-4 space-y-4">
           {customerLogos2.map((customer) => (
             <img
               key={customer.name}
