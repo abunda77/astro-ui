@@ -8,6 +8,7 @@ const Section01 = () => {
     { name: "Bloomberg", logo: "images/bloomberg.png" },
     { name: "FASHIONISTA", logo: "images/fashionita.png" },
     { name: "NEW YORK POST", logo: "images/newyorktime.png" },
+    // { name: "NEW YORK POST", logo: "images/newyorktime.png" },
   ];
 
   const customerLogos = [
@@ -32,16 +33,22 @@ const Section01 = () => {
     <section className="px-4 py-12 bg-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* As seen on logos */}
-        <div className="flex flex-wrap justify-center mb-12 space-x-4 sm:space-x-0 sm:space-y-4">
-          <p className="self-center text-gray-500">As seen on:</p>
-          {brands.map((brand) => (
-            <img
-              key={brand.name}
-              src={brand.logo}
-              alt={`${brand.name} logo`}
-              className="object-contain h-8 sm:w-1/2 sm:mb-4"
-            />
-          ))}
+        <div className="flex flex-col items-center mb-12">
+          <p className="mb-4 text-gray-500">As seen on:</p>
+          <div className="grid w-full max-w-2xl grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+            {brands.map((brand) => (
+              <div
+                key={brand.name}
+                className="flex items-center justify-center"
+              >
+                <img
+                  src={brand.logo}
+                  alt={`${brand.name} logo`}
+                  className="object-contain h-8 max-w-full"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Main content */}
