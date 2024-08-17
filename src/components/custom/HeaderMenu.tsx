@@ -25,7 +25,7 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuitems }) => {
 
   return (
     <div className="md:hidden">
-      <Button variant="ghost" size="icon" onClick={toggleMenu}>
+      <Button variant="secondary" size="icon" onClick={toggleMenu}>
         {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </Button>
 
