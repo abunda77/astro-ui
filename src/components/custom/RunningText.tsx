@@ -47,10 +47,16 @@ const RunningText: React.FC = () => {
           Array.isArray(result.results)
         ) {
           setNews(
-            result.results.slice(0, 3).map((item: any) => ({
-              title: item.title,
-              link: item.link,
-            }))
+            result.results.slice(0, 3).map((item: any) => {
+              let title = item.title;
+              if (title.length > 50) {
+                title = title.substring(0, 50) + "...";
+              }
+              return {
+                title: title,
+                link: item.link,
+              };
+            })
           );
         } else {
           console.error("Unexpected data structure:", result);
