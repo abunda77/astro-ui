@@ -28,7 +28,15 @@ export default defineConfig({
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.PEXELS_API_KEY),
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.API_NEWS),
     },
+    ssr: {
+      noExternal: ['@astrojs/react'],
+    },
   },
-
+  routes: [
+    {
+      path: '/post/:title/:id',
+      component: './src/pages/post/[...slug].astro',
+    },
+  ],
 
 });

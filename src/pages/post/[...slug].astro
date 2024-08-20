@@ -1,0 +1,56 @@
+---
+// File: post/[...slug].astro
+import "@/styles/globals.css";
+import Header01 from "@/layouts/Header01.astro";
+import SingleSection from "@/components/custom/SingleSection";
+import Footer01 from "@/layouts/Footer01.astro";
+
+export async function getStaticPaths() {
+  const urlEndpoint =
+    import.meta.env.PUBLIC_FRONTAPI_ENDPOINT || "http://localhost:8000/api/v1";
+
+  try {
+    const response = await fetch(`${urlEndpoint}/properties`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return data.items.map((property: { title: string; id: string }) => ({
+      params: { slug: `${property.id}` },
+      props: { property },
+    }));
+  } catch (error) {
+    console.error("Error fetching properties:", error);
+    return []; // Return an empty array if there's an error
+  }
+}
+interface Property {
+  title: string;
+  // Add other properties as needed
+}
+const { property } = Astro.props as { property: Property };
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{property.title}</title>
+  </head>
+  <body>
+    <Header01 />
+    <SingleSection property={property} client:load />
+
+    <!-- <RegisterForm client:load />
+    <Toaster client:load /> -->
+    <Footer01 />
+    <slot />
+  </body>
+</html>
+<!-- <style is:global> -->

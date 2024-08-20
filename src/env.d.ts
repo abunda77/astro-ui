@@ -12,6 +12,8 @@ interface ImportMetaEnv {
   readonly MAIL_ENCRYPTION: string;
   readonly MAIL_FROM_ADDRESS: string;
   readonly PEXELS_API_KEY: string;
+  readonly PUBLIC_FRONTAPI_ENDPOINT: string;
+  readonly PUBLIC_HOME_DOMAIN: string;
     // more env variables...
   }
   

@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Hero from "@/layouts/Hero.astro";
 import Footer01 from "@/layouts/Footer01.astro";
 import Section01 from "@/layouts/Section01.astro";
+import PostSection from "@/components/custom/PostSection";
 
 const { title } = Astro.props;
 
@@ -30,6 +31,7 @@ const makeTitle = title
     <Header01 />
     <Hero />
     <Section01 />
+    <PostSection client:load />
 
     <slot />
     <style is:global>
