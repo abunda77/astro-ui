@@ -32,6 +32,9 @@ const PostSection: React.FC = () => {
         const response = await fetch(
           `${urlendpoint}/properties/?page=1&size=10`
         );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         console.log("Response received, parsing JSON...");
         const data: PropertyResponse = await response.json();
         console.log("Properties fetched successfully.");
