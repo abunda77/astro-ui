@@ -6,8 +6,7 @@ import SingleSection from "@/components/custom/SingleSection";
 import Footer01 from "@/layouts/Footer01.astro";
 
 export async function getStaticPaths() {
-  const urlEndpoint =
-    import.meta.env.PUBLIC_FRONTAPI_ENDPOINT || "http://localhost:8000/api/v1";
+  const urlEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 
   try {
     const response = await fetch(`${urlEndpoint}/properties`);
@@ -28,8 +27,99 @@ export async function getStaticPaths() {
   }
 }
 interface Property {
+  user_id: number;
+  category_id: number;
   title: string;
-  // Add other properties as needed
+  short_desc: string;
+  description: string;
+  price: number;
+  period: string;
+  address: string;
+  province_id: string;
+  district_id: string;
+  city_id: string;
+  village_id: string;
+  coordinates: string;
+  nearby: string;
+  ads: string;
+  status: string;
+  views_count: number;
+  meta_title: string | null;
+  meta_description: string | null;
+  keywords: string;
+  id: number;
+  created_at: string;
+  updated_at: string;
+  facility: {
+    certificate: string;
+    electricity: number;
+    line_phone: string;
+    internet: string;
+    road_width: string;
+    water_source: string;
+    hook: string | null;
+    condition: string | null;
+    security: string | null;
+    wastafel: string | null;
+    id: number;
+  };
+  specification: {
+    land_size: number | null;
+    building_size: number;
+    bedroom: number;
+    carport: string | null;
+    bathroom: number;
+    dining_room: string | null;
+    living_room: string | null;
+    floors: number;
+    id: number;
+  };
+  images: {
+    image_url: string;
+    is_primary: boolean;
+    id: number;
+  }[];
+  province: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  district: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  city: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  village: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  user: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+    is_active: boolean;
+    id: number;
+    created_at: string;
+    updated_at: string;
+    profile: {
+      first_name: string;
+      last_name: string;
+      phone: string;
+      email: string;
+      whatsapp: string;
+      company_name: string;
+      avatar: string;
+      biodata_company: string;
+      jobdesk: string;
+    };
+  };
 }
 const { property } = Astro.props as { property: Property };
 ---
