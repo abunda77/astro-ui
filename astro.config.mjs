@@ -27,6 +27,11 @@ export default defineConfig({
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.MAIL_FROM_ADDRESS),
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.PEXELS_API_KEY),
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.API_NEWS),
+      'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.FASTAPI_ENDPOINT),
+      'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.HOME_DOMAIN),
+      'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.AUTH_LOGIN_ENDPOINT),
+      
+      
     },
     ssr: {
       noExternal: ['@astrojs/react'],
