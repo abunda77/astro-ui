@@ -22,6 +22,7 @@ const PostSection: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
+  console.log("PostSection loaded: ", urlendpoint);
 
   useEffect(() => {
     const fetchProperties = async () => {
