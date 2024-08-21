@@ -32,6 +32,7 @@ const PostSection: React.FC = () => {
         const response = await fetch(
           `${urlendpoint}/properties/?page=1&size=10`
         );
+        console.log("Response status:", response.status); // Tambahkan log ini
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
