@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowDownIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AnimatePresence, motion } from "framer-motion";
+import { useOutsideClick } from "@/hooks/use-outside-click";
 
 interface Property {
   id: number;
@@ -28,6 +30,9 @@ const PostSection: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
+  const [active, setActive] = useState<Property | boolean | null>(null);
+  const id = useId();
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -65,6 +70,25 @@ const PostSection: React.FC = () => {
     fetchProperties();
   }, [currentPage]);
 
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setActive(false);
+      }
+    }
+
+    if (active && typeof active === "object") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [active]);
+
+  useOutsideClick(ref, () => setActive(null));
+
   const getImageUrl = (property: Property) => {
     const primaryImage = property.images.find((img) => img.is_primary);
 
@@ -88,63 +112,137 @@ const PostSection: React.FC = () => {
   return (
     <section className="text-gray-800 bg-gray-100 dark:bg-gray-800 dark:text-gray-100">
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
-        {properties.length > 0 && (
-          <a
-            rel="noopener noreferrer"
-            href={`/post/${properties[0].id}`}
-            className="block max-w-sm gap-3 mx-auto bg-gray-50 sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 dark:bg-gray-900"
-          >
-            <img
-              src={getImageUrl(properties[0])}
-              alt={properties[0].title}
-              className="object-cover w-full h-64 bg-gray-500 rounded sm:h-96 lg:col-span-7 dark:bg-gray-500"
+        <AnimatePresence>
+          {active && typeof active === "object" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-10 w-full h-full bg-black/20"
             />
-            <div className="p-6 space-y-2 lg:col-span-5">
-              <h3 className="text-2xl font-semibold sm:text-4xl group-hover:underline group-focus:underline">
-                {properties[0].title}
-              </h3>
-              <span className="text-xs text-gray-600 dark:text-gray-400">
-                {`${properties[0].province.name}, ${properties[0].district.name}, ${properties[0].city.name}`}
-              </span>
-              <p>{properties[0].short_desc}</p>
-              <p> Created at : {properties[0].created_at}</p>
-              <p>Post by: {properties[0].user.name}</p>
-              <p className="font-bold">
-                Price: Rp {properties[0].price.toLocaleString()}
-              </p>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {active && typeof active === "object" ? (
+            <div className="fixed inset-0 grid place-items-center z-[100]">
+              <motion.button
+                key={`button-${active.title}-${id}`}
+                layout
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    duration: 0.05,
+                  },
+                }}
+                className="absolute flex items-center justify-center w-6 h-6 bg-white rounded-full top-2 right-2 lg:hidden"
+                onClick={() => setActive(null)}
+              >
+                <CloseIcon />
+              </motion.button>
+              <motion.div
+                layoutId={`card-${active.title}-${id}`}
+                ref={ref}
+                className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              >
+                <motion.div layoutId={`image-${active.title}-${id}`}>
+                  <img
+                    src={getImageUrl(active)}
+                    alt={active.title}
+                    className="object-cover object-top w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg"
+                  />
+                </motion.div>
+
+                <div>
+                  <div className="flex items-start justify-between p-4">
+                    <div className="">
+                      <motion.h3
+                        layoutId={`title-${active.title}-${id}`}
+                        className="text-base font-medium text-neutral-700 dark:text-neutral-200"
+                      >
+                        {active.title}
+                      </motion.h3>
+                      <motion.p
+                        layoutId={`description-${active.short_desc}-${id}`}
+                        className="text-base text-neutral-600 dark:text-neutral-400"
+                      >
+                        {active.short_desc}
+                      </motion.p>
+                    </div>
+
+                    <motion.a
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      href={`/post/${active.id}`}
+                      className="px-4 py-3 text-sm font-bold text-white bg-green-500 rounded-full"
+                    >
+                      Detail
+                    </motion.a>
+                  </div>
+                  <div className="relative px-4 pt-4">
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                    >
+                      <p> Created at : {active.created_at}</p>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
+                        {`${active.province.name}, ${active.district.name}, ${active.city.name}`}
+                      </span>
+                      <p>Post by: {active.user.name}</p>
+                      <p className="font-bold">
+                        Price: Rp {active.price.toLocaleString()}
+                      </p>
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-          </a>
-        )}
-        <div className="grid justify-center grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {properties.slice(1).map((property, index) => (
-            <a
-              key={index}
-              href={`/post/${property.id}`}
-              className="max-w-sm mx-auto bg-gray-50 group hover:no-underline focus:no-underline dark:bg-gray-900"
+          ) : null}
+        </AnimatePresence>
+        <ul className="grid items-start w-full max-w-6xl grid-cols-1 gap-4 mx-auto md:grid-cols-2 lg:grid-cols-4">
+          {properties.map((property, index) => (
+            <motion.div
+              layoutId={`card-${property.title}-${id}`}
+              key={property.title}
+              onClick={() => setActive(property)}
+              className="flex flex-col p-4 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl"
             >
-              <img
-                role="presentation"
-                className="object-cover w-full bg-gray-500 rounded h-44 dark:bg-gray-500"
-                src={getImageUrl(property)}
-                alt={property.title}
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
-                  {property.title}
-                </h3>
-                <p> Created at : {property.created_at}</p>
-                <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {`${property.province.name}, ${property.district.name}, ${property.city.name}`}
-                </span>
-                <p>{property.short_desc}</p>
-                <p>Post by: {property.user.name}</p>
-                <p className="font-bold">
-                  Price: Rp {property.price.toLocaleString()}
-                </p>
+              <div className="flex flex-col w-full gap-4">
+                <motion.div layoutId={`image-${property.title}-${id}`}>
+                  <img
+                    src={getImageUrl(property)}
+                    alt={property.title}
+                    className="object-cover object-top w-full rounded-lg h-60"
+                  />
+                </motion.div>
+                <div className="flex flex-col items-center justify-center">
+                  <motion.h3
+                    layoutId={`title-${property.title}-${id}`}
+                    className="text-base font-medium text-center text-neutral-800 dark:text-neutral-200 md:text-left"
+                  >
+                    {property.title}
+                  </motion.h3>
+                  <motion.p
+                    layoutId={`description-${property.short_desc}-${id}`}
+                    className="text-base text-center text-neutral-600 dark:text-neutral-400 md:text-left"
+                  >
+                    {property.short_desc}
+                  </motion.p>
+                </div>
               </div>
-            </a>
+            </motion.div>
           ))}
-        </div>
+        </ul>
         <div className="flex justify-center">
           <Button
             onClick={handleLoadMore}
@@ -161,6 +259,39 @@ const PostSection: React.FC = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+export const CloseIcon = () => {
+  return (
+    <motion.svg
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+        transition: {
+          duration: 0.05,
+        },
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4 text-black"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M18 6l-12 12" />
+      <path d="M6 6l12 12" />
+    </motion.svg>
   );
 };
 
