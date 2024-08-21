@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowDownIcon } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Property {
   id: number;
@@ -22,25 +25,24 @@ const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
 const PostSection: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 4;
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
-  console.log("PostSection loaded: ", urlendpoint);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        console.log("Fetching properties from API...");
+        setLoading(true);
+
         const response = await fetch(
-          `${urlendpoint}/properties/?page=1&size=10`
+          `${urlendpoint}/properties/?page=${currentPage}&size=${pageSize}`
         );
-        console.log("Response status:", response.status);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        console.log("Response received, parsing JSON...");
         const data: PropertyResponse = await response.json();
-        console.log("Properties fetched successfully.");
 
         // Urutkan data berdasarkan created_at (terbaru ke terlama)
         const sortedProperties = data.items.sort((a, b) => {
@@ -49,7 +51,10 @@ const PostSection: React.FC = () => {
           );
         });
 
-        setProperties(sortedProperties);
+        setProperties((prevProperties) => [
+          ...prevProperties,
+          ...sortedProperties,
+        ]);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching properties:", error);
@@ -57,8 +62,8 @@ const PostSection: React.FC = () => {
       }
     };
 
-    fetchProperties(); // Panggil fetchProperties hanya sekali
-  }, []);
+    fetchProperties();
+  }, [currentPage]);
 
   const getImageUrl = (property: Property) => {
     const primaryImage = property.images.find((img) => img.is_primary);
@@ -68,20 +73,26 @@ const PostSection: React.FC = () => {
       : "images/home_fallback.png";
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
+  const handleLoadMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  if (loading && currentPage === 1) {
+    return (
+      <div className="skeleton">
+        <Skeleton className="w-[100px] h-[20px] rounded-md" />
+      </div>
+    );
   }
 
-  // Bagian sebelum sintaks `return` berakhir di sini
-
   return (
-    <section className="text-gray-100 bg-gray-800 dark:bg-gray-100 dark:text-gray-800">
+    <section className="text-gray-800 bg-gray-100 dark:bg-gray-800 dark:text-gray-100">
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
         {properties.length > 0 && (
           <a
             rel="noopener noreferrer"
             href={`/post/${properties[0].id}`}
-            className="block max-w-sm gap-3 mx-auto bg-gray-900 sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 dark:bg-gray-50"
+            className="block max-w-sm gap-3 mx-auto bg-gray-50 sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 dark:bg-gray-900"
           >
             <img
               src={getImageUrl(properties[0])}
@@ -92,7 +103,7 @@ const PostSection: React.FC = () => {
               <h3 className="text-2xl font-semibold sm:text-4xl group-hover:underline group-focus:underline">
                 {properties[0].title}
               </h3>
-              <span className="text-xs text-gray-400 dark:text-gray-600">
+              <span className="text-xs text-gray-600 dark:text-gray-400">
                 {`${properties[0].province.name}, ${properties[0].district.name}, ${properties[0].city.name}`}
               </span>
               <p>{properties[0].short_desc}</p>
@@ -109,7 +120,7 @@ const PostSection: React.FC = () => {
             <a
               key={index}
               href={`/post/${property.id}`}
-              className="max-w-sm mx-auto bg-gray-900 group hover:no-underline focus:no-underline dark:bg-gray-50"
+              className="max-w-sm mx-auto bg-gray-50 group hover:no-underline focus:no-underline dark:bg-gray-900"
             >
               <img
                 role="presentation"
@@ -121,8 +132,8 @@ const PostSection: React.FC = () => {
                 <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
                   {property.title}
                 </h3>
-                <p> Created at : {properties[0].created_at}</p>
-                <span className="text-xs text-gray-400 dark:text-gray-600">
+                <p> Created at : {property.created_at}</p>
+                <span className="text-xs text-gray-600 dark:text-gray-400">
                   {`${property.province.name}, ${property.district.name}, ${property.city.name}`}
                 </span>
                 <p>{property.short_desc}</p>
@@ -135,12 +146,18 @@ const PostSection: React.FC = () => {
           ))}
         </div>
         <div className="flex justify-center">
-          <button
-            type="button"
-            className="px-6 py-3 text-sm text-gray-400 bg-gray-900 rounded-md hover:underline dark:bg-gray-50 dark:text-gray-600"
+          <Button
+            onClick={handleLoadMore}
+            variant="outline"
+            size="default"
+            className="flex items-center px-6 py-3 text-sm text-gray-600 bg-gray-300 rounded-md hover:underline dark:bg-gray-900 dark:text-gray-400 animate-bounce"
+            disabled={loading}
           >
-            Load more properties...
-          </button>
+            <span className="mr-2">
+              {loading ? "Loading..." : "Load more properties..."}
+            </span>
+            <ArrowDownIcon className="w-5 h-5 animate-bounce" />
+          </Button>
         </div>
       </div>
     </section>

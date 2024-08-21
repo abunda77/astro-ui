@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 interface NewsItem {
   title: string;
@@ -83,9 +84,12 @@ const RunningText: React.FC = () => {
 
     return () => clearInterval(interval);
   }, []);
-
   if (news.length === 0) {
-    return <div>Loading...</div>;
+    return (
+      <div className="skeleton">
+        <Skeleton className="w-[100px] h-[20px] rounded-md bg-gray-300 dark:bg-gray-200" />
+      </div>
+    );
   }
 
   return (
