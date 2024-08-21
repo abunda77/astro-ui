@@ -10,6 +10,7 @@ interface Property {
   city: { name: string };
   user: { name: string };
   images: { image_url: string; is_primary: boolean }[];
+  created_at: string;
 }
 
 interface PropertyResponse {
@@ -31,7 +32,7 @@ const PostSection: React.FC = () => {
         const response = await fetch(
           `${urlendpoint}/properties/?page=1&size=10`
         );
-        console.log("Response status:", response.status); // Tambahkan log ini
+        console.log("Response status:", response.status);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -40,7 +41,15 @@ const PostSection: React.FC = () => {
         console.log("Response received, parsing JSON...");
         const data: PropertyResponse = await response.json();
         console.log("Properties fetched successfully.");
-        setProperties(data.items);
+
+        // Urutkan data berdasarkan created_at (terbaru ke terlama)
+        const sortedProperties = data.items.sort((a, b) => {
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+        });
+
+        setProperties(sortedProperties);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching properties:", error);
@@ -48,7 +57,7 @@ const PostSection: React.FC = () => {
       }
     };
 
-    fetchProperties();
+    fetchProperties(); // Panggil fetchProperties hanya sekali
   }, []);
 
   const getImageUrl = (property: Property) => {
@@ -62,6 +71,8 @@ const PostSection: React.FC = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  // Bagian sebelum sintaks `return` berakhir di sini
 
   return (
     <section className="text-gray-100 bg-gray-800 dark:bg-gray-100 dark:text-gray-800">
@@ -85,6 +96,7 @@ const PostSection: React.FC = () => {
                 {`${properties[0].province.name}, ${properties[0].district.name}, ${properties[0].city.name}`}
               </span>
               <p>{properties[0].short_desc}</p>
+              <p> Created at : {properties[0].created_at}</p>
               <p>Post by: {properties[0].user.name}</p>
               <p className="font-bold">
                 Price: Rp {properties[0].price.toLocaleString()}
@@ -109,6 +121,7 @@ const PostSection: React.FC = () => {
                 <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
                   {property.title}
                 </h3>
+                <p> Created at : {properties[0].created_at}</p>
                 <span className="text-xs text-gray-400 dark:text-gray-600">
                   {`${property.province.name}, ${property.district.name}, ${property.city.name}`}
                 </span>
