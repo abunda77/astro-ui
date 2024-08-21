@@ -28,14 +28,15 @@ const PostSection: React.FC = () => {
     const fetchProperties = async () => {
       try {
         console.log("Fetching properties from API...");
-
         const response = await fetch(
           `${urlendpoint}/properties/?page=1&size=10`
         );
         console.log("Response status:", response.status); // Tambahkan log ini
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         console.log("Response received, parsing JSON...");
         const data: PropertyResponse = await response.json();
         console.log("Properties fetched successfully.");
@@ -68,7 +69,6 @@ const PostSection: React.FC = () => {
         {properties.length > 0 && (
           <a
             rel="noopener noreferrer"
-            // href={`${urlendpoint}/properties/${properties[0].id}`}
             href={`/post/${properties[0].id}`}
             className="block max-w-sm gap-3 mx-auto bg-gray-900 sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 dark:bg-gray-50"
           >
@@ -96,9 +96,6 @@ const PostSection: React.FC = () => {
           {properties.slice(1).map((property, index) => (
             <a
               key={index}
-              //   rel="noopener noreferrer"
-              //   href={`${urlendpoint}/properties/${properties[1].id}`}
-              //   href={`/post/${property.title}/${property.id}`}
               href={`/post/${property.id}`}
               className="max-w-sm mx-auto bg-gray-900 group hover:no-underline focus:no-underline dark:bg-gray-50"
             >
@@ -116,7 +113,7 @@ const PostSection: React.FC = () => {
                   {`${property.province.name}, ${property.district.name}, ${property.city.name}`}
                 </span>
                 <p>{property.short_desc}</p>
-                <p>Post by: {properties[0].user.name}</p>
+                <p>Post by: {property.user.name}</p>
                 <p className="font-bold">
                   Price: Rp {property.price.toLocaleString()}
                 </p>
