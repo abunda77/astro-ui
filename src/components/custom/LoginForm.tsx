@@ -198,31 +198,30 @@ const LoginForm: React.FC<{
         </Carousel>
       </div>
 
-      {/* Versi Mobile */}
-      <div className="flex items-center justify-center min-h-screen px-4 py-6">
-        <Card className="w-full max-w-sm bg-white rounded-lg shadow-lg">
+      <div className="flex items-center justify-center min-h-screen px-4 py-6 lg:py-12">
+        <Card className="w-full max-w-sm bg-white rounded-lg shadow-lg lg:w-[350px]">
           <CardHeader className="space-y-2">
-            <CardTitle className="text-2xl font-bold text-center">
-              Login Mobile
+            <CardTitle className="text-2xl font-bold text-center lg:text-3xl">
+              Login
             </CardTitle>
             <CardDescription className="text-sm text-center">
               Enter your username and password below to login to your account
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6" onSubmit={handleLogin}>
-              <div className="space-y-2">
+            <form className="space-y-6 lg:grid lg:gap-4" onSubmit={handleLogin}>
+              <div className="space-y-2 lg:grid lg:gap-2">
                 <Label htmlFor="username" className="text-sm font-medium">
                   Username
                 </Label>
                 <Input
-                  id="username1"
+                  id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className={`w-full h-10 text-base px-3 border ${
                     errors.username
                       ? "border-red-500"
-                      : "bg-slate-200  border-green-500 dark:bg-slate-700"
+                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
                   } rounded-md`}
                   aria-invalid={errors.username ? "true" : "false"}
                 />
@@ -230,27 +229,27 @@ const LoginForm: React.FC<{
                   <p className="text-xs text-red-500">{errors.username}</p>
                 )}
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 lg:grid lg:gap-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="text-sm font-medium">
                     Password
                   </Label>
                   <a
                     href="/auth/forgot-password"
-                    className="text-xs text-blue-600 underline"
+                    className="text-xs text-blue-600 underline lg:text-sm"
                   >
                     Forgot your password?
                   </a>
                 </div>
                 <Input
-                  id="password1"
+                  id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={`w-full h-10 text-base px-3 border ${
                     errors.password
                       ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-700"
+                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
                   } rounded-md`}
                   aria-invalid={errors.password ? "true" : "false"}
                 />
@@ -260,7 +259,7 @@ const LoginForm: React.FC<{
               </div>
               <Button
                 type="submit"
-                className="w-full h-10 text-sm bg-green-500 rounded-md"
+                className="w-full h-10 text-sm bg-green-500 rounded-md lg:bg-green-500"
                 disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Login"}
@@ -272,92 +271,13 @@ const LoginForm: React.FC<{
                 Login with Google
               </Button>
             </form>
-            <div className="mt-4 text-xs text-center">
+            <div className="mt-4 text-xs text-center lg:text-sm">
               Don't have an account?{" "}
               <a href="/auth/register" className="text-blue-600 underline">
                 Sign up
               </a>
             </div>
-            <div className="mt-2 text-xs text-center">
-              <a href="/" className="text-blue-600 underline">
-                Back to Home
-              </a>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Bagian Kanan (Form Versi Desktop) */}
-      <div className="items-center justify-center hidden py-12 lg:flex ">
-        <Card className="mx-auto w-[350px] shadow-2xl opacity-100">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold">Login</CardTitle>
-            <CardDescription>
-              Enter your username and password below to login to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form className="grid gap-4" onSubmit={handleLogin}>
-              <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username2"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className={`w-full border ${
-                    errors.username
-                      ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  }`}
-                  aria-invalid={errors.username ? "true" : "false"}
-                />
-                {errors.username && (
-                  <p className="text-xs text-red-500">{errors.username}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <a href="/auth/forgot-password" className="text-sm underline">
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
-                  id="password2"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full border ${
-                    errors.password
-                      ? "border-red-500"
-                      : "bg-slate-200 border-green-500 dark:bg-slate-300"
-                  }`}
-                  aria-invalid={errors.password ? "true" : "false"}
-                />
-                {errors.password && (
-                  <p className="text-xs text-red-500">{errors.password}</p>
-                )}
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-green-500"
-                disabled={isLoading}
-              >
-                {isLoading ? "Logging in..." : "Login"}
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
-            </form>
-
-            <div className="mt-4 text-sm text-center">
-              Don&apos;t have an account?{" "}
-              <a href="/auth/register" className="underline">
-                {" "}
-                Sign up{" "}
-              </a>
-            </div>
-            <div className="mt-6 text-sm text-center">
+            <div className="mt-2 text-xs text-center lg:mt-6 lg:text-sm">
               <a href="/" className="text-blue-600 underline">
                 Back to Home
               </a>
