@@ -4,6 +4,16 @@ import { ArrowDownIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectLabel,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 interface Property {
   id: number;
@@ -12,6 +22,7 @@ interface Property {
   price: number;
   province: { name: string };
   district: { name: string };
+  category_id: number;
   city: { name: string };
   user: { name: string };
   images: { image_url: string; is_primary: boolean }[];
@@ -28,34 +39,41 @@ const PostSection: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 4;
+  const pageSize = 8;
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
   const [active, setActive] = useState<Property | boolean | null>(null);
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
 
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(Number(value));
+  };
+
+  const categories = [
+    { key: 11, value: "Home", badgeColor: "bg-blue-500 rounded-lg p-2" },
+    { key: 12, value: "Apartment", badgeColor: "bg-red-500 rounded-lg p-2" },
+    { key: 13, value: "Kavling", badgeColor: "bg-yellow-500 rounded-lg p-2" },
+    { key: 14, value: "Office", badgeColor: "bg-purple-500 rounded-lg p-2" },
+    { key: 15, value: "Warehouse", badgeColor: "bg-green-500 rounded-lg p-2" },
+  ];
+
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
-
         const response = await fetch(
           `${urlendpoint}/properties/?page=${currentPage}&size=${pageSize}`
         );
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data: PropertyResponse = await response.json();
-
-        // Urutkan data berdasarkan created_at (terbaru ke terlama)
         const sortedProperties = data.items.sort((a, b) => {
           return (
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           );
         });
-
         setProperties((prevProperties) => [
           ...prevProperties,
           ...sortedProperties,
@@ -66,7 +84,6 @@ const PostSection: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchProperties();
   }, [currentPage]);
 
@@ -76,13 +93,11 @@ const PostSection: React.FC = () => {
         setActive(false);
       }
     }
-
     if (active && typeof active === "object") {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [active]);
@@ -91,7 +106,6 @@ const PostSection: React.FC = () => {
 
   const getImageUrl = (property: Property) => {
     const primaryImage = property.images.find((img) => img.is_primary);
-
     return primaryImage
       ? `${homedomain}/storage/${primaryImage.image_url}`
       : "images/home_fallback.png";
@@ -111,6 +125,41 @@ const PostSection: React.FC = () => {
 
   return (
     <section className="text-gray-800 bg-gray-100 dark:bg-gray-800 dark:text-gray-100">
+      <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold">Property Listings</h2>
+          <div className="w-48">
+            <label
+              htmlFor="category"
+              className="block mb-1 text-sm font-medium text-gray-700"
+            >
+              Filter by Category
+            </label>
+            <Select
+              value={selectedCategory?.toString() ?? ""}
+              onValueChange={(value) => setSelectedCategory(Number(value))}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Categories</SelectLabel>
+                  {categories.map((category) => (
+                    <SelectItem
+                      key={category.key}
+                      value={category.key.toString()}
+                    >
+                      {category.value}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
         <AnimatePresence>
           {active && typeof active === "object" && (
@@ -150,12 +199,20 @@ const PostSection: React.FC = () => {
                 ref={ref}
                 className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
               >
-                <motion.div layoutId={`image-${active.title}-${id}`}>
+                <motion.div
+                  layoutId={`image-${active.title}-${id}`}
+                  className="relative"
+                >
                   <img
                     src={getImageUrl(active)}
                     alt={active.title}
                     className="object-cover object-top w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg"
                   />
+                  {
+                    categories.find(
+                      (category) => category.key === active.category_id
+                    )?.value
+                  }
                 </motion.div>
 
                 <div>
@@ -199,6 +256,14 @@ const PostSection: React.FC = () => {
                         {`${active.province.name}, ${active.district.name}, ${active.city.name}`}
                       </span>
                       <p>Post by: {active.user.name}</p>
+                      <p>
+                        Category:{" "}
+                        {
+                          categories.find(
+                            (category) => category.key === active.category_id
+                          )?.value
+                        }
+                      </p>
                       <p className="font-bold">
                         Price: Rp {active.price.toLocaleString()}
                       </p>
@@ -224,6 +289,13 @@ const PostSection: React.FC = () => {
                     alt={property.title}
                     className="object-cover object-top w-full rounded-lg h-60"
                   />
+                  <Badge className="absolute m-2 text-white bg-green-500 bottom-2 right-2">
+                    {
+                      categories.find(
+                        (category) => category.key === property.category_id
+                      )?.value
+                    }
+                  </Badge>
                 </motion.div>
                 <div className="flex flex-col items-center justify-center">
                   <motion.h3
@@ -237,6 +309,20 @@ const PostSection: React.FC = () => {
                     className="text-base text-center text-neutral-600 dark:text-neutral-400 md:text-left"
                   >
                     {property.short_desc}
+                  </motion.p>
+                  <motion.p
+                    layoutId={`category-${property.category_id}-${id}`}
+                    className={`text-sm text-center md:text-left ${
+                      categories.find(
+                        (category) => category.key === property.category_id
+                      )?.badgeColor
+                    }`}
+                  >
+                    {
+                      categories.find(
+                        (category) => category.key === property.category_id
+                      )?.value
+                    }
                   </motion.p>
                 </div>
               </div>
