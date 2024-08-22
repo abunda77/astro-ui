@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import DotPattern from "@/components/magicui/dot-pattern";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface Property {
   user_id: number;
@@ -125,25 +128,45 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   };
 
   return (
-    <div className="p-5 mx-auto text-gray-100 bg-gray-800 sm:p-10 md:p-16 dark:bg-gray-100 dark:text-gray-800">
+    <div className="p-5 mx-auto text-gray-100 bg-gray-200 sm:p-10 md:p-16 dark:bg-gray-700 dark:text-gray-800">
       <div className="flex flex-col max-w-3xl mx-auto overflow-hidden rounded">
+        <DotPattern
+          width={20}
+          height={20}
+          cx={1}
+          cy={1}
+          cr={1}
+          className={cn(
+            "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]"
+          )}
+        />
         <img
           src={getImageUrl(property)}
           alt={renderValue(property.title) || "Property Image"} // Provide a default alt text
           className="w-full bg-gray-500 h-60 sm:h-96 dark:bg-gray-500"
         />
         <div className="p-6 pb-12 m-4 mx-auto -mt-16 space-y-6 bg-gray-900 lg:max-w-2xl sm:px-10 sm:mx-12 lg:rounded-md dark:bg-gray-50">
-          <div className="space-y-2">
-            <h1 className="inline-block text-2xl font-semibold sm:text-3xl">
-              {" "}
-               {renderValue(property.title)}
-            </h1>
-            <p className="text-xs text-gray-400 dark:text-gray-600">
-              By
-              <span className="text-xs hover:underline">
-                {renderValue(property.user?.name) || "Unknown User"}
-              </span>
-            </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold sm:text-3xl">
+                {renderValue(property.title)}
+              </h1>
+              <p className="text-xs text-gray-400 dark:text-gray-600">
+                By
+                <span className="text-xs hover:underline">
+                  {renderValue(property.user?.name) || "Unknown User"}
+                </span>
+              </p>
+            </div>
+            <Avatar className="w-32 h-32 mb-4">
+              <AvatarImage
+                src={renderValue(
+                  `${homedomain}/storage/${property.user.profile.avatar}`
+                )}
+                alt={renderValue(property.user.name)}
+              />
+              <AvatarFallback>{property.user.name.charAt(0)}</AvatarFallback>
+            </Avatar>
           </div>
           <div className="text-gray-100 dark:text-gray-800">
             <p>{renderValue(property.short_desc)}</p>

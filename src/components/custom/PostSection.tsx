@@ -169,8 +169,8 @@ const PostSection: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
+      {/* Mulai Card Grid */}
+      <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12 ">
         <AnimatePresence>
           {active && typeof active === "object" && (
             <motion.div
@@ -207,7 +207,7 @@ const PostSection: React.FC = () => {
               <motion.div
                 layoutId={`card-${active.title}-${id}`}
                 ref={ref}
-                className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+                className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden "
               >
                 <motion.div
                   layoutId={`image-${active.title}-${id}`}
@@ -290,7 +290,7 @@ const PostSection: React.FC = () => {
               layoutId={`card-${property.title}-${id}`}
               key={property.title}
               onClick={() => setActive(property)}
-              className="flex flex-col p-4 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl"
+              className="flex flex-col p-4 shadow-lg cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl"
             >
               <div className="flex flex-col w-full gap-4">
                 <motion.div layoutId={`image-${property.title}-${id}`}>
@@ -299,13 +299,13 @@ const PostSection: React.FC = () => {
                     alt={property.title}
                     className="object-cover object-top w-full rounded-lg h-60"
                   />
-                  <Badge className="absolute m-2 text-white bg-green-500 bottom-2 right-2">
+                  {/* <Badge className="absolute m-2 text-white bg-green-500 bottom-2 right-2">
                     {
                       categories.find(
                         (category) => category.key === property.category_id
                       )?.value
                     }
-                  </Badge>
+                  </Badge> */}
                 </motion.div>
                 <div className="flex flex-col items-center justify-center">
                   <motion.h3
