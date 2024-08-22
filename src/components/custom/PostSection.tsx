@@ -48,9 +48,12 @@ const PostSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(Number(value));
+    setCurrentPage(1);
+    setProperties([]);
   };
 
   const categories = [
+    { key: 0, value: "All" },
     { key: 11, value: "Home", badgeColor: "bg-blue-500 rounded-lg p-2" },
     { key: 12, value: "Apartment", badgeColor: "bg-red-500 rounded-lg p-2" },
     { key: 13, value: "Kavling", badgeColor: "bg-yellow-500 rounded-lg p-2" },
@@ -62,9 +65,15 @@ const PostSection: React.FC = () => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `${urlendpoint}/properties/?page=${currentPage}&size=${pageSize}`
-        );
+        // Buat URL dengan filter kategori jika dipilih
+        let url;
+        if (selectedCategory !== null && selectedCategory !== 0) {
+          url = `${urlendpoint}/properties/search/?category=${selectedCategory}&page=${currentPage}&size=${pageSize}`;
+        } else {
+          url = `${urlendpoint}/properties/?page=${currentPage}&size=${pageSize}`;
+        }
+
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -85,7 +94,7 @@ const PostSection: React.FC = () => {
       }
     };
     fetchProperties();
-  }, [currentPage]);
+  }, [currentPage, selectedCategory]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -137,7 +146,8 @@ const PostSection: React.FC = () => {
             </label>
             <Select
               value={selectedCategory?.toString() ?? ""}
-              onValueChange={(value) => setSelectedCategory(Number(value))}
+              //   onValueChange={(value) => setSelectedCategory(Number(value))}
+              onValueChange={handleCategoryChange}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a category" />
