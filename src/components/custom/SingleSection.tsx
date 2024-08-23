@@ -151,7 +151,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
     return value;
   };
   return (
-    <div className="p-5 mx-auto text-gray-100 bg-gray-200 sm:p-10 md:p-16 dark:bg-gray-700 dark:text-gray-800">
+    <div className="p-5 mx-auto text-gray-100 bg-gray-200 sm:p-10 md:p-16 dark:bg-gray-800 dark:text-gray-800">
       <div className="flex justify-start">
         <a
           href="/"
@@ -161,7 +161,9 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
         </a>
       </div>
 
-      <div className="flex flex-col max-w-3xl mx-auto overflow-hidden rounded">
+      <div className="flex flex-col max-w-6xl mx-auto overflow-hidden rounded">
+        {/* <div className="flex flex-col items-center justify-center max-w-6xl mx-auto overflow-hidden border rounded-lg bg-background md:shadow-xl"> */}
+        {/* <div className="flex flex-col items-center justify-center max-w-6xl p-20 mx-auto overflow-hidden border rounded-lg bg-background md:shadow-xl"> */}
         <DotPattern
           width={20}
           height={20}
@@ -176,25 +178,36 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-2/4">
             {getAllImage(property).map((imageUrl, index) => (
-              <div className="mb-12">
-                <HoverCard key={index}>
-                  <HoverCardTrigger>
-                    <AspectRatio ratio={16 / 9}>
+              <div className="mb-16">
+                <div className="hidden md:block">
+                  <HoverCard key={index}>
+                    <HoverCardTrigger>
+                      <AspectRatio ratio={16 / 9}>
+                        <img
+                          src={imageUrl}
+                          alt={renderValue(property.title) || "Property Image"}
+                          className="object-cover my-4 bg-gray-500 rounded-md dark:bg-gray-500"
+                        />
+                      </AspectRatio>
+                    </HoverCardTrigger>
+
+                    <HoverCardContent className="w-108">
                       <img
                         src={imageUrl}
                         alt={renderValue(property.title) || "Property Image"}
-                        className="object-cover my-4 bg-gray-500 rounded-md dark:bg-gray-500"
                       />
-                    </AspectRatio>
-                  </HoverCardTrigger>
-
-                  <HoverCardContent className="w-128">
+                    </HoverCardContent>
+                  </HoverCard>
+                </div>
+                <div className="block md:hidden">
+                  <AspectRatio ratio={16 / 9}>
                     <img
                       src={imageUrl}
                       alt={renderValue(property.title) || "Property Image"}
+                      className="object-cover my-4 bg-gray-500 rounded-md dark:bg-gray-500"
                     />
-                  </HoverCardContent>
-                </HoverCard>
+                  </AspectRatio>
+                </div>
               </div>
             ))}
           </div>

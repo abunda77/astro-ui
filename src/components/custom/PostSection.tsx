@@ -133,7 +133,7 @@ const PostSection: React.FC = () => {
   }
 
   return (
-    <section className="text-gray-800 bg-gray-100 dark:bg-gray-800 dark:text-gray-100">
+    <section className="text-gray-800 bg-gradient-to-b from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-900">
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold">Property Listings</h2>
@@ -149,16 +149,19 @@ const PostSection: React.FC = () => {
               //   onValueChange={(value) => setSelectedCategory(Number(value))}
               onValueChange={handleCategoryChange}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] dark:bg-slate-900 dark:text-gray-200">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Categories</SelectLabel>
+                  <SelectLabel className="dark:text-gray-300">
+                    Categories
+                  </SelectLabel>
                   {categories.map((category) => (
                     <SelectItem
                       key={category.key}
                       value={category.key.toString()}
+                      className="dark:text-gray-200"
                     >
                       {category.value}
                     </SelectItem>

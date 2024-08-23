@@ -30,7 +30,7 @@ const Section01 = () => {
   ];
 
   return (
-    <section className="px-4 py-12 bg-white sm:px-6 lg:px-8">
+    <section className="px-4 py-12 bg-gradient-to-t from-blue-100 via-blue-50 to-white dark:from-gray-100 dark:via-gray-50 dark:to-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* As seen on logos */}
         <div className="flex flex-col items-center mb-12">
