@@ -11,32 +11,32 @@ import RunningText from "@/components/custom/RunningText";
 
 const menuitems = [
   {
-    title: "Features",
+    title: "Type Properti",
     path: "#",
     children: [
-      { title: "Action", path: "/" },
-      { title: "Another action", path: "#" },
-      { title: "Dropdown Submenu", path: "#" },
-      { title: "404 Page", path: "/404" },
+      { title: "Apartement", path: "#" },
+      { title: "Kavling", path: "#" },
+      { title: "Gudang", path: "#" },
+      { title: "Office", path: "# " },
     ],
   },
-  { title: "Pricing", path: "/about" },
+  { title: "Layanan", path: "/layanan" },
   { title: "About", path: "/about" },
-  { title: "Blog", path: "/about" },
-  { title: "Contact", path: "/about" },
+  { title: "Blog", path: "/blog" },
+  { title: "Contact", path: "/contact" },
   {
-    title: "Pro Version",
+    title: "PROMO MERDEKA",
     badge: true,
-    path: "https://astroship-pro.web3templates.com/",
+    path: "#",
   },
 ];
 ---
 
 <header class="w-full bg-gray-100 shadow-md dark:bg-gray-900">
-  <div class="container px-4 mx-auto">
+  <div class="px-4 mx-auto container-lg">
     <div class="flex items-center justify-between h-16">
       {/* Logo and Welcome Message */}
-      <div class="flex items-center space-x-4">
+      <div class="flex items-center ml-10 space-x-4">
         <div class="flex-shrink-0">
           <a href="/">
             <img
@@ -50,7 +50,7 @@ const menuitems = [
       </div>
       {/* Desktop Menu */}
       <div class="hidden md:block">
-        <div class="flex items-baseline ml-10 space-x-4">
+        <div class="flex items-center space-x-4 ml-80">
           <Astronav>
             <MenuItems class="hidden w-full mt-2 lg:w-auto lg:flex lg:mt-0">
               <ul class="flex flex-col lg:flex-row lg:gap-3">
@@ -88,22 +88,23 @@ const menuitems = [
         </div>
       </div>
       {/* Right side items */}
-      <div class="items-center hidden space-x-8 md:flex">
-        <AvatarComponent client:load />
+      <div class="items-center hidden mr-10 space-x-8 md:flex">
+        <!-- <AvatarComponent client:load /> -->
         <LoginButtons client:load />
-        <div class="items-center hidden space-x-8 md:flex">
-          <ModeToggle client:load />
-        </div><div
+
+        <div
           id="welcomeMessage"
           class="text-sm font-medium dark:text-gray-300 animate-pulse"
         >
+        </div>
+        <div class="items-end hidden space-x-8 md:flex">
+          <ModeToggle client:load />
         </div>
       </div>
       {/* Mobile menu */}
       <HeaderMenu client:load menuitems={menuitems} />
     </div>
   </div>
-  <Astronav />
 </header>
 
 {/* Running Text */}

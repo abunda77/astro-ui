@@ -21,11 +21,11 @@ const Section01 = () => {
   ];
 
   const customerLogos2 = [
-    { name: "Harsco", logo: "images/harsco.png" },
-    { name: "Rogers", logo: "images/rogers.png" },
-    { name: "Berkeley", logo: "images/berkeley.png" },
-    { name: "NCR", logo: "images/ncr.png" },
-    { name: "Octa", logo: "images/octa.png" },
+    { name: "Kompas", logo: "images/kompas.png" },
+    { name: "Media Indonesia", logo: "images/mediaindonesia.png" },
+    { name: "RealEstate", logo: "images/realestate.webp" },
+    { name: "Seputar Indonesia", logo: "images/seputarindonesia.webp" },
+    { name: "Tech In Asia", logo: "images/techinasia.png" },
     { name: "WarnerMedia", logo: "images/warnermedia.png" },
   ];
 
@@ -35,8 +35,9 @@ const Section01 = () => {
         {/* As seen on logos */}
         <div className="flex flex-col items-center mb-12">
           <p className="mb-4 text-gray-500">As seen on:</p>
-          <div className="grid w-full max-w-2xl grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-            {brands.map((brand) => (
+          {/* <div className="grid w-full max-w-6xl grid-cols-2 gap-1 sm:gap-8 sm:grid-cols-3 md:grid-cols-6 md:gap-x-2 md:gap-y-16"> */}
+          <div className="flex flex-wrap items-center justify-center mt-12 space-x-4 space-y-4">
+            {customerLogos2.map((brand) => (
               <div
                 key={brand.name}
                 className="flex items-center justify-center"
@@ -44,7 +45,7 @@ const Section01 = () => {
                 <img
                   src={brand.logo}
                   alt={`${brand.name} logo`}
-                  className="object-contain h-8 max-w-full"
+                  className="object-contain h-12"
                 />
               </div>
             ))}
