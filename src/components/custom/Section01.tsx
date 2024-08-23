@@ -34,9 +34,9 @@ const Section01 = () => {
       <div className="mx-auto max-w-7xl">
         {/* As seen on logos */}
         <div className="flex flex-col items-center mb-12">
-          <p className="mb-4 text-gray-500">As seen on:</p>
+          <p className="mb-1 text-2xl text-gray-500">As seen on:</p>
           {/* <div className="grid w-full max-w-6xl grid-cols-2 gap-1 sm:gap-8 sm:grid-cols-3 md:grid-cols-6 md:gap-x-2 md:gap-y-16"> */}
-          <div className="flex flex-wrap items-center justify-center mt-12 space-x-4 space-y-4">
+          <div className="flex flex-wrap items-center justify-center mt-2 space-x-4 space-y-8">
             {customerLogos2.map((brand) => (
               <div
                 key={brand.name}
