@@ -5,6 +5,8 @@ import "@/styles/globals.css";
 import { Button } from "@/components/ui/button";
 import Layout from "@/layouts/Layout03.astro";
 import Footer01 from "@/layouts/Footer01.astro";
+import { PhoneTwoTone } from "@ant-design/icons";
+import { Phone } from "lucide-react";
 ---
 
 <Layout title="About Us" />
@@ -94,9 +96,18 @@ import Footer01 from "@/layouts/Footer01.astro";
         form berikut ini untuk bisa tahu lebih lanjut terkait listing projek:
       </p>
       <ul class="mb-6 text-gray-700 list-disc list-inside dark:text-gray-300">
-        <li>0813-2075-3957 (Edo)</li>
-        <li>0852-6565-1221 (Henci)</li>
-        <li>0857-7233-3068 (Sugi)</li>
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0813-2075-3957 (Edo)</span>
+        </li>
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0852-6565-1221 (Henci)</span>
+        </li>
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0857-7233-3068 (Sugi)</span>
+        </li>
       </ul>
       <p class="text-gray-700 dark:text-gray-300">
         Jalan Boulevard Utara Podomoro Park Bandung, Ruko Neo Plaza Blok F no.06
@@ -107,9 +118,9 @@ import Footer01 from "@/layouts/Footer01.astro";
       <Button
         variant="default"
         size="lg"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
-        Hubungi Kami Sekarang
+        <a href="/contact">Hubungi Kami Sekarang</a>
       </Button>
     </div>
 
