@@ -1,0 +1,101 @@
+---
+import "@/styles/globals.css";
+import Layout from "@/layouts/Layout03.astro";
+import Footer01 from "@/layouts/Footer01.astro";
+import { Button } from "@/components/ui/button";
+---
+
+<Layout title="Kontak Kami" />
+
+<div
+  class="min-h-screen px-4 py-12 bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 sm:px-6 lg:px-8"
+>
+  <div class="max-w-4xl mx-auto">
+    <h1
+      class="mb-8 text-4xl font-bold text-center text-blue-800 dark:text-blue-300"
+    >
+      Kontak Kami
+    </h1>
+
+    <div class="grid grid-cols-1 gap-8 mb-8 md:grid-cols-3">
+      <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+        <h3 class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300">
+          Kontak Kami
+        </h3>
+        <ul class="text-gray-700 dark:text-gray-300">
+          <li>0813-2075-3957 (Edo)</li>
+          <li>0852-6565-1221 (Henci)</li>
+          <li>0857-7233-3068 (Sugi)</li>
+        </ul>
+      </div>
+      <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+        <h3 class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300">
+          Media Sosial
+        </h3>
+        <ul class="text-gray-700 dark:text-gray-300">
+          <li>TikTok: bosque.properti</li>
+          <li>Instagram: bosque.properti</li>
+          <li>Email: bosquepropertyofficial@gmail.com</li>
+        </ul>
+      </div>
+      <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+        <h3 class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300">
+          Alamat
+        </h3>
+        <p class="text-gray-700 dark:text-gray-300">
+          Jl. Boulevard Utara Podomoro Park Bandung, Ruko Neo Plaza Blok F no.06
+        </p>
+      </div>
+    </div>
+
+    <div class="p-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Kontak Kami
+      </h2>
+      <p class="mb-6 text-gray-700 dark:text-gray-300">
+        Terima kasih telah berkunjung ke laman bosqueproperti.com. Silahkan isi
+        form berikut ini untuk bisa tahu lebih lanjut terkait listing projek:
+      </p>
+      <form class="space-y-4">
+        <div>
+          <input
+            type="text"
+            placeholder="Masukan Nama Anda"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+          />
+        </div>
+        <div>
+          <input
+            type="tel"
+            placeholder="Masukan No WA Aktif Anda"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+          />
+        </div>
+        <div>
+          <input
+            type="email"
+            placeholder="Masukan Email Aktif Anda"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+          />
+        </div>
+        <div>
+          <textarea
+            placeholder="Message"
+            rows="4"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+          ></textarea>
+        </div>
+        <div>
+          <Button
+            type="submit"
+            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+          >
+            KIRIM PESAN
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<Footer01 />
