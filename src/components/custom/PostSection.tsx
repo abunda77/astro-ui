@@ -133,7 +133,7 @@ const PostSection: React.FC = () => {
   }
 
   return (
-    <section className="text-gray-800 bg-gradient-to-b from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-900">
+    <section className="text-gray-800 bg-gradient-to-b from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold">Property Listings</h2>
@@ -293,49 +293,45 @@ const PostSection: React.FC = () => {
               layoutId={`card-${property.title}-${id}`}
               key={property.title}
               onClick={() => setActive(property)}
-              className="flex flex-col p-4 shadow-lg cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl"
+              className="flex flex-col p-4 shadow-lg cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-300 rounded-xl"
             >
               <div className="flex flex-col w-full gap-4">
-                <motion.div layoutId={`image-${property.title}-${id}`}>
-                  <img
-                    src={getImageUrl(property)}
-                    alt={property.title}
-                    className="object-cover object-top w-full rounded-lg h-60"
-                  />
-                  {/* <Badge className="absolute m-2 text-white bg-green-500 bottom-2 right-2">
-                    {
-                      categories.find(
-                        (category) => category.key === property.category_id
-                      )?.value
-                    }
-                  </Badge> */}
-                </motion.div>
                 <div className="flex flex-col items-center justify-center">
+                  <motion.div
+                    layoutId={`image-${property.title}-${id}`}
+                    className="relative"
+                  >
+                    <img
+                      src={getImageUrl(property)}
+                      alt={property.title}
+                      className="object-cover object-top w-full rounded-lg h-60"
+                    />
+                    <motion.p
+                      layoutId={`category-${property.category_id}-${id}`}
+                      className={`absolute top-2 right-2 text-sm ${
+                        categories.find(
+                          (category) => category.key === property.category_id
+                        )?.badgeColor
+                      }`}
+                    >
+                      {
+                        categories.find(
+                          (category) => category.key === property.category_id
+                        )?.value
+                      }
+                    </motion.p>
+                  </motion.div>
                   <motion.h3
                     layoutId={`title-${property.title}-${id}`}
-                    className="text-base font-medium text-center text-neutral-800 dark:text-neutral-200 md:text-left"
+                    className="mt-4 text-base text-center text-gray-800 dark:text-gray-600 md:text-left"
                   >
                     {property.title}
                   </motion.h3>
                   <motion.p
                     layoutId={`description-${property.short_desc}-${id}`}
-                    className="text-base text-center text-neutral-600 dark:text-neutral-400 md:text-left"
+                    className="mt-2 text-sm text-center text-neutral-600 dark:text-gray-600 md:text-left"
                   >
                     {property.short_desc}
-                  </motion.p>
-                  <motion.p
-                    layoutId={`category-${property.category_id}-${id}`}
-                    className={`text-sm text-center md:text-left ${
-                      categories.find(
-                        (category) => category.key === property.category_id
-                      )?.badgeColor
-                    }`}
-                  >
-                    {
-                      categories.find(
-                        (category) => category.key === property.category_id
-                      )?.value
-                    }
                   </motion.p>
                 </div>
               </div>

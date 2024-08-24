@@ -5,6 +5,8 @@ import "@/styles/globals.css";
 import { Button } from "@/components/ui/button";
 import Layout from "@/layouts/Layout03.astro";
 import Footer01 from "@/layouts/Footer01.astro";
+import { PhoneTwoTone } from "@ant-design/icons";
+import { Phone } from "lucide-react";
 ---
 
 <Layout title="About Us" />
@@ -16,136 +18,115 @@ import Footer01 from "@/layouts/Footer01.astro";
     <h1
       class="mb-8 text-4xl font-bold text-center text-blue-800 dark:text-blue-300"
     >
-      Tentang PT. Bosqu Indonesia
+      Tentang Kami
     </h1>
 
     <div class="p-8 mb-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Temukan Properti Impian Anda Bersama Bosque Properti!
+      </h2>
       <p class="mb-6 text-lg text-gray-700 dark:text-gray-300">
-        PT. Bosqu Indonesia adalah perusahaan agen real estate terkemuka yang
-        berkomitmen untuk memberikan layanan properti terbaik di Indonesia.
-        Didirikan pada tahun 2007, kami telah tumbuh menjadi salah satu pemain
-        utama di industri properti dengan reputasi yang solid dan jaringan yang
-        luas.
+        Apakah Anda sedang mencari properti baru atau bekas yang sesuai dengan
+        impian Anda? Bosque Properti hadir untuk memenuhi kebutuhan Anda!
+        Sebagai perusahaan yang bergerak di bidang pemasaran properti, kami siap
+        membantu Anda menemukan hunian atau investasi terbaik.
       </p>
 
       <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
-        Visi Kami
+        Layanan Unggulan
       </h2>
       <p class="mb-6 text-gray-700 dark:text-gray-300">
-        Menjadi mitra terpercaya dalam mewujudkan impian properti setiap
-        individu dan bisnis di Indonesia.
+        Kami tidak hanya membantu Anda menemukan properti idaman, tetapi juga
+        memberikan layanan konsultasi interior dan renovasi. Dengan layanan ini,
+        Anda dapat langsung mengubah properti yang Anda beli sesuai keinginan,
+        tanpa biaya tambahan!
       </p>
-
-      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
-        Misi Kami
-      </h2>
-      <ul class="mb-6 text-gray-700 list-disc list-inside dark:text-gray-300">
-        <li>
-          Menyediakan layanan properti yang komprehensif dan berkualitas tinggi
-        </li>
-        <li>
-          Membangun hubungan jangka panjang dengan klien berdasarkan kepercayaan
-          dan integritas
-        </li>
-        <li>
-          Memanfaatkan teknologi terkini untuk meningkatkan efisiensi dan
-          pengalaman klien
-        </li>
-        <li>
-          Berkontribusi positif terhadap perkembangan industri properti di
-          Indonesia
-        </li>
-      </ul>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
-      <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
-        <h3 class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300">
-          Pengalaman yang Luas
-        </h3>
-        <p class="text-gray-700 dark:text-gray-300">
-          Dengan lebih dari 15 tahun pengalaman di industri properti, kami
-          memiliki pengetahuan mendalam tentang pasar dan tren properti di
-          Indonesia.
-        </p>
-      </div>
-      <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
-        <h3 class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300">
-          Tim Profesional
-        </h3>
-        <p class="text-gray-700 dark:text-gray-300">
-          Tim kami terdiri dari agen properti bersertifikat dan profesional yang
-          berdedikasi untuk memberikan layanan terbaik kepada klien.
-        </p>
-      </div>
-      <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
-        <h3 class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300">
-          Teknologi Inovatif
-        </h3>
-        <p class="text-gray-700 dark:text-gray-300">
-          Kami memanfaatkan platform teknologi canggih untuk memudahkan
-          pencarian, penjualan, dan manajemen properti.
-        </p>
-      </div>
-      <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
-        <h3 class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300">
-          Jaringan Luas
-        </h3>
-        <p class="text-gray-700 dark:text-gray-300">
-          Bosqu memiliki jaringan luas yang mencakup developer, investor, dan
-          mitra bisnis di seluruh Indonesia.
-        </p>
+    <div class="mb-8">
+      <h2
+        class="mb-6 text-2xl font-semibold text-center text-blue-800 dark:text-blue-300"
+      >
+        3 Alasan Mengapa Memilih Bosque Properti?
+      </h2>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+          <h3
+            class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300"
+          >
+            Beragam Pilihan Properti
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Kami memiliki berbagai pilihan properti, mulai dari rumah,
+            apartemen, hingga bangunan komersial, dengan harga yang kompetitif.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+          <h3
+            class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300"
+          >
+            Konsultasi Gratis
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Kami melayani dengan tepat waktu, kompeten, dan ramah; memenuhi
+            kebutuhan Anda dengan standar etika tinggi dan kualitas yang
+            konsisten.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+          <h3
+            class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300"
+          >
+            Team Profesional
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Tim kami terdiri dari profesional berpengalaman yang siap memberikan
+            panduan terbaik dalam setiap langkah pembelian properti Anda.
+          </p>
+        </div>
       </div>
     </div>
 
     <div class="p-8 mb-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
       <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
-        Layanan Kami
-      </h2>
-      <ul class="mb-6 text-gray-700 list-disc list-inside dark:text-gray-300">
-        <li>Jual beli properti residensial dan komersial</li>
-        <li>Sewa properti</li>
-        <li>Konsultasi investasi properti</li>
-        <li>Manajemen aset</li>
-        <li>Pemasaran properti digital</li>
-      </ul>
-
-      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
-        Komitmen Kami
+        Kontak Kami
       </h2>
       <p class="mb-4 text-gray-700 dark:text-gray-300">
-        Di PT. Bosqu Indonesia, kami berkomitmen untuk:
+        Terima kasih telah berkunjung ke laman bosqueproperti.com. Silahkan isi
+        form berikut ini untuk bisa tahu lebih lanjut terkait listing projek:
       </p>
-      <ol
-        class="mb-6 text-gray-700 list-decimal list-inside dark:text-gray-300"
-      >
-        <li>Integritas dalam setiap transaksi</li>
-        <li>Transparansi dalam komunikasi dengan klien</li>
-        <li>Inovasi berkelanjutan dalam layanan kami</li>
-        <li>Kepuasan klien sebagai prioritas utama</li>
-      </ol>
+      <ul class="mb-6 text-gray-700 list-disc list-inside dark:text-gray-300">
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0813-2075-3957 (Edo)</span>
+        </li>
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0852-6565-1221 (Henci)</span>
+        </li>
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0857-7233-3068 (Sugi)</span>
+        </li>
+      </ul>
+      <p class="text-gray-700 dark:text-gray-300">
+        Jalan Boulevard Utara Podomoro Park Bandung, Ruko Neo Plaza Blok F no.06
+      </p>
     </div>
 
     <div class="text-center">
-      <h2 class="mb-4 text-2xl font-semibold text-blue-800 dark:text-blue-300">
-        Bergabunglah dengan Kami
-      </h2>
-      <p class="mb-6 text-gray-700 dark:text-gray-300">
-        Apakah Anda mencari properti impian atau ingin memasarkan properti Anda?
-        PT. Bosqu Indonesia siap membantu Anda mewujudkan tujuan properti Anda.
-      </p>
       <Button
         variant="default"
         size="lg"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
-        Hubungi Kami Sekarang
+        <a href="/contact">Hubungi Kami Sekarang</a>
       </Button>
     </div>
 
     <footer class="mt-12 text-center text-gray-600 dark:text-gray-400">
       <p class="italic">
-        PT. Bosqu Indonesia - Mitra Terpercaya dalam Perjalanan Properti Anda
+        Bosque Properti - Mitra Terpercaya dalam Perjalanan Properti Anda
       </p>
     </footer>
   </div>
