@@ -57,13 +57,15 @@ const Section01 = () => {
           {/* Left column */}
           <div>
             <h3 className="mb-4 text-lg font-semibold">
-              All photoshoots include
+              Mengapa Memilih bosqproperti.com?
             </h3>
             <ul className="space-y-2">
               {[
-                "80 headshots per person",
-                "8 unique locations per shoot",
-                "High quality photo size",
+                "Database properti terlengkap",
+                "Tim agen profesional berpengalaman",
+                "Antarmuka website user-friendly",
+                "Transaksi aman dan transparan",
+                "Layanan pelanggan 24/7",
               ].map((item) => (
                 <li key={item} className="flex items-center">
                   <Check className="mr-2 text-green-500" size={20} />
@@ -76,13 +78,15 @@ const Section01 = () => {
           {/* Middle column */}
           <div>
             <h3 className="mb-4 text-lg font-semibold">
-              Why choose AI headshots?
+              Setiap Listing Properti di bosqproperti.com Meliputi:
             </h3>
             <ul className="space-y-2">
               {[
-                "Indistinguishable from real photos",
-                "No need for any physical shoot",
-                "Matching photos, no matter where",
+                "Foto-foto berkualitas tinggi dari berbagai sudut",
+                "Tur virtual 360 derajat ",
+                "Deskripsi properti yang detail dan informatif",
+                "Informasi lengkap mengenai fasilitas",
+                "Peta lokasi yang akurat dan interaktif",
               ].map((item) => (
                 <li key={item} className="flex items-center">
                   <Check className="mr-2 text-green-500" size={20} />
@@ -95,13 +99,15 @@ const Section01 = () => {
           {/* Right column */}
           <div>
             <h3 className="mb-4 text-lg font-semibold">
-              Why choose AI headshots?
+              Keuntungan Pemasaran di bosqproperti.com:
             </h3>
             <ul className="space-y-2">
               {[
-                "Indistinguishable from real photos",
-                "No need for any physical shoot",
-                "Matching photos, no matter where",
+                "Target pasar luas",
+                "Visibilitas online maksimal",
+                "Laporan kinerja real-time",
+                "Dukungan materi kreatif",
+                "Fitur unggulan prioritas",
               ].map((item) => (
                 <li key={item} className="flex items-center">
                   <Check className="mr-2 text-green-500" size={20} />
@@ -114,16 +120,18 @@ const Section01 = () => {
 
         {/* Reviews & examples */}
         <div className="mt-12 text-center">
-          <h2 className="mb-4 text-2xl font-semibold">Reviews & examples</h2>
-          <div className="text-4xl font-bold text-teal-500">13,228,221</div>
-          <div className="text-3xl">AI headshots already generated</div>
+          <h2 className="mb-4 text-2xl font-semibold">
+            Testimoni & Pencapaian Kami
+          </h2>
+          <div className="text-4xl font-bold text-blue-500">1,234,567</div>
+          <div className="text-3xl">Properti Terjual Melalui Platform Kami</div>
           <div className="mt-2 text-4xl">
-            for <span className="font-bold text-yellow-500">80,469</span> happy
-            customers!
+            dengan <span className="font-bold text-green-500">98.7%</span>{" "}
+            Tingkat Kepuasan Pelanggan!
           </div>
           <p className="mt-4 text-gray-600">
-            You're in good company. Check out real customer headshots examples,
-            shared with their permission.
+            Bergabunglah dengan ribuan pemilik properti yang telah sukses. Lihat
+            contoh properti yang telah terjual dan testimoni pelanggan kami.
           </p>
         </div>
 

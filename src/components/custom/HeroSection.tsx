@@ -6,21 +6,21 @@ export function TypewriterEffectSmoothDemo() {
   const words = [
     {
       text: "Temukan",
-      className: "text-3xl antialiased",
+      className: "text-3xl sm:text-4xl md:text-5xl antialiased",
     },
     {
       text: "Hunian",
-      className: "text-3xl antialiased",
+      className: "text-3xl sm:text-4xl md:text-5xl antialiased",
     },
-
     {
       text: "Idaman Anda.",
-      className: "text-blue-500 dark:text-blue-500 text-3xl antialiased",
+      className:
+        "text-blue-500 dark:text-blue-500 text-3xl sm:text-4xl md:text-5xl antialiased inline",
     },
   ];
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="antialiased text-9xl">
+    <div className="flex flex-col items-center justify-center mx-4 sm:mx-0">
+      <h1>
         <TypewriterEffectSmooth words={words} />
       </h1>
     </div>
