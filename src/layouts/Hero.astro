@@ -6,7 +6,7 @@ const { title } = Astro.props;
 
 {/* Hero Section */}
 
-<div class="relative py-20 overflow-hidden hero-background overlay">
+<div class="relative py-20 overflow-hidden hero-background">
   <BorderBeam />
   <div class="container relative z-10 px-6 mx-auto">
     <div class="max-w-4xl mx-auto text-center text-white">
@@ -39,6 +39,11 @@ const { title } = Astro.props;
         <span class="ml-2">13,228,221+ properti telah terjual</span>
       </div>
     </div>
+  </div>
+  <div class="wave-container">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
   </div>
 </div>
 {/* search global  */}
@@ -73,28 +78,91 @@ const { title } = Astro.props;
     </div>
   </div>
 </div>
-
 <style>
-  @keyframes backgroundMove {
+  @keyframes gradient {
     0% {
-      background-position: 0% 50%;
+      background-position: 0% 0%;
     }
     50% {
-      background-position: 100% 50%;
+      background-position: 100% 100%;
     }
     100% {
-      background-position: 0% 50%;
+      background-position: 0% 0%;
     }
   }
+
   .hero-background {
-    background-image: linear-gradient(
-        rgba(17, 24, 39, 0.8),
-        rgba(17, 24, 39, 0.8)
-      ),
-      url("images/banner01.jpg");
-    background-size: 90% 100%;
-    background-position: center;
-    animation: backgroundMove 50s ease infinite !important;
+    background: url("images/home01.jpg"),
+      linear-gradient(
+        315deg,
+        rgb(23, 0, 50) 3%,
+        rgba(30, 66, 103, 1) 38%,
+        rgba(24, 119, 113, 1) 68%,
+        rgba(3, 53, 94, 0.637) 98%
+      );
+    background-blend-mode: multiply;
+
+    animation: gradient 15s ease infinite;
+    background-size:
+      cover,
+      1000% 1000%;
+    background-attachment: fixed;
+  }
+  .wave-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 200px; /* Sesuaikan tinggi sesuai kebutuhan */
+    overflow: hidden;
+  }
+
+  .wave {
+    position: absolute;
+    left: 0;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(
+      315deg,
+      rgba(23, 0, 50, 0.5) 3%,
+      rgba(30, 66, 103, 0.5) 38%,
+      rgba(24, 119, 113, 0.5) 68%,
+      rgba(4, 92, 16, 0.418) 98%
+    );
+    transform-origin: center bottom;
+  }
+
+  .wave:nth-child(1) {
+    bottom: 0;
+    opacity: 1;
+    border-radius: 1000% 1000% 0 0;
+    animation: wave 8s linear infinite;
+  }
+
+  .wave:nth-child(2) {
+    bottom: 10px;
+    opacity: 0.5;
+    border-radius: 1000% 1000% 0 0;
+    animation: wave 10s linear infinite;
+  }
+
+  .wave:nth-child(3) {
+    bottom: 20px;
+    opacity: 0.2;
+    border-radius: 1000% 1000% 0 0;
+    animation: wave 12s linear infinite;
+  }
+
+  @keyframes wave {
+    0% {
+      transform: translateX(0) translateZ(0) scaleY(1);
+    }
+    50% {
+      transform: translateX(-25%) translateZ(0) scaleY(0.55);
+    }
+    100% {
+      transform: translateX(-50%) translateZ(0) scaleY(1);
+    }
   }
 
   .gradient-text {
