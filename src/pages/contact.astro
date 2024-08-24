@@ -2,7 +2,7 @@
 import "@/styles/globals.css";
 import Layout from "@/layouts/Layout03.astro";
 import Footer01 from "@/layouts/Footer01.astro";
-import { Button } from "@/components/ui/button";
+
 import {
   PhoneTwoTone,
   TikTokFilled,
@@ -10,6 +10,9 @@ import {
   MailTwoTone,
   HomeTwoTone,
 } from "@ant-design/icons";
+
+import { Toaster } from "@/components/ui/toaster";
+import SendEmail from "@/components/custom/SendEmail";
 ---
 
 <Layout title="Kontak Kami" />
@@ -82,44 +85,8 @@ import {
         Terima kasih telah berkunjung ke laman bosqueproperti.com. Silahkan isi
         form berikut ini untuk bisa tahu lebih lanjut terkait listing projek:
       </p>
-      <form class="space-y-4">
-        <div>
-          <input
-            type="text"
-            placeholder="Masukan Nama Anda"
-            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-          />
-        </div>
-        <div>
-          <input
-            type="tel"
-            placeholder="Masukan No WA Aktif Anda"
-            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-          />
-        </div>
-        <div>
-          <input
-            type="email"
-            placeholder="Masukan Email Aktif Anda"
-            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-          />
-        </div>
-        <div>
-          <textarea
-            placeholder="Message"
-            rows="4"
-            class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-          ></textarea>
-        </div>
-        <div>
-          <Button
-            type="submit"
-            className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
-            KIRIM PESAN
-          </Button>
-        </div>
-      </form>
+      <SendEmail client:load />
+      <Toaster />
     </div>
   </div>
 </div>
