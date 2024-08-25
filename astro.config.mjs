@@ -30,6 +30,8 @@ export default defineConfig({
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.FASTAPI_ENDPOINT),
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.HOME_DOMAIN),
       'import.meta.env.MAIL_FROM_ADDRESS': JSON.stringify(process.env.AUTH_LOGIN_ENDPOINT),
+      'import.meta.env.PUBLIC_APIKEY_BREVO': JSON.stringify(process.env.PUBLIC_APIKEY_BREVO),
+
       
       
     },

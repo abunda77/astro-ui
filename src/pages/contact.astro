@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 
 import { Toaster } from "@/components/ui/toaster";
-import SendEmail from "@/components/custom/SendEmail";
+import SendEmail from "@/components/custom/SendEmail.tsx";
 ---
 
 <Layout title="Kontak Kami" />
@@ -86,7 +86,7 @@ import SendEmail from "@/components/custom/SendEmail";
         form berikut ini untuk bisa tahu lebih lanjut terkait listing projek:
       </p>
       <SendEmail client:load />
-      <Toaster />
+      <Toaster client:load />
     </div>
   </div>
 </div>
