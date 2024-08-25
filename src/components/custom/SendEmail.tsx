@@ -16,6 +16,7 @@ const SendEmail = () => {
   const [result, setResult] = useState("");
   const [captchaText, setCaptchaText] = useState("");
   const [userCaptcha, setUserCaptcha] = useState("");
+  const [noWa, setNoWa] = useState("");
 
   const generateCaptcha = () => {
     const randomString = Math.random().toString(36).substring(2, 8);
@@ -45,6 +46,7 @@ const SendEmail = () => {
       subject,
       name,
       email,
+      noWa,
       message,
     };
 
@@ -116,7 +118,7 @@ const SendEmail = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="bg-gray-200"
+          className="bg-gray-200 dark:text-gray-200"
         />
         <input
           type="hidden"
@@ -137,7 +139,20 @@ const SendEmail = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="bg-gray-200"
+          className="bg-gray-200 dark:text-gray-200"
+        />
+      </div>
+      <div>
+        <Label htmlFor="noWa" className="text-gray-700 dark:text-gray-300">
+          No. WhatsApp
+        </Label>
+        <Input
+          id="noWa"
+          type="text"
+          placeholder="Masukan No. WhatsApp Anda"
+          value={noWa}
+          onChange={(e) => setNoWa(e.target.value)}
+          className="bg-gray-200 dark:text-gray-200"
         />
       </div>
       <div>
@@ -148,7 +163,7 @@ const SendEmail = () => {
           id="message"
           placeholder="Tulis pesan Anda di sini"
           rows={4}
-          className="bg-gray-200"
+          className="bg-gray-200 dark:text-gray-200"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           required
