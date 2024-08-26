@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import debounce from "lodash/debounce";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface Property {
   id: number;
@@ -11,6 +13,7 @@ interface Property {
   price: number;
   province: { name: string };
   district: { name: string };
+  village: { name: string };
   address: string;
   category_id: number;
   city: { name: string };
@@ -32,11 +35,13 @@ const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
 
 const SearchResult: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [noResults, setNoResults] = useState(false);
   const pageSize = 8;
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
   const suggestionsRef = useRef<HTMLDivElement>(null);
@@ -44,11 +49,11 @@ const SearchResult: React.FC = () => {
   useOutsideClick(suggestionsRef, () => setShowSuggestions(false));
 
   const fetchSuggestions = useCallback(
-    debounce(async (term: string) => {
-      if (term.length >= 3) {
+    debounce(async (term: string, location: string) => {
+      if (term.length >= 3 || location.length >= 3) {
         try {
           const response = await fetch(
-            `${urlendpoint}/properties/search/?keyword=${term}`
+            `${urlendpoint}/properties/search/?keyword=${term}&location=${location}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -68,15 +73,17 @@ const SearchResult: React.FC = () => {
   );
 
   useEffect(() => {
-    fetchSuggestions(searchTerm);
-  }, [searchTerm, fetchSuggestions]);
+    fetchSuggestions(searchTerm, searchLocation);
+  }, [searchTerm, searchLocation, fetchSuggestions]);
 
   const fetchProperties = useCallback(async () => {
-    if (searchTerm.length >= 3) {
+    if (searchTerm.length >= 3 || searchLocation.length >= 3) {
       try {
         setLoading(true);
-        const url = `${urlendpoint}/properties/search/?page=${currentPage}&size=${pageSize}&keyword=${searchTerm}`;
+        setNoResults(false);
+        const url = `${urlendpoint}/properties/search/?page=${currentPage}&size=${pageSize}&keyword=${searchTerm}&location=${searchLocation}`;
         const response = await fetch(url);
+        console.log(response);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -86,6 +93,9 @@ const SearchResult: React.FC = () => {
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           );
         });
+        if (sortedProperties.length === 0 && currentPage === 1) {
+          setNoResults(true);
+        }
         setProperties((prevProperties) => [
           ...prevProperties,
           ...sortedProperties,
@@ -94,13 +104,10 @@ const SearchResult: React.FC = () => {
       } catch (error) {
         console.error("Error fetching properties:", error);
         setLoading(false);
+        setNoResults(true);
       }
     }
-  }, [currentPage, searchTerm]);
-
-  useEffect(() => {
-    fetchProperties();
-  }, [fetchProperties]);
+  }, [currentPage, searchTerm, searchLocation, urlendpoint, pageSize]);
 
   const getImageUrl = (property: Property) => {
     const primaryImage = property.images.find((img) => img.is_primary);
@@ -111,6 +118,7 @@ const SearchResult: React.FC = () => {
 
   const handleLoadMore = () => {
     setCurrentPage((prevPage) => prevPage + 1);
+    fetchProperties();
   };
 
   const handleSearch = () => {
@@ -124,33 +132,41 @@ const SearchResult: React.FC = () => {
   const handleSuggestionClick = (suggestion: string) => {
     setSearchTerm(suggestion);
     setShowSuggestions(false);
-    setCurrentPage(1);
+  };
+
+  const handleClear = () => {
+    setSearchTerm("");
+    setSearchLocation("");
     setProperties([]);
-    fetchProperties();
+    setNoResults(false);
+    setCurrentPage(1);
   };
 
   return (
-    <div
-      className="container relative z-20 px-4 mx-auto sm:px-6 headshot-generator-container"
-      style={{ marginTop: "-50px" }}
-    >
-      <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg sm:max-w-none headshot-generator-card">
-        <h3 className="mb-3 text-lg font-semibold text-center text-gray-800 sm:text-xl headshot-generator-title">
+    <div className="container relative z-20 px-4 mx-auto sm:px-6 sm:-mt-[100px]">
+      <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg sm:max-w-2xl sm:p-6">
+        <h3 className="mb-3 text-lg font-semibold text-center text-gray-800 sm:text-3xl">
           Cari Property Idaman Kamu
         </h3>
         <div className="relative flex flex-col sm:flex-row">
           <input
             type="text"
             placeholder="Cari kata kunci atau lokasi (min. 3 karakter)"
-            className="w-full px-3 py-2 mb-2 text-sm border-2 border-gray-300 rounded-md sm:mb-0 sm:rounded-r-none focus:outline-none focus:border-blue-500 headshot-generator-input"
+            className="w-full px-3 py-2 mb-2 text-sm border-2 border-gray-300 rounded-md sm:mb-0 sm:rounded-r-none focus:outline-none focus:border-blue-500 sm:text-base sm:px-4 sm:py-3"
             onChange={(e) => setSearchTerm(e.target.value)}
             value={searchTerm}
           />
           <button
-            className="w-full px-4 py-2 text-sm font-medium text-white transition duration-300 bg-blue-600 rounded-md sm:w-auto sm:rounded-l-none hover:bg-blue-700 headshot-generator-button"
+            className="w-full px-4 py-2 text-sm font-medium text-white transition duration-300 bg-blue-600 rounded-md sm:w-auto sm:rounded-l-none hover:bg-blue-700 sm:text-base sm:px-8 sm:py-3"
             onClick={handleSearch}
           >
             Search
+          </button>
+          <button
+            className="w-full px-4 py-2 mt-2 text-sm font-medium text-white transition duration-300 bg-red-600 rounded-md sm:w-auto sm:mt-0 sm:ml-2 hover:bg-red-700 sm:text-base"
+            onClick={handleClear}
+          >
+            Clear
           </button>
           {showSuggestions && suggestions.length > 0 && (
             <div
@@ -169,20 +185,21 @@ const SearchResult: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="mt-2 text-xs text-center text-gray-600 sm:text-sm headshot-generator-popular">
+        <div className="mt-2 text-xs text-center text-gray-600 sm:text-sm">
           Popular: Apartemen, Rumah, Villa, Tanah
         </div>
       </div>
 
-      {searchTerm.length >= 3 && (
+      {/* Hasil Searching */}
+      {properties.length > 0 && (
         <div className="mt-4">
           <h3 className="text-lg font-semibold text-center text-gray-800 sm:text-xl">
             Hasil Pencarian
           </h3>
-          <div className="flex flex-wrap justify-center">
+          <div className="flex flex-wrap justify-center p-4 ">
             {properties.map((property) => (
               <div
-                className="w-full p-4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+                className="w-full p-4 m-2 border border-gray-300 rounded-lg shadow-md sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1rem)] xl:w-[calc(20%-1rem)] transition duration-300 ease-in-out hover:shadow-lg hover:border-blue-500 dark:border-gray-700 dark:hover:border-blue-400 dark:bg-gray-800"
                 key={property.id}
               >
                 <a href={`/post/${property.id}`}>
@@ -191,13 +208,15 @@ const SearchResult: React.FC = () => {
                       <img
                         src={getImageUrl(property)}
                         alt={property.title}
-                        className="object-cover w-full h-40"
+                        className="object-cover w-full h-40 transition duration-300 ease-in-out transform hover:scale-105"
                       />
                     </div>
-                    <p className="mt-2 text-lg font-semibold text-gray-800">
+                    <p className="mt-2 text-lg font-semibold text-gray-800 transition duration-300 ease-in-out dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400">
                       {property.title}
                     </p>
-                    <p className="text-sm text-gray-500">{property.address}</p>
+                    <p className="text-sm text-gray-500 transition duration-300 ease-in-out dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                      {property.address}
+                    </p>
                   </div>
                 </a>
               </div>
@@ -213,6 +232,24 @@ const SearchResult: React.FC = () => {
               </button>
             </div>
           )}
+        </div>
+      )}
+      {noResults && (
+        <Alert
+          variant="destructive"
+          className="max-w-sm p-4 mx-auto bg-red-100 border-none shadow-lg sm:max-w-2xl sm:p-6"
+        >
+          <AlertCircle className="w-4 h-4" />
+          <AlertTitle>Tidak Ditemukan</AlertTitle>
+          <AlertDescription>
+            Maaf, tidak ada hasil yang sesuai dengan pencarian Anda. Silakan
+            coba kata kunci lain.
+          </AlertDescription>
+        </Alert>
+      )}
+      {loading && (
+        <div className="mt-4 text-center">
+          <p>Loading...</p>
         </div>
       )}
     </div>
