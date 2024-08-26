@@ -2,7 +2,7 @@ import React from "react";
 import "@/styles/globals.css";
 const AttractiveLoadingAnimation = () => {
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
       <div className="w-32 h-32 opacity-0 sm:w-16 sm:h-16 md:w-32 md:h-32 animate-fadeIn">
         <svg
           className="w-32 h-32"
@@ -28,8 +28,8 @@ const AttractiveLoadingAnimation = () => {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-bold text-gray-800 animate-bounce">
-            Please Wait ...
+          <span className="text-xs font-bold text-white animate-bounce">
+            Mohon tunggu ...
           </span>
         </div>
       </div>

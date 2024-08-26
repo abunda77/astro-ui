@@ -32,7 +32,7 @@ const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
 
 const SearchResult: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -63,7 +63,7 @@ const SearchResult: React.FC = () => {
         setSuggestions([]);
         setShowSuggestions(false);
       }
-    }, 300),
+    }, 1000),
     []
   );
 

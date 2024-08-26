@@ -14,6 +14,9 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Loader2 } from "lucide-react";
+import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
+import { CloseIcon } from "@/components/custom/CloseIcon";
 
 interface Property {
   id: number;
@@ -202,7 +205,7 @@ const PostSection: React.FC = () => {
                     duration: 0.05,
                   },
                 }}
-                className="absolute flex items-center justify-center w-6 h-6 bg-white rounded-full top-2 right-2 lg:hidden"
+                className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-white rounded-full z-[101]"
                 onClick={() => setActive(null)}
               >
                 <CloseIcon />
@@ -245,16 +248,29 @@ const PostSection: React.FC = () => {
                       </motion.p>
                     </div>
 
-                    <motion.a
+                    <motion.div
                       layout
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      href={`/post/${active.id}`}
-                      className="px-4 py-3 text-sm font-bold text-white bg-green-500 rounded-full"
                     >
-                      Detail
-                    </motion.a>
+                      <Button
+                        className="flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-green-500 rounded-full"
+                        onClick={() => {
+                          setLoading(true);
+                          setTimeout(() => {
+                            window.location.href = `/post/${active.id}`;
+                          }, 1000);
+                        }}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <AttractiveLoadingAnimation />
+                        ) : (
+                          <span className="mr-2">Detail</span>
+                        )}
+                      </Button>
+                    </motion.div>
                   </div>
                   <div className="relative px-4 pt-4">
                     <motion.div
@@ -354,39 +370,6 @@ const PostSection: React.FC = () => {
         </div>
       </div>
     </section>
-  );
-};
-
-export const CloseIcon = () => {
-  return (
-    <motion.svg
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      exit={{
-        opacity: 0,
-        transition: {
-          duration: 0.05,
-        },
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="w-4 h-4 text-black"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 6l-12 12" />
-      <path d="M6 6l12 12" />
-    </motion.svg>
   );
 };
 

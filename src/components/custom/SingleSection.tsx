@@ -15,6 +15,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 
 interface Property {
   user_id: number;
@@ -140,6 +141,19 @@ interface SingleSectionProps {
   property: Property;
 }
 const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulasikan proses loading
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
+  if (isLoading) {
+    return <AttractiveLoadingAnimation />;
+  }
+
   if (!property) {
     return <div>Property not found</div>;
   }
