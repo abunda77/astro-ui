@@ -1,6 +1,7 @@
 ---
 import { TypewriterEffectSmoothDemo } from "@/components/custom/HeroSection";
 import { BorderBeam } from "@/components/magicui/border-beam.tsx";
+import SearchResult from "@/components/custom/SearchResult.tsx";
 const { title } = Astro.props;
 ---
 
@@ -47,7 +48,8 @@ const { title } = Astro.props;
   </div>
 </div>
 {/* search global  */}
-
+<SearchResult client:load />
+<!-- 
 <div
   class="container relative z-20 px-4 mx-auto sm:px-6 headshot-generator-container"
   style="margin-top: -50px;"
@@ -58,26 +60,28 @@ const { title } = Astro.props;
     <h3
       class="mb-3 text-lg font-semibold text-center text-gray-800 sm:text-xl headshot-generator-title"
     >
-      Generate Your Professional Headshot
+      Cari Properti Idaman Anda
     </h3>
     <div class="flex flex-col sm:flex-row">
       <input
         type="text"
-        placeholder="Enter your preferences (e.g., business casual, outdoor)"
+        placeholder="Cari kata kunci (e.g., rumah deket kampus, apartemen murah, villa, tanah)"
         class="w-full px-3 py-2 mb-2 text-sm border-2 border-gray-300 rounded-md sm:mb-0 sm:rounded-r-none focus:outline-none focus:border-blue-500 headshot-generator-input"
       />
       <button
         class="w-full px-4 py-2 text-sm font-medium text-white transition duration-300 bg-blue-600 rounded-md sm:w-auto sm:rounded-l-none hover:bg-blue-700 headshot-generator-button"
-        >Generate</button
+        >Search</button
       >
     </div>
     <div
       class="mt-2 text-xs text-center text-gray-600 sm:text-sm headshot-generator-popular"
     >
-      Popular: Business, Casual, Studio, Outdoor
+      Popular: Apartemen, Rumah, Villa, Tanah
     </div>
   </div>
-</div>
+</div> -->
+
+{/* style */}
 <style>
   @keyframes gradient {
     0% {
