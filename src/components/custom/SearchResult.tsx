@@ -48,7 +48,7 @@ const SearchResult: React.FC = () => {
       if (term.length >= 3) {
         try {
           const response = await fetch(
-            `${urlendpoint}/properties/suggestions/?keyword=${term}`
+            `${urlendpoint}/properties/search/?keyword=${term}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -185,7 +185,7 @@ const SearchResult: React.FC = () => {
                 className="w-full p-4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
                 key={property.id}
               >
-                <a href={`/property/${property.id}`}>
+                <a href={`/post/${property.id}`}>
                   <div className="block">
                     <div className="overflow-hidden rounded-lg">
                       <img
