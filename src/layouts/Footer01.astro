@@ -26,11 +26,15 @@ import { Icon } from "astro-icon/components";
         <div class="mb-4">
           <h3 class="mb-2 font-semibold">Download Aplikasi Bosqu</h3>
           <div class="flex space-x-2">
-            <GooglePlay />
-            <AppleStore />
+            <div class="flex flex-col">
+              <div class="flex mb-2 space-x-2">
+                <GooglePlay />
+                <AppleStore />
+              </div>
+              <Qrcode />
+            </div>
           </div>
         </div>
-        <Qrcode />
       </div>
 
       <div>

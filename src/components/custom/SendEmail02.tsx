@@ -210,14 +210,14 @@ const SendEmail = () => {
           />
         </div>
         <div>
-          <div className="flex items-center mb-4 space-x-4">
+          <div className="flex flex-col mb-4 space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
             <Label
               htmlFor="captcha"
               className="text-gray-700 dark:text-gray-300 whitespace-nowrap"
             >
               Captcha
             </Label>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-col items-start w-full space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2 sm:w-auto">
               <Input
                 id="captcha"
                 type="text"
@@ -225,28 +225,30 @@ const SendEmail = () => {
                 value={userCaptcha}
                 onChange={(e) => setUserCaptcha(e.target.value)}
                 required
-                className="max-w-xs text-gray-900 bg-white w-36 dark:bg-gray-600 dark:text-gray-100"
+                className="w-full text-gray-900 bg-white sm:w-36 dark:bg-gray-600 dark:text-gray-100"
               />
-              <div className="p-2 text-green-600 bg-gray-200 rounded dark:bg-gray-600 dark:text-green-400">
-                {captchaText}
+              <div className="flex items-center space-x-2">
+                <div className="p-2 text-green-600 bg-gray-200 rounded dark:bg-gray-600 dark:text-green-400">
+                  {captchaText}
+                </div>
+                <Button
+                  type="button"
+                  onClick={generateCaptcha}
+                  className="bg-blue-500 hover:bg-blue-600"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <RefreshCcw className="w-4 h-4" />
+                  )}
+                </Button>
               </div>
-              <Button
-                type="button"
-                onClick={generateCaptcha}
-                className="bg-blue-500 hover:bg-blue-600"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <RefreshCcw className="w-4 h-4" />
-                )}
-              </Button>
             </div>
           </div>
           <Button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-800"
+            className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
             disabled={isLoading}
           >
             {isLoading ? (
