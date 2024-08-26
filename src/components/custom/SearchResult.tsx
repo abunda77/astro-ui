@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import debounce from "lodash/debounce";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 
 interface Property {
   id: number;
@@ -152,22 +155,29 @@ const SearchResult: React.FC = () => {
           <input
             type="text"
             placeholder="Cari kata kunci atau lokasi (min. 3 karakter)"
-            className="w-full px-3 py-2 mb-2 text-sm border-2 border-gray-300 rounded-md sm:mb-0 sm:rounded-r-none focus:outline-none focus:border-blue-500 sm:text-base sm:px-4 sm:py-3"
+            className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
             onChange={(e) => setSearchTerm(e.target.value)}
             value={searchTerm}
           />
-          <button
-            className="w-full px-4 py-2 text-sm font-medium text-white transition duration-300 bg-blue-600 rounded-md sm:w-auto sm:rounded-l-none hover:bg-blue-700 sm:text-base sm:px-8 sm:py-3"
+          <Button
+            className="w-full px-4 py-2 text-sm font-medium text-gray-200 transition duration-300 bg-green-600 rounded-md dark:text-gray-100 dark:bg-green-700 sm:w-auto sm:rounded-l-none hover:bg-green-700 dark:hover:bg-green-600 sm:text-base sm:px-8 sm:py-3"
             onClick={handleSearch}
+            disabled={loading}
           >
-            Search
-          </button>
-          <button
-            className="w-full px-4 py-2 mt-2 text-sm font-medium text-white transition duration-300 bg-red-600 rounded-md sm:w-auto sm:mt-0 sm:ml-2 hover:bg-red-700 sm:text-base"
+            {" "}
+            <SearchIcon className="w-4 h-4 mr-1" />
+            {loading ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              "Search"
+            )}
+          </Button>
+          <Button
+            className="w-full px-4 py-2 mt-2 text-sm font-medium text-gray-700 transition duration-300 border border-gray-700 rounded-md dark:text-gray-100 sm:w-auto sm:mt-0 sm:ml-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-500 sm:text-base"
             onClick={handleClear}
           >
             Clear
-          </button>
+          </Button>
           {showSuggestions && suggestions.length > 0 && (
             <div
               ref={suggestionsRef}
