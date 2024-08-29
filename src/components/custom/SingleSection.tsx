@@ -129,9 +129,10 @@ const getAllImage = (property: Property) => {
   console.log("Status: Mengambil semua gambar properti");
   return property.images.length > 0
     ? property.images.map((img) => {
-        const imageUrl = img.image_url.startsWith("/")
+        let imageUrl = img.image_url.startsWith("/")
           ? img.image_url.substring(1)
           : img.image_url;
+        imageUrl = imageUrl.replace(/[",/\\]/g, ""); // Menghapus karakter yang tidak diperlukan
         return `${homedomain}/storage/${imageUrl}`;
       })
     : ["images/home_fallback.png"];

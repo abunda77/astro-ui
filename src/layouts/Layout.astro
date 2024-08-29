@@ -5,6 +5,7 @@ import Hero from "@/layouts/Hero.astro";
 import Footer01 from "@/layouts/Footer01.astro";
 import Section01 from "@/layouts/Section01.astro";
 import PostSection from "@/components/custom/PostSection";
+import BlogSection from "@/components/custom/BlogSection.tsx";
 
 const { title } = Astro.props;
 
@@ -32,7 +33,7 @@ const makeTitle = title
     <Hero />
     <Section01 />
     <PostSection client:load />
-
+    <BlogSection client:load />
     <slot />
     <style is:global>
       /* Improve Page speed */
