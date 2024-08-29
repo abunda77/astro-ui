@@ -69,25 +69,25 @@ const BlogSection: React.FC = () => {
     <section className="py-8">
       <div className="container mx-auto">
         <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200">
-          Blog Terbaru
+          Berita Terbaru
         </h2>
         {posts.length > 0 ? (
-          <Carousel className="w-full max-w-4xl mx-auto mt-6">
+          <Carousel className="w-full max-w-5xl mx-auto mt-6">
             <CarouselContent className="-ml-1">
               {posts.map((post) => (
                 <CarouselItem
                   key={post.id}
-                  className="pl-1 md:basis-1/2 lg:basis-1/3"
+                  className="pl-1 md:basis-1/2 lg:basis-1/4"
                 >
                   <div className="p-1">
-                    <Card>
-                      <CardContent className="flex flex-col items-center justify-center p-6">
+                    <Card className="transition duration-300 border-2 shadow-lg h-80 hover:border-blue-500">
+                      <CardContent className="flex flex-col items-center justify-center h-full p-6">
                         <img
                           src={post.feature_image}
                           alt={post.title}
                           className="object-cover w-full h-40 rounded-lg"
                         />
-                        <h3 className="mt-4 text-lg font-semibold text-center text-gray-800 dark:text-gray-200">
+                        <h3 className="mt-4 text-lg font-semibold text-center text-gray-800 transition duration-300 dark:text-gray-200 hover:text-blue-500">
                           <a
                             href={`/blog/${post.id}`}
                             className="hover:underline"
@@ -96,7 +96,7 @@ const BlogSection: React.FC = () => {
                           </a>
                         </h3>
                         <p className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400">
-                          {post.body.substring(0, 100)}...
+                          {post.body.substring(0, 50)}...
                         </p>
                       </CardContent>
                     </Card>

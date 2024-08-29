@@ -161,7 +161,7 @@ const SearchResult: React.FC = () => {
           <input
             type="text"
             placeholder="Cari kata kunci atau lokasi (min. 3 karakter)"
-            className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
+            className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-200 border-gray-100 rounded-md dark:bg-gray-200 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
             onChange={(e) => setSearchTerm(e.target.value)}
             value={searchTerm}
           />

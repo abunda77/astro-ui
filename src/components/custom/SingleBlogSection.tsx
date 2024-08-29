@@ -63,18 +63,19 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
           Kembali ke Blog
         </a>
       </div>
+      <div className="flex items-center justify-center mb-6">
+        <AspectRatio ratio={4 / 3} className="w-full max-w-3xl">
+          <img
+            src={post.feature_image}
+            alt={post.title}
+            className="object-cover rounded-lg"
+          />
+        </AspectRatio>
+      </div>
 
-      <h1 className="mb-4 text-3xl font-bold text-gray-800 dark:text-gray-200">
+      <h1 className="mt-16 mb-6 text-3xl font-bold text-center text-gray-800 dark:text-gray-200">
         {post.title}
       </h1>
-
-      <AspectRatio ratio={16 / 9} className="mb-6">
-        <img
-          src={post.feature_image}
-          alt={post.title}
-          className="object-cover rounded-lg"
-        />
-      </AspectRatio>
 
       <div className="prose prose-lg dark:prose-invert">
         {post.body.split("\n\n").map((paragraph, index) => (
