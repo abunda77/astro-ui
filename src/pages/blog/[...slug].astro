@@ -1,0 +1,44 @@
+---
+import "@/styles/globals.css";
+import Header01 from "@/layouts/Header01.astro";
+
+import SingleBlogSection from "@/components/custom/SingleBlogSection";
+import Footer01 from "@/layouts/Footer01.astro";
+
+export async function getStaticPaths() {
+  // Ambil semua ID artikel yang tersedia
+  const response = await fetch(
+    `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/posts`
+  );
+  const data = await response.json();
+
+  if (!data || !data.data) {
+    console.error("Data tidak ditemukan atau format tidak valid");
+    return [];
+  }
+
+  return data.data.map((post: { id: number | string }) => ({
+    params: { slug: post.id.toString() },
+    props: { postId: post.id },
+  }));
+}
+
+const { postId } = Astro.props;
+---
+
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Detail Artikel" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Detail Artikel</title>
+  </head>
+  <body>
+    <Header01 />
+    <SingleBlogSection client:load postId={postId} />
+    <Footer01 />
+    <slot />
+  </body>
+</html>
