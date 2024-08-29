@@ -114,9 +114,15 @@ const SearchResult: React.FC = () => {
 
   const getImageUrl = (property: Property) => {
     const primaryImage = property.images.find((img) => img.is_primary);
-    return primaryImage
-      ? `${homedomain}/storage/${primaryImage.image_url}`
-      : "images/home_fallback.png";
+    if (primaryImage) {
+      let imageUrl = primaryImage.image_url.startsWith("/")
+        ? primaryImage.image_url.substring(1)
+        : primaryImage.image_url;
+      imageUrl = imageUrl.replace(/[",/\\]/g, ""); // Menghapus karakter yang tidak diperlukan
+      return `${homedomain}/storage/${imageUrl}`;
+    } else {
+      return "images/home_fallback.png";
+    }
   };
 
   const handleLoadMore = () => {
