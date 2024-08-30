@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 import { CloseIcon } from "@/components/custom/CloseIcon";
+import { Loader, Placeholder } from "rsuite";
+import "rsuite/dist/rsuite-no-reset.min.css";
 
 interface Property {
   id: number;
@@ -270,7 +272,11 @@ const PostSection: React.FC = () => {
                         disabled={loading}
                       >
                         {loading ? (
-                          <AttractiveLoadingAnimation />
+                          <Loader
+                            size="lg"
+                            content="Loading please wait..."
+                            vertical
+                          />
                         ) : (
                           <span className="mr-2">Detail</span>
                         )}

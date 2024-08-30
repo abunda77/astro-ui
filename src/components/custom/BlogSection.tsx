@@ -9,6 +9,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
+import { Loader, Placeholder } from "rsuite";
+import "rsuite/dist/rsuite-no-reset.min.css";
 
 interface BlogSection {
   id: number;
@@ -58,7 +60,13 @@ const BlogSection: React.FC = () => {
   }, []);
 
   if (isLoading) {
-    return <div className="text-center">Memuat data...</div>;
+    return (
+      <div className="text-center">
+        {" "}
+        <hr />
+        <Loader size="lg" content="Loading please wait..." vertical />
+      </div>
+    );
   }
 
   if (error) {
@@ -92,11 +100,15 @@ const BlogSection: React.FC = () => {
                             href={`/blog/${post.id}`}
                             className="hover:underline"
                           >
-                            {post.title}
+                            {post.title.length > 40
+                              ? `${post.title.substring(0, 40)}...`
+                              : post.title}
                           </a>
                         </h3>
                         <p className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400">
-                          {post.body.substring(0, 50)}...
+                          {post.body.length > 100
+                            ? `${post.body.substring(0, 100)}...`
+                            : post.body}
                         </p>
                       </CardContent>
                     </Card>

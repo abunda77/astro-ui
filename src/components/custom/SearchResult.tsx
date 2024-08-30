@@ -7,7 +7,7 @@ import debounce from "lodash/debounce";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, ALargeSmall, LocateIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Property {
@@ -160,17 +160,19 @@ const SearchResult: React.FC = () => {
         </h3>
         <div className="relative flex flex-col sm:flex-row">
           <Tabs defaultValue="keyword" className="w-full">
-            <TabsList className="grid justify-center w-full grid-cols-2 border-b-2 border-gray-300 hover:bg-gray-200 ">
+            <TabsList className="grid justify-center w-full grid-cols-2 border-b-2 border-gray-300 dark:bg-gray-300">
               <TabsTrigger
                 value="keyword"
-                className="data-[state=active]:bg-green-200"
+                className="data-[state=active]:bg-green-200 dark:data-[state=active]:bg-orange-500"
               >
+                <ALargeSmall className="mr-1" />
                 Keyword
               </TabsTrigger>
               <TabsTrigger
                 value="location"
-                className="data-[state=active]:bg-green-200"
+                className="data-[state=active]:bg-green-200 dark:data-[state=active]:bg-orange-500"
               >
+                <LocateIcon className="mr-1" />
                 Location
               </TabsTrigger>
             </TabsList>

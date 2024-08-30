@@ -15,7 +15,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
+import { Loader, Placeholder } from "rsuite";
+import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
+import "rsuite/dist/rsuite-no-reset.min.css";
 
 interface Property {
   user_id: number;
@@ -152,7 +154,11 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   }, []);
 
   if (isLoading) {
-    return <AttractiveLoadingAnimation />;
+    return (
+      <div className="h-[600px] bg-[#94918d]">
+        <Loader size="lg" inverse center content="loading..." />
+      </div>
+    );
   }
 
   if (!property) {
@@ -168,12 +174,9 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   return (
     <div className="p-5 mx-auto text-gray-100 bg-gray-200 sm:p-10 md:p-16 dark:bg-gray-800 dark:text-gray-800">
       <div className="flex justify-start">
-        <a
-          href="/"
-          className="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-        >
-          Back to Home
-        </a>
+        <Button appearance="primary" href="/">
+          Kembali ke Beranda
+        </Button>
       </div>
 
       <div className="flex flex-col max-w-6xl mx-auto overflow-hidden rounded">
