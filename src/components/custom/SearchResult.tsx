@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { SearchIcon } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Property {
   id: number;
@@ -131,7 +132,7 @@ const SearchResult: React.FC = () => {
   };
 
   const handleSearch = () => {
-    if (searchTerm.length >= 3) {
+    if (searchTerm.length >= 3 || searchLocation.length >= 3) {
       setCurrentPage(1);
       setProperties([]);
       fetchProperties();
@@ -158,32 +159,62 @@ const SearchResult: React.FC = () => {
           Cari Property Idaman Kamu
         </h3>
         <div className="relative flex flex-col sm:flex-row">
-          <input
-            type="text"
-            placeholder="Cari kata kunci atau lokasi (min. 3 karakter)"
-            className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-          />
-          <Button
-            className="w-full px-4 py-2 text-sm font-medium text-gray-200 transition duration-300 bg-green-600 rounded-md dark:text-gray-100 dark:bg-green-700 sm:w-auto sm:rounded-l-none hover:bg-green-700 dark:hover:bg-green-600 sm:text-base sm:px-8 sm:py-3"
-            onClick={handleSearch}
-            disabled={loading}
-          >
-            {" "}
-            <SearchIcon className="w-4 h-4 mr-1" />
-            {loading ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
-              "Search"
-            )}
-          </Button>
-          <Button
-            className="w-full px-4 py-2 mt-2 text-sm font-medium text-gray-700 transition duration-300 border border-gray-700 rounded-md dark:text-gray-100 sm:w-auto sm:mt-0 sm:ml-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-500 sm:text-base"
-            onClick={handleClear}
-          >
-            Clear
-          </Button>
+          <Tabs defaultValue="keyword" className="w-full">
+            <TabsList className="grid justify-center w-full grid-cols-2 border-b-2 border-gray-300 hover:bg-gray-200 ">
+              <TabsTrigger
+                value="keyword"
+                className="data-[state=active]:bg-green-200"
+              >
+                Keyword
+              </TabsTrigger>
+              <TabsTrigger
+                value="location"
+                className="data-[state=active]:bg-green-200"
+              >
+                Location
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="keyword">
+              <input
+                type="text"
+                placeholder="Cari kata kunci (min. 3 karakter)"
+                className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
+                onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTerm}
+              />
+            </TabsContent>
+            <TabsContent value="location">
+              <input
+                type="text"
+                placeholder="Lokasi (min. 3 karakter)"
+                className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
+                onChange={(e) => setSearchLocation(e.target.value)}
+                value={searchLocation}
+              />
+            </TabsContent>
+          </Tabs>
+          <div className="flex flex-col sm:mt-10 sm:flex-row sm:items-center">
+            <Button
+              className="w-full px-4 py-2 text-sm font-medium text-gray-200 transition duration-300 bg-green-600 rounded-md dark:text-gray-100 dark:bg-green-700 sm:w-auto sm:rounded-l-none hover:bg-green-700 dark:hover:bg-green-600 sm:text-base sm:px-8 sm:py-3 sm:mt-2 sm:ml-2"
+              onClick={handleSearch}
+              disabled={loading}
+            >
+              {" "}
+              <SearchIcon className="w-4 h-4 mr-1" />
+              {loading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                "Search"
+              )}
+            </Button>
+            <Button
+              className="w-full px-4 py-2 mt-2 text-sm font-medium text-gray-700 transition duration-300 border border-gray-700 rounded-md dark:text-gray-100 sm:w-auto sm:mt-2 sm:ml-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-500 sm:text-base"
+              onClick={handleClear}
+            >
+              Clear
+            </Button>
+          </div>
+
           {showSuggestions && suggestions.length > 0 && (
             <div
               ref={suggestionsRef}

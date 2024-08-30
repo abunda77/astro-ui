@@ -210,7 +210,7 @@ const PostSection: React.FC = () => {
                     duration: 0.05,
                   },
                 }}
-                className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-white rounded-full z-[101]"
+                className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-500 rounded-full z-[101]"
                 onClick={() => setActive(null)}
               >
                 <CloseIcon />
@@ -218,7 +218,7 @@ const PostSection: React.FC = () => {
               <motion.div
                 layoutId={`card-${active.title}-${id}`}
                 ref={ref}
-                className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden "
+                className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-green-100 dark:bg-neutral-900 sm:rounded-3xl overflow-hidden "
               >
                 <motion.div
                   layoutId={`image-${active.title}-${id}`}
@@ -308,13 +308,14 @@ const PostSection: React.FC = () => {
             </div>
           ) : null}
         </AnimatePresence>
+        {/* mulai desain grid */}
         <ul className="grid items-start w-full max-w-6xl grid-cols-1 gap-4 mx-auto md:grid-cols-2 lg:grid-cols-4">
           {properties.map((property, index) => (
             <motion.div
               layoutId={`card-${property.title}-${id}`}
               key={property.title}
               onClick={() => setActive(property)}
-              className="flex flex-col p-4 shadow-lg cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-300 rounded-xl"
+              className="flex flex-col p-4 transition-transform transform shadow-lg cursor-pointer bg-gray-50 hover:bg-gray-200 dark:bg-gray-300 dark:hover:bg-gray-100 rounded-xl hover:scale-105 hover:border-blue-500"
             >
               <div className="flex flex-col w-full gap-4">
                 <div className="flex flex-col items-center justify-center">
