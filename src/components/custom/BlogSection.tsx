@@ -66,28 +66,46 @@ const BlogSection: React.FC = () => {
   }
 
   return (
-    <section className="py-8">
+    <section className="py-8 bg-gradient-to-t from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
       <div className="container mx-auto">
+<<<<<<< HEAD
         <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200">
           Berita Terbaru
         </h2>
         {posts.length > 0 ? (
           <Carousel className="w-full max-w-5xl mx-auto mt-6">
+=======
+        <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-700">
+          Blog Terbaru
+        </h2>
+        {posts.length > 0 ? (
+          <Carousel className="w-full max-w-6xl mx-auto mt-6">
+>>>>>>> blog
             <CarouselContent className="-ml-1">
               {posts.map((post) => (
                 <CarouselItem
                   key={post.id}
                   className="pl-1 md:basis-1/2 lg:basis-1/4"
                 >
+<<<<<<< HEAD
                   <div className="p-1">
                     <Card className="transition duration-300 border-2 shadow-lg h-80 hover:border-blue-500">
                       <CardContent className="flex flex-col items-center justify-center h-full p-6">
+=======
+                  <div className="p-5">
+                    <Card className="transition-transform transform hover:scale-105 hover:border-blue-500 dark:bg-gray-300 dark:hover:bg-gray-100 dark:border-gray-100 dark:hover:border-blue-500">
+                      <CardContent className="flex flex-col items-center justify-center p-6">
+>>>>>>> blog
                         <img
                           src={post.feature_image}
                           alt={post.title}
                           className="object-cover w-full h-40 rounded-lg"
                         />
+<<<<<<< HEAD
                         <h3 className="mt-4 text-lg font-semibold text-center text-gray-800 transition duration-300 dark:text-gray-200 hover:text-blue-500">
+=======
+                        <h3 className="mt-4 text-lg font-semibold text-center text-gray-800 dark:text-gray-700 hover:text-blue-500">
+>>>>>>> blog
                           <a
                             href={`/blog/${post.id}`}
                             className="hover:underline"
