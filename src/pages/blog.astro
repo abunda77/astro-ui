@@ -1,0 +1,16 @@
+---
+import "@/styles/globals.css";
+import Layout from "@/layouts/Layout03.astro";
+import Footer01 from "@/layouts/Footer01.astro";
+import BlogPost from "@/components/custom/BlogPost.tsx";
+
+const pageTitle = "Blog";
+---
+
+<Layout title={pageTitle}>
+  <main>
+    <h1 class="mb-8 text-4xl font-bold text-center">{pageTitle}</h1>
+    <BlogPost client:load />
+  </main>
+  <Footer01 />
+</Layout>

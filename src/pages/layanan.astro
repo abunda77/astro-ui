@@ -1,0 +1,124 @@
+---
+import "@/styles/globals.css";
+import { Button } from "@/components/ui/button";
+import Layout from "@/layouts/Layout03.astro";
+import Footer01 from "@/layouts/Footer01.astro";
+import { Phone } from "lucide-react";
+---
+
+<Layout title="Layanan Kami" />
+
+<div
+  class="min-h-screen px-4 py-12 bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 sm:px-6 lg:px-8"
+>
+  <div class="max-w-4xl mx-auto">
+    <h1
+      class="mb-8 text-4xl font-bold text-center text-blue-800 dark:text-blue-300"
+    >
+      Layanan Kami
+    </h1>
+
+    <div class="p-8 mb-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Solusi Properti Lengkap dari Bosque Properti
+      </h2>
+      <p class="mb-6 text-lg text-gray-700 dark:text-gray-300">
+        Bosque Properti menyediakan berbagai layanan untuk memenuhi kebutuhan
+        properti Anda. Dari pencarian hingga renovasi, kami siap membantu di
+        setiap tahap.
+      </p>
+
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Layanan Unggulan Kami
+      </h2>
+      <ul class="mb-6 text-gray-700 list-disc list-inside dark:text-gray-300">
+        <li>Pencarian dan Pemasaran Properti</li>
+        <li>Konsultasi Investasi Properti</li>
+        <li>Desain Interior dan Renovasi</li>
+        <li>Manajemen Properti</li>
+        <li>Bantuan Legal dan Administrasi</li>
+      </ul>
+    </div>
+
+    <div class="mb-8">
+      <h2
+        class="mb-6 text-2xl font-semibold text-center text-blue-800 dark:text-blue-300"
+      >
+        Mengapa Memilih Layanan Kami?
+      </h2>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+          <h3
+            class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300"
+          >
+            Pengalaman Luas
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Tim kami memiliki pengalaman bertahun-tahun dalam industri properti,
+            menjamin layanan berkualitas tinggi.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+          <h3
+            class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300"
+          >
+            Solusi Menyeluruh
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Kami menawarkan layanan end-to-end, dari pencarian properti hingga
+            renovasi dan manajemen.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg shadow bg-blue-50 dark:bg-gray-700">
+          <h3
+            class="mb-3 text-xl font-semibold text-blue-800 dark:text-blue-300"
+          >
+            Kepuasan Klien
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Kepuasan klien adalah prioritas utama kami, dengan layanan personal
+            dan aftercare yang terjamin.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-8 mb-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Hubungi Kami
+      </h2>
+      <p class="mb-4 text-gray-700 dark:text-gray-300">
+        Tertarik dengan layanan kami? Jangan ragu untuk menghubungi tim Bosque
+        Properti:
+      </p>
+      <ul class="mb-6 text-gray-700 list-disc list-inside dark:text-gray-300">
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0813-2075-3957 (Edo)</span>
+        </li>
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0852-6565-1221 (Henci)</span>
+        </li>
+        <li class="flex items-center">
+          <Phone className="mr-2 h-4 w-4" />
+          <span>0857-7233-3068 (Sugi)</span>
+        </li>
+      </ul>
+      <p class="text-gray-700 dark:text-gray-300">
+        Jalan Boulevard Utara Podomoro Park Bandung, Ruko Neo Plaza Blok F no.06
+      </p>
+    </div>
+
+    <div class="text-center">
+      <Button
+        variant="default"
+        size="lg"
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        <a href="/contact">Konsultasi Gratis</a>
+      </Button>
+    </div>
+  </div>
+</div>
+<Footer01 />
