@@ -17,13 +17,13 @@ export async function getStaticPaths() {
     return [];
   }
 
-  return data.data.map((post: { id: number | string }) => ({
+  return data.data.map((post: { id: number | string; title: string }) => ({
     params: { slug: post.id.toString() },
-    props: { postId: post.id },
+    props: { postId: post.id, title: post.title },
   }));
 }
 
-const { postId } = Astro.props;
+const { postId, title } = Astro.props;
 ---
 
 <html lang="id">
@@ -33,7 +33,7 @@ const { postId } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Detail Artikel</title>
+    <title>{title}</title>
   </head>
   <body>
     <Header01 />

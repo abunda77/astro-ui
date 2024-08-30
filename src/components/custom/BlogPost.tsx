@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Loader, Placeholder } from "rsuite";
 import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface BlogPost {
   id: number;
@@ -92,25 +93,45 @@ const BlogPost: React.FC = () => {
               className="h-full transition-transform transform hover:scale-105 hover:border-blue-500 dark:bg-gray-300 dark:hover:bg-gray-100 dark:border-gray-100 dark:hover:border-blue-500"
             >
               <CardContent className="flex flex-col h-full p-6">
-                <img
-                  src={post.feature_image}
-                  alt={post.title}
-                  className="object-cover w-full h-40 mb-4 rounded-lg"
-                />
-                <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-700 hover:text-blue-500">
-                  <a href={`/blog/${post.id}`} className="hover:underline">
-                    {post.title}
+                {isLoading ? (
+                  <Skeleton className="w-full h-40 mb-4 rounded-lg" />
+                ) : (
+                  <img
+                    src={post.feature_image}
+                    alt={post.title}
+                    className="object-cover w-full h-40 mb-4 rounded-lg"
+                  />
+                )}
+                {isLoading ? (
+                  <Skeleton className="w-3/4 h-6 mb-2" />
+                ) : (
+                  <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-700 hover:text-blue-500">
+                    <a href={`/blog/${post.id}`} className="hover:underline">
+                      {post.title}
+                    </a>
+                  </h3>
+                )}
+                {isLoading ? (
+                  <>
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-3/4 h-4 mb-4" />
+                  </>
+                ) : (
+                  <p className="flex-grow mb-4 text-sm text-gray-600 dark:text-gray-400">
+                    {post.body.substring(0, 100)}...
+                  </p>
+                )}
+                {isLoading ? (
+                  <Skeleton className="w-1/3 h-4 mt-auto" />
+                ) : (
+                  <a
+                    href={`/blog/${post.id}`}
+                    className="mt-auto text-blue-500 hover:underline"
+                  >
+                    Baca selengkapnya
                   </a>
-                </h3>
-                <p className="flex-grow mb-4 text-sm text-gray-600 dark:text-gray-400">
-                  {post.body.substring(0, 100)}...
-                </p>
-                <a
-                  href={`/blog/${post.id}`}
-                  className="mt-auto text-blue-500 hover:underline"
-                >
-                  Baca selengkapnya
-                </a>
+                )}
               </CardContent>
             </Card>
           ))}
