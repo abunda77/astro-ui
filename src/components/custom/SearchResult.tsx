@@ -154,23 +154,23 @@ const SearchResult: React.FC = () => {
 
   return (
     <div className="container relative z-20 px-4 mx-auto sm:px-6 sm:-mt-[100px]">
-      <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg sm:max-w-2xl sm:p-6">
-        <h3 className="mb-3 text-lg font-semibold text-center text-gray-800 sm:text-3xl">
+      <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-800 sm:max-w-2xl sm:p-6">
+        <h3 className="mb-3 text-lg font-semibold text-center text-gray-800 dark:text-gray-200 sm:text-3xl">
           Cari Property Idaman Kamu
         </h3>
         <div className="relative flex flex-col sm:flex-row">
           <Tabs defaultValue="keyword" className="w-full">
-            <TabsList className="grid justify-center w-full grid-cols-2 border-b-2 border-gray-300 dark:bg-gray-300">
+            <TabsList className="grid justify-center w-full grid-cols-2 border-gray-800 border-1 dark:border-gray-100 dark:bg-gray-800">
               <TabsTrigger
                 value="keyword"
-                className="data-[state=active]:bg-green-200 dark:data-[state=active]:bg-orange-500"
+                className="data-[state=active]:bg-yellow-500 dark:data-[state=active]:bg-yellow-500"
               >
                 <ALargeSmall className="mr-1" />
                 Keyword
               </TabsTrigger>
               <TabsTrigger
                 value="location"
-                className="data-[state=active]:bg-green-200 dark:data-[state=active]:bg-orange-500"
+                className="data-[state=active]:bg-yellow-500 dark:data-[state=active]:bg-yellow-500"
               >
                 <LocateIcon className="mr-1" />
                 Location
@@ -197,7 +197,7 @@ const SearchResult: React.FC = () => {
           </Tabs>
           <div className="flex flex-col sm:mt-10 sm:flex-row sm:items-center">
             <Button
-              className="w-full px-4 py-2 text-sm font-medium text-gray-200 transition duration-300 bg-green-600 rounded-md dark:text-gray-100 dark:bg-green-700 sm:w-auto sm:rounded-l-none hover:bg-green-700 dark:hover:bg-green-600 sm:text-base sm:px-8 sm:py-3 sm:mt-2 sm:ml-2"
+              className="w-full px-4 py-2 text-sm font-medium text-gray-200 transition duration-300 bg-green-600 rounded-md dark:text-gray-100 dark:bg-green-500 sm:w-auto sm:rounded-l-none hover:bg-green-700 dark:hover:bg-green-600 sm:text-base sm:px-8 sm:py-3 sm:mt-2 sm:ml-2"
               onClick={handleSearch}
               disabled={loading}
             >
@@ -210,7 +210,7 @@ const SearchResult: React.FC = () => {
               )}
             </Button>
             <Button
-              className="w-full px-4 py-2 mt-2 text-sm font-medium text-gray-700 transition duration-300 border border-gray-700 rounded-md dark:text-gray-100 sm:w-auto sm:mt-2 sm:ml-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-500 sm:text-base"
+              className="w-full px-4 py-2 mt-2 text-sm font-medium text-gray-700 transition duration-300 border border-gray-700 rounded-md dark:border-gray-500 dark:text-gray-100 sm:w-auto sm:mt-2 sm:ml-2 bg-gray-50 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-500 sm:text-base"
               onClick={handleClear}
             >
               Clear

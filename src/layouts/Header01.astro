@@ -8,8 +8,16 @@ import LoginButtons from "@/components/custom/LoginButtons";
 import HeaderClientScript from "@/components/custom/HeaderClientScript";
 import HeaderMenu from "@/components/custom/HeaderMenu";
 import RunningText from "@/components/custom/RunningText";
+import { Navbar, Nav } from "rsuite";
+import "rsuite/dist/rsuite-no-reset.min.css";
 
-const menuitems = [
+type MenuItem = {
+  title?: string;
+  path?: string;
+  badge?: boolean;
+};
+
+const menuitems: MenuItem[] = [
   {
     title: "Home",
     path: "/",
@@ -17,21 +25,21 @@ const menuitems = [
   {
     title: "Type Properti",
     path: "#",
-    children: [
-      { title: "Apartement", path: "#" },
-      { title: "Kavling", path: "#" },
-      { title: "Gudang", path: "#" },
-      { title: "Office", path: "# " },
-    ],
+    // children: [
+    //   { title: "Apartement", path: "#" },
+    //   { title: "Kavling", path: "#" },
+    //   { title: "Gudang", path: "#" },
+    //   { title: "Office", path: "# " },
+    // ],
   },
   { title: "Layanan", path: "/layanan" },
   { title: "About", path: "/about" },
   { title: "Blog", path: "/blog" },
-  { title: "Contact", path: "/contact" },
+  { title: "Contact", badge: true, path: "/contact" },
   {
-    title: "PROMO MERDEKA",
-    badge: true,
-    path: "#",
+    // title: "PROMO MERDEKA",
+    // badge: true,
+    // path: "#",
   },
 ];
 ---
@@ -59,31 +67,20 @@ const menuitems = [
             <MenuItems class="hidden w-full mt-2 lg:w-auto lg:flex lg:mt-0">
               <ul class="flex flex-col lg:flex-row lg:gap-3">
                 {
-                  menuitems.map((item, index) => (
-                    <>
-                      {item.children && (
-                        <Dropdown
-                          title={item.title}
-                          children={item.children}
-                          lastItem={index === menuitems.length - 1}
-                        />
-                      )}
-                      {!item.children && (
-                        <li>
-                          <a
-                            href={item.path}
-                            class="px-3 py-2 text-sm font-medium text-gray-800 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
-                          >
-                            <span>{item.title}</span>
-                            {item.badge && (
-                              <span class="ml-1 px-2 py-0.5 text-[10px] animate-pulse font-semibold uppercase text-white bg-indigo-600 rounded-full">
-                                New
-                              </span>
-                            )}
-                          </a>
-                        </li>
-                      )}
-                    </>
+                  menuitems.map((item) => (
+                    <li>
+                      <a
+                        href={item.path}
+                        class="px-3 py-2 text-sm font-medium text-gray-800 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+                      >
+                        <span>{item.title}</span>
+                        {item.badge && (
+                          <span class="ml-1 px-2 py-0.5 text-[10px] animate-pulse font-semibold uppercase text-white bg-indigo-600 rounded-full">
+                            New
+                          </span>
+                        )}
+                      </a>
+                    </li>
                   ))
                 }
               </ul>
@@ -106,7 +103,7 @@ const menuitems = [
         </div>
       </div>
       {/* Mobile menu */}
-      <HeaderMenu client:load menuitems={menuitems} />
+      <HeaderMenu client:load menuitems={menuitems as any} />
     </div>
   </div>
 </header>

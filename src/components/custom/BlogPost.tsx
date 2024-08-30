@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
+import { Loader, Placeholder } from "rsuite";
+import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
+import "rsuite/dist/rsuite-no-reset.min.css";
 
 interface BlogPost {
   id: number;
@@ -52,7 +55,11 @@ const BlogPost: React.FC = () => {
     fetchPosts();
   }, []);
   if (isLoading) {
-    return <div className="text-center">Memuat data...</div>;
+    return (
+      <div className="h-[600px] bg-[#94918d]">
+        <Loader size="lg" inverse center content="loading..." />
+      </div>
+    );
   }
 
   if (error) {
@@ -113,7 +120,6 @@ const BlogPost: React.FC = () => {
           <div className="mt-8 text-center">
             <Button
               onClick={loadMorePosts}
-              variant="outline"
               className="px-6 py-3 text-sm text-gray-600 bg-gray-300 rounded-md hover:underline dark:bg-gray-900 dark:text-gray-400"
             >
               Muat lebih banyak...
