@@ -1,0 +1,76 @@
+---
+import "@/styles/globals.css";
+import { Button } from "@/components/ui/button";
+import Layout from "@/layouts/Layout03.astro";
+import Footer01 from "@/layouts/Footer01.astro";
+---
+
+<Layout title="Kebijakan Privasi" />
+
+<div
+  class="min-h-screen px-4 py-12 bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 sm:px-6 lg:px-8"
+>
+  <div class="max-w-4xl mx-auto">
+    <h1
+      class="mb-8 text-4xl font-bold text-center text-blue-800 dark:text-blue-300"
+    >
+      Kebijakan Privasi
+    </h1>
+
+    <div class="p-8 mb-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Komitmen Kami Terhadap Privasi Anda
+      </h2>
+      <p class="mb-6 text-lg text-gray-700 dark:text-gray-300">
+        Di Bosque Properti, kami menghargai privasi Anda dan berkomitmen untuk
+        melindungi informasi pribadi Anda. Kebijakan privasi ini menjelaskan
+        bagaimana kami mengumpulkan, menggunakan, dan melindungi data Anda.
+      </p>
+
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Informasi yang Kami Kumpulkan
+      </h2>
+      <p class="mb-6 text-gray-700 dark:text-gray-300">
+        Kami hanya mengumpulkan informasi yang diperlukan untuk memberikan
+        layanan terbaik kepada Anda. Ini mungkin termasuk nama, alamat email,
+        nomor telepon, dan preferensi properti Anda.
+      </p>
+    </div>
+
+    <div class="p-8 mb-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Penggunaan Informasi
+      </h2>
+      <p class="mb-6 text-gray-700 dark:text-gray-300">
+        Informasi yang Anda berikan digunakan untuk:
+      </p>
+      <ul class="mb-6 text-gray-700 list-disc list-inside dark:text-gray-300">
+        <li>Memberikan layanan properti yang Anda minta</li>
+        <li>Mengirimkan pembaruan tentang properti yang mungkin Anda minati</li>
+        <li>Meningkatkan layanan kami</li>
+        <li>Mematuhi kewajiban hukum</li>
+      </ul>
+    </div>
+
+    <div class="p-8 mb-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+      <h2 class="mb-4 text-2xl font-semibold text-blue-700 dark:text-blue-400">
+        Keamanan Data
+      </h2>
+      <p class="mb-6 text-gray-700 dark:text-gray-300">
+        Kami mengimplementasikan langkah-langkah keamanan yang ketat untuk
+        melindungi informasi Anda dari akses yang tidak sah atau pengungkapan.
+      </p>
+    </div>
+
+    <div class="text-center">
+      <Button
+        variant="default"
+        size="lg"
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        <a href="/contact">Hubungi Kami untuk Informasi Lebih Lanjut</a>
+      </Button>
+    </div>
+  </div>
+</div>
+<Footer01 />

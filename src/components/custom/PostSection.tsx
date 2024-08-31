@@ -19,6 +19,7 @@ import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAni
 import { CloseIcon } from "@/components/custom/CloseIcon";
 import { Loader, Placeholder } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
+import { MapPin, Banknote } from "lucide-react";
 
 interface Property {
   id: number;
@@ -321,13 +322,13 @@ const PostSection: React.FC = () => {
               layoutId={`card-${property.title}-${id}`}
               key={property.title}
               onClick={() => setActive(property)}
-              className="flex flex-col p-4 transition-transform transform shadow-lg cursor-pointer bg-gray-50 hover:bg-gray-200 dark:bg-gray-300 dark:hover:bg-gray-100 rounded-xl hover:scale-105 hover:border-blue-500"
+              className="flex flex-col p-4 transition-transform transform shadow-lg cursor-pointer bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-600 rounded-xl hover:scale-105 hover:border-blue-500"
             >
               <div className="flex flex-col w-full gap-4">
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-start justify-center">
                   <motion.div
                     layoutId={`image-${property.title}-${id}`}
-                    className="relative"
+                    className="relative w-full"
                   >
                     <img
                       src={getImageUrl(property)}
@@ -351,15 +352,29 @@ const PostSection: React.FC = () => {
                   </motion.div>
                   <motion.h3
                     layoutId={`title-${property.title}-${id}`}
-                    className="mt-4 text-base text-center text-gray-800 dark:text-gray-600 md:text-left"
+                    className="mt-4 text-lg font-semibold text-left text-gray-800 transition-colors duration-300 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400"
                   >
                     {property.title}
                   </motion.h3>
                   <motion.p
                     layoutId={`description-${property.short_desc}-${id}`}
-                    className="mt-2 text-sm text-center text-neutral-600 dark:text-gray-600 md:text-left"
+                    className="mt-2 text-sm text-left transition-all duration-300 text-neutral-600 dark:text-gray-400 line-clamp-2 hover:line-clamp-none"
                   >
                     {property.short_desc}
+                  </motion.p>
+                  <motion.p
+                    layoutId={`description-${property.price}-${id}`}
+                    className="mt-2 text-base font-bold text-left text-gray-600 dark:text-gray-400"
+                  >
+                    <Banknote className="inline-block w-4 h-4 mr-1 text-green-600 dark:text-green-400" />
+                    {`Rp ${property.price.toLocaleString("id-ID")}`}
+                  </motion.p>
+                  <motion.p
+                    layoutId={`description-${property.district.name}-${id}`}
+                    className="py-1 mt-2 text-xs font-semibold text-left rounded-full text-neutral-500 dark:text-gray-400 "
+                  >
+                    <MapPin className="inline-block w-4 h-4 mr-1 text-green-600 dark:text-green-400" />
+                    {property.district.name}
                   </motion.p>
                 </div>
               </div>
