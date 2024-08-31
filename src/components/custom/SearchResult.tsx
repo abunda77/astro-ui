@@ -9,6 +9,7 @@ import { AlertCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { SearchIcon, ALargeSmall, LocateIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Highlight } from "rsuite";
 
 interface Property {
   id: number;
@@ -156,7 +157,19 @@ const SearchResult: React.FC = () => {
     <div className="container relative z-20 px-4 mx-auto sm:px-6 sm:-mt-[100px]">
       <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-800 sm:max-w-2xl sm:p-6">
         <h3 className="mb-3 text-lg font-semibold text-center text-gray-800 dark:text-gray-200 sm:text-3xl">
-          Cari Property Idaman Kamu
+          <Highlight
+            query={["Idaman Kamu"]}
+            renderMark={(match, index) => (
+              <mark
+                key={index}
+                className="text-gray-800 bg-yellow-200 dark:bg-gray-100 dark:text-red-700"
+              >
+                {match}
+              </mark>
+            )}
+          >
+            Cari Property Idaman Kamu
+          </Highlight>
         </h3>
         <div className="relative flex flex-col sm:flex-row">
           <Tabs defaultValue="keyword" className="w-full">
@@ -234,7 +247,7 @@ const SearchResult: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="mt-2 text-xs text-center text-gray-600 sm:text-sm">
+        <div className="mt-2 text-xs text-center text-gray-600 dark:text-gray-200 sm:text-sm">
           Popular: Apartemen, Rumah, Villa, Tanah
         </div>
       </div>

@@ -23,6 +23,8 @@ import { Label } from "@/components/ui/label";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
+import { Loader } from "rsuite";
+import "rsuite/dist/rsuite-no-reset.min.css";
 
 const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 // const AUTH_LOGIN_ENDPOINT = import.meta.env.PUBLIC_AUTH_LOGIN_ENDPOINT;
@@ -155,11 +157,15 @@ const LoginForm: React.FC<{
   };
 
   const plugin = React.useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true })
+    Autoplay({ delay: 1000, stopOnInteraction: true })
   );
 
   if (isPageLoading) {
-    return <AttractiveLoadingAnimation />;
+    return (
+      <div className="h-screen bg-[#94918d]">
+        <Loader size="lg" inverse center content="loading..." />
+      </div>
+    );
   }
 
   return (

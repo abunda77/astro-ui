@@ -24,6 +24,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
+import { Loader, Placeholder } from "rsuite";
+import "rsuite/dist/rsuite-no-reset.min.css";
 
 const PEXELS_API_KEY = import.meta.env.PUBLIC_PEXELS_API_KEY;
 const PEXELS_QUERY = ["real estate"][Math.floor(Math.random() * 3)];
@@ -122,7 +124,11 @@ const RegisterForm: React.FC = () => {
   );
 
   if (isPageLoading) {
-    return <AttractiveLoadingAnimation />;
+    return (
+      <div className="h-screen bg-[#94918d]">
+        <Loader size="lg" inverse center content="loading..." />
+      </div>
+    );
   }
 
   return (
