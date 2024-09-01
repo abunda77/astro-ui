@@ -2,11 +2,12 @@
 import { TypewriterEffectSmoothDemo } from "@/components/custom/HeroSection";
 import { BorderBeam } from "@/components/magicui/border-beam.tsx";
 import SearchResult from "@/components/custom/SearchResult.tsx";
+import RunningText from "@/components/custom/RunningText";
 const { title } = Astro.props;
 ---
 
 {/* Hero Section */}
-
+<RunningText client:load />
 <div class="relative py-20 overflow-hidden hero-background">
   <BorderBeam />
   <div class="container relative z-10 px-6 mx-auto">

@@ -16,7 +16,15 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Loader, Placeholder } from "rsuite";
-import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
+import {
+  Button,
+  ButtonGroup,
+  ButtonToolbar,
+  Carousel,
+  RadioGroup,
+  Radio,
+  Divider,
+} from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 
 interface Property {
@@ -179,9 +187,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
         </Button>
       </div>
 
-      <div className="flex flex-col max-w-6xl mx-auto overflow-hidden rounded">
-        {/* <div className="flex flex-col items-center justify-center max-w-6xl mx-auto overflow-hidden border rounded-lg bg-background md:shadow-xl"> */}
-        {/* <div className="flex flex-col items-center justify-center max-w-6xl p-20 mx-auto overflow-hidden border rounded-lg bg-background md:shadow-xl"> */}
+      <div className="flex flex-col max-w-3xl mx-auto overflow-hidden rounded">
         <DotPattern
           width={20}
           height={20}
@@ -193,239 +199,206 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
           )}
         />
 
-        <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-2/4">
+        <div className="w-full ">
+          <Carousel autoplay className="custom-slider">
             {getAllImage(property).map((imageUrl, index) => (
-              <div className="mb-16">
-                <div className="hidden md:block">
-                  <HoverCard key={index}>
-                    <HoverCardTrigger>
-                      <AspectRatio ratio={16 / 9}>
-                        <img
-                          src={imageUrl}
-                          alt={renderValue(property.title) || "Property Image"}
-                          className="object-cover my-4 bg-gray-500 rounded-md dark:bg-gray-500"
-                        />
-                      </AspectRatio>
-                    </HoverCardTrigger>
-
-                    <HoverCardContent className="w-108">
-                      <img
-                        src={imageUrl}
-                        alt={renderValue(property.title) || "Property Image"}
-                      />
-                    </HoverCardContent>
-                  </HoverCard>
-                </div>
-                <div className="block md:hidden">
-                  <AspectRatio ratio={16 / 9}>
-                    <img
-                      src={imageUrl}
-                      alt={renderValue(property.title) || "Property Image"}
-                      className="object-cover my-4 bg-gray-500 rounded-md dark:bg-gray-500"
-                    />
-                  </AspectRatio>
-                </div>
-              </div>
+              <AspectRatio key={index} ratio={16 / 9}>
+                <img
+                  src={imageUrl}
+                  alt={renderValue(property.title) || "Property Image"}
+                  className="object-cover my-4 bg-gray-500 rounded-md dark:bg-gray-500"
+                />
+              </AspectRatio>
             ))}
+          </Carousel>
+        </div>
+
+        <div className="flex flex-col justify-center flex-grow w-full p-6 pt-12 pb-12 m-4 mx-auto space-y-6 bg-gray-900 lg:max-w-2xl sm:px-10 sm:mx-12 lg:rounded-md dark:bg-gray-50">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold sm:text-3xl">
+                {renderValue(property.title)}
+              </h1>
+              <p className="text-xs text-gray-400 dark:text-gray-600">
+                By
+                <span className="text-xs hover:underline">
+                  {renderValue(property.user?.name) || "Unknown User"}
+                </span>
+              </p>
+            </div>
+            <Avatar className="w-32 h-32 mb-4">
+              <AvatarImage
+                src={
+                  property.user?.profile?.avatar
+                    ? `${homedomain}/storage/${property.user.profile.avatar}`
+                    : "images/avatar-fallback.gif"
+                }
+                alt={renderValue(property.user.name)}
+              />
+              <AvatarFallback>{property.user.name.charAt(0)}</AvatarFallback>
+            </Avatar>
           </div>
 
-          <div className="flex flex-col justify-center flex-grow w-full p-6 pt-12 pb-12 m-4 mx-auto space-y-6 bg-gray-900 lg:max-w-2xl sm:px-10 sm:mx-12 lg:rounded-md dark:bg-gray-50">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-semibold sm:text-3xl">
-                  {renderValue(property.title)}
-                </h1>
-                <p className="text-xs text-gray-400 dark:text-gray-600">
-                  By
-                  <span className="text-xs hover:underline">
-                    {renderValue(property.user?.name) || "Unknown User"}
-                  </span>
-                </p>
-              </div>
-              <Avatar className="w-32 h-32 mb-4">
-                <AvatarImage
-                  src={
-                    property.user?.profile?.avatar
-                      ? `${homedomain}/storage/${property.user.profile.avatar}`
-                      : "images/avatar-fallback.gif"
-                  }
-                  alt={renderValue(property.user.name)}
-                />
-                <AvatarFallback>{property.user.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-            </div>
+          <div className="text-gray-100 dark:text-gray-800">
+            <p>{renderValue(property.short_desc)}</p>
+            <p className="mt-4 font-bold">
+              Harga: Rp {renderValue(property.price)?.toLocaleString() || "N/A"}
+            </p>
+            <p>Address: {renderValue(property.address) || "N/A"}</p>
+            <p>
+              Location:{" "}
+              {property.province && property.district && property.city
+                ? `${property.province.name}, ${property.district.name}, ${property.city.name}`
+                : "N/A"}
+            </p>
+          </div>
 
-            <div className="text-gray-100 dark:text-gray-800">
-              <p>{renderValue(property.short_desc)}</p>
-              <p className="mt-4 font-bold">
-                Harga: Rp{" "}
-                {renderValue(property.price)?.toLocaleString() || "N/A"}
-              </p>
-              <p>Address: {renderValue(property.address) || "N/A"}</p>
-              <p>
-                Location:{" "}
-                {property.province && property.district && property.city
-                  ? `${property.province.name}, ${property.district.name}, ${property.city.name}`
-                  : "N/A"}
-              </p>
-            </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold">Specifications</h2>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Specifications</AccordionTrigger>
+                <AccordionContent>
+                  <ul>
+                    {property.specification ? (
+                      <>
+                        <li>
+                          Carport:{" "}
+                          {renderValue(property.specification.carport) || "N/A"}
+                        </li>
+                        <li>
+                          Dining Room:{" "}
+                          {renderValue(property.specification.dining_room) ||
+                            "N/A"}
+                        </li>
+                        <li>
+                          Living Room:{" "}
+                          {renderValue(property.specification.living_room) ||
+                            "N/A"}
+                        </li>
+                        <li>
+                          Land Size:{" "}
+                          {renderValue(property.specification.land_size) ||
+                            "N/A"}{" "}
+                          m²
+                        </li>
+                        <li>
+                          Building Size:{" "}
+                          {renderValue(property.specification.building_size) ||
+                            "N/A"}{" "}
+                          m²
+                        </li>
+                        <li>
+                          Bedrooms:{" "}
+                          {renderValue(property.specification.bedroom) || "N/A"}
+                        </li>
+                        <li>
+                          Bathrooms:{" "}
+                          {renderValue(property.specification.bathroom) ||
+                            "N/A"}
+                        </li>
+                        <li>
+                          Floors:{" "}
+                          {renderValue(property.specification.floors) || "N/A"}
+                        </li>
+                      </>
+                    ) : (
+                      <li>No specifications available</li>
+                    )}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
 
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">Specifications</h2>
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>Specifications</AccordionTrigger>
-                  <AccordionContent>
-                    <ul>
-                      {property.specification ? (
-                        <>
-                          <li>
-                            Carport:{" "}
-                            {renderValue(property.specification.carport) ||
-                              "N/A"}
-                          </li>
-                          <li>
-                            Dining Room:{" "}
-                            {renderValue(property.specification.dining_room) ||
-                              "N/A"}
-                          </li>
-                          <li>
-                            Living Room:{" "}
-                            {renderValue(property.specification.living_room) ||
-                              "N/A"}
-                          </li>
-                          <li>
-                            Land Size:{" "}
-                            {renderValue(property.specification.land_size) ||
-                              "N/A"}{" "}
-                            m²
-                          </li>
-                          <li>
-                            Building Size:{" "}
-                            {renderValue(
-                              property.specification.building_size
-                            ) || "N/A"}{" "}
-                            m²
-                          </li>
-                          <li>
-                            Bedrooms:{" "}
-                            {renderValue(property.specification.bedroom) ||
-                              "N/A"}
-                          </li>
-                          <li>
-                            Bathrooms:{" "}
-                            {renderValue(property.specification.bathroom) ||
-                              "N/A"}
-                          </li>
-                          <li>
-                            Floors:{" "}
-                            {renderValue(property.specification.floors) ||
-                              "N/A"}
-                          </li>
-                        </>
-                      ) : (
-                        <li>No specifications available</li>
-                      )}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold">Facilities</h2>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Facilities</AccordionTrigger>
+                <AccordionContent>
+                  <ul>
+                    {property.facility ? (
+                      <>
+                        <li>
+                          Line Phone:{" "}
+                          {renderValue(property.facility.line_phone) || "N/A"}
+                        </li>
+                        <li>
+                          Road Width:{" "}
+                          {renderValue(property.facility.road_width) || "N/A"} m
+                        </li>
+                        <li>
+                          Hook: {renderValue(property.facility.hook) || "N/A"}
+                        </li>
+                        <li>
+                          Condition:{" "}
+                          {renderValue(property.facility.condition) || "N/A"}
+                        </li>
+                        <li>
+                          Security:{" "}
+                          {renderValue(property.facility.security) || "N/A"}
+                        </li>
+                        <li>
+                          Wastafel:{" "}
+                          {renderValue(property.facility.wastafel) || "N/A"}
+                        </li>
+                        <li>
+                          Certificate:{" "}
+                          {renderValue(property.facility.certificate) || "N/A"}
+                        </li>
+                        <li>
+                          Electricity:{" "}
+                          {renderValue(property.facility.electricity) || "N/A"}{" "}
+                          VA
+                        </li>
+                        <li>
+                          Internet:{" "}
+                          {renderValue(property.facility.internet) || "N/A"}
+                        </li>
+                        <li>
+                          Water Source:{" "}
+                          {renderValue(property.facility.water_source) || "N/A"}
+                        </li>
+                      </>
+                    ) : (
+                      <li>No facilities available</li>
+                    )}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
 
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">Facilities</h2>
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>Facilities</AccordionTrigger>
-                  <AccordionContent>
-                    <ul>
-                      {property.facility ? (
-                        <>
-                          <li>
-                            Line Phone:{" "}
-                            {renderValue(property.facility.line_phone) || "N/A"}
-                          </li>
-                          <li>
-                            Road Width:{" "}
-                            {renderValue(property.facility.road_width) || "N/A"}{" "}
-                            m
-                          </li>
-                          <li>
-                            Hook: {renderValue(property.facility.hook) || "N/A"}
-                          </li>
-                          <li>
-                            Condition:{" "}
-                            {renderValue(property.facility.condition) || "N/A"}
-                          </li>
-                          <li>
-                            Security:{" "}
-                            {renderValue(property.facility.security) || "N/A"}
-                          </li>
-                          <li>
-                            Wastafel:{" "}
-                            {renderValue(property.facility.wastafel) || "N/A"}
-                          </li>
-                          <li>
-                            Certificate:{" "}
-                            {renderValue(property.facility.certificate) ||
-                              "N/A"}
-                          </li>
-                          <li>
-                            Electricity:{" "}
-                            {renderValue(property.facility.electricity) ||
-                              "N/A"}{" "}
-                            VA
-                          </li>
-                          <li>
-                            Internet:{" "}
-                            {renderValue(property.facility.internet) || "N/A"}
-                          </li>
-                          <li>
-                            Water Source:{" "}
-                            {renderValue(property.facility.water_source) ||
-                              "N/A"}
-                          </li>
-                        </>
-                      ) : (
-                        <li>No facilities available</li>
-                      )}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
+          <div>
+            <h2 className="mb-2 text-xl font-semibold">Description</h2>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="description">
+                <AccordionTrigger>Description</AccordionTrigger>
+                <AccordionContent>
+                  <p>
+                    {renderValue(property.description) ||
+                      "No description available"}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
 
-            <div>
-              <h2 className="mb-2 text-xl font-semibold">Description</h2>
-              <Accordion type="single" collapsible>
-                <AccordionItem value="description">
-                  <AccordionTrigger>Description</AccordionTrigger>
-                  <AccordionContent>
-                    <p>
-                      {renderValue(property.description) ||
-                        "No description available"}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-
-            <div>
-              <h2 className="mb-2 text-xl font-semibold">Map</h2>
-              {property.coordinates ? (
-                <iframe
-                  width="100%"
-                  height="450"
-                  frameBorder="0"
-                  style={{ border: 0 }}
-                  src={`https://www.google.com/maps?q=${property.coordinates}&output=embed`}
-                  allowFullScreen
-                ></iframe>
-              ) : (
-                <p>No coordinates available</p>
-              )}
-            </div>
+          <div>
+            <h2 className="mb-2 text-xl font-semibold">Map</h2>
+            {property.coordinates ? (
+              <iframe
+                width="100%"
+                height="450"
+                frameBorder="0"
+                style={{ border: 0 }}
+                src={`https://www.google.com/maps?q=${property.coordinates}&output=embed`}
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <p>No coordinates available</p>
+            )}
           </div>
         </div>
       </div>
