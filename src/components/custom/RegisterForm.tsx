@@ -32,6 +32,14 @@ const PEXELS_QUERY = ["real estate"][Math.floor(Math.random() * 3)];
 
 const client = createClient(PEXELS_API_KEY);
 const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
+
+// Fungsi untuk mode maintenance
+const isMaintenanceMode = () => {
+  // Logika untuk menentukan apakah dalam mode maintenance
+  // Misalnya, bisa menggunakan variabel lingkungan atau kondisi tertentu
+  return true; // Ganti menjadi true untuk mengaktifkan mode maintenance
+};
+
 const RegisterForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ name: "", password: "" });
@@ -127,6 +135,25 @@ const RegisterForm: React.FC = () => {
     return (
       <div className="h-screen bg-[#94918d]">
         <Loader size="lg" inverse center content="loading..." />
+      </div>
+    );
+  }
+
+  if (isMaintenanceMode()) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+        <div className="p-8 text-center bg-white rounded-lg shadow-xl">
+          <h1 className="mb-4 text-4xl font-bold text-gray-800">Coming Soon</h1>
+          <p className="mb-6 text-xl text-gray-600">
+            We're working on something awesome. Please check back later!
+          </p>
+          <Button
+            onClick={() => (window.location.href = "/")}
+            className="px-6 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          >
+            Kembali ke Beranda
+          </Button>
+        </div>
       </div>
     );
   }
