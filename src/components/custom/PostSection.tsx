@@ -19,7 +19,7 @@ import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAni
 import { CloseIcon } from "@/components/custom/CloseIcon";
 import { Loader, Placeholder } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
-import { MapPin, Banknote } from "lucide-react";
+import { MapPin, Banknote, House } from "lucide-react";
 
 interface Property {
   id: number;
@@ -30,9 +30,23 @@ interface Property {
   district: { name: string };
   category_id: number;
   city: { name: string };
-  user: { name: string };
   images: { image_url: string; is_primary: boolean }[];
   created_at: string;
+  ads: string;
+  status: string;
+  user: {
+    profile: {
+      first_name: string;
+      last_name: string;
+      phone: string;
+      email: string;
+      whatsapp: string | null;
+      company_name: string;
+      avatar: string;
+      biodata_company: string | null;
+      jobdesk: string | null;
+    };
+  };
 }
 
 interface PropertyResponse {
@@ -198,6 +212,7 @@ const PostSection: React.FC = () => {
         <AnimatePresence>
           {active && typeof active === "object" ? (
             <div className="fixed inset-0 grid place-items-center z-[100]">
+              {/* --- Button Close --- */}
               <motion.button
                 key={`button-${active.title}-${id}`}
                 layout
@@ -213,16 +228,18 @@ const PostSection: React.FC = () => {
                     duration: 0.05,
                   },
                 }}
-                className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-500 rounded-full z-[101]"
+                className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-500 rounded-full z-[102]"
                 onClick={() => setActive(null)}
               >
                 <CloseIcon />
               </motion.button>
+
               <motion.div
                 layoutId={`card-${active.title}-${id}`}
                 ref={ref}
                 className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-green-100 dark:bg-neutral-900 sm:rounded-3xl overflow-hidden "
               >
+                {/* --- Image --- */}
                 <motion.div
                   layoutId={`image-${active.title}-${id}`}
                   className="relative"
@@ -232,22 +249,37 @@ const PostSection: React.FC = () => {
                     alt={active.title}
                     className="object-cover object-top w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg"
                   />
-                  {
-                    categories.find(
-                      (category) => category.key === active.category_id
-                    )?.value
-                  }
+
+                  {/* --- Category --- */}
+                  <Badge
+                    className={
+                      active.ads === "sell"
+                        ? "bg-red-500"
+                        : active.ads === "rent"
+                          ? "bg-blue-500"
+                          : ""
+                    }
+                  >
+                    {active.ads === "sell"
+                      ? "Dijual"
+                      : active.ads === "rent"
+                        ? "Disewakan"
+                        : active.ads}
+                  </Badge>
                 </motion.div>
 
                 <div>
                   <div className="flex items-start justify-between p-4">
                     <div className="">
+                      {/* --Title ---*/}
                       <motion.h3
                         layoutId={`title-${active.title}-${id}`}
                         className="text-base font-medium text-neutral-700 dark:text-neutral-200"
                       >
                         {active.title}
                       </motion.h3>
+
+                      {/* ---Shor Desc --- */}
                       <motion.p
                         layoutId={`description-${active.short_desc}-${id}`}
                         className="text-base text-neutral-600 dark:text-neutral-400"
@@ -256,6 +288,7 @@ const PostSection: React.FC = () => {
                       </motion.p>
                     </div>
 
+                    {/* --- Button Detail ---*/}
                     <motion.div
                       layout
                       initial={{ opacity: 0 }}
@@ -292,20 +325,56 @@ const PostSection: React.FC = () => {
                       exit={{ opacity: 0 }}
                       className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                     >
-                      <p> Created at : {active.created_at}</p>
-                      <span className="text-xs text-gray-600 dark:text-gray-400">
+                      <div className="text-xs">
+                        <p>
+                          Diiklankan tanggal :{" "}
+                          <strong>
+                            {new Date(active.created_at).toLocaleDateString(
+                              "id-ID",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )}
+                          </strong>
+                        </p>
+                        <p>
+                          Diposting oleh:{" "}
+                          <strong>
+                            {active.user.profile.first_name}{" "}
+                            {active.user.profile.last_name}
+                          </strong>
+                        </p>
+                        <p>
+                          Developer:{" "}
+                          <strong>{active.user.profile.company_name}</strong>
+                        </p>
+                      </div>
+                      <span className="flex items-center text-xs font-bold text-gray-600 dark:text-gray-400">
+                        <MapPin className="w-4 h-4 mr-1" />
                         {`${active.province.name}, ${active.district.name}, ${active.city.name}`}
                       </span>
-                      <p>Post by: {active.user.name}</p>
-                      <p>
-                        Category:{" "}
-                        {
-                          categories.find(
-                            (category) => category.key === active.category_id
-                          )?.value
-                        }
+
+                      <p className="flex items-center">
+                        <House className="w-4 h-4 mr-1" />
+                        {"   "}
+                        <Badge
+                          className={
+                            categories.find(
+                              (category) => category.key === active.category_id
+                            )?.badgeColor
+                          }
+                        >
+                          {
+                            categories.find(
+                              (category) => category.key === active.category_id
+                            )?.value
+                          }
+                        </Badge>
                       </p>
-                      <p className="font-bold">
+                      <p className="flex items-center font-bold">
+                        <Banknote className="w-4 h-4 mr-1" />
                         Price: Rp {active.price.toLocaleString()}
                       </p>
                     </motion.div>

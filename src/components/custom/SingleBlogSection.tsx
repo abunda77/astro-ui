@@ -10,6 +10,7 @@ interface BlogPost {
   title: string;
   body: string;
   feature_image: string;
+  created_at: string;
 }
 
 interface SingleBlogSectionProps {
@@ -61,33 +62,39 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
   }
 
   return (
-    <section className="py-8 bg-gradient-to-t from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
-      <div className="max-w-4xl p-5 mx-auto text-gray-100 bg-gray-200 sm:p-10 md:p-16 dark:bg-gray-600 dark:text-gray-800">
-        <div className="flex justify-start mb-6">
+    <section className="py-12 bg-gradient-to-t from-blue-200 via-blue-100 to-white dark:from-gray-800 dark:via-gray-700 dark:to-gray-600">
+      <div className="max-w-4xl p-8 mx-auto text-gray-900 bg-white rounded-lg shadow-lg sm:p-12 md:p-20 dark:bg-gray-700 dark:text-gray-200">
+        <div className="flex justify-start mb-8">
           <a
-            href="/"
-            className="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+            href="/blog"
+            className="px-6 py-3 text-sm font-bold text-white bg-blue-600 rounded-full hover:bg-blue-800"
           >
             Kembali ke Blog
           </a>
         </div>
-        <div className="flex items-center justify-center mb-6">
-          <AspectRatio ratio={4 / 3} className="w-full max-w-3xl">
+        <div className="flex justify-center">
+          <AspectRatio ratio={16 / 9} className="w-full max-w-7xl">
             <img
               src={post.feature_image}
               alt={post.title}
-              className="object-cover rounded-lg"
+              className="object-cover rounded-lg shadow-md"
             />
           </AspectRatio>
         </div>
-
-        <h1 className="mt-16 mb-6 text-3xl font-bold text-center text-gray-800 dark:text-gray-200">
+        <h1 className="mt-24 mb-8 text-4xl font-extrabold text-center text-gray-900 dark:text-gray-100">
           {post.title}
         </h1>
+        <p className="mt-2 mb-16 text-center text-gray-600 dark:text-gray-400">
+          {new Date(post.created_at).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
 
         <div className="prose prose-lg dark:prose-invert">
           {post.body.split("\n\n").map((paragraph, index) => (
-            <p key={index} className="mb-4 text-gray-700 dark:text-gray-300">
+            <p key={index} className="mb-6 text-gray-800 dark:text-gray-300">
               {paragraph}
             </p>
           ))}
