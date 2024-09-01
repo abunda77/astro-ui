@@ -1,10 +1,12 @@
+import { mtConfig } from "@material-tailwind/react";
 /** @type {import('tailwindcss').Config} */
 export default {
 	darkMode: ["class"],
 	content: [ './pages/**/*.{ts,tsx}',
 		'./components/**/*.{ts,tsx}',
 		'./app/**/*.{ts,tsx}',
-		'./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+		'./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+	"./node_modules/@material-tailwind/react/**/*.{js,ts,jsx,tsx}"],
 		prefix: "",
 		theme: {
 		  container: {
@@ -67,5 +69,5 @@ export default {
 			},
 		  },
 		},
-		plugins: [require("tailwindcss-animate")],
+		plugins: [require("tailwindcss-animate"), mtConfig()],
 }

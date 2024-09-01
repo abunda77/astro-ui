@@ -1,12 +1,8 @@
 ---
 import * as React from "react";
 import "@/styles/globals.css";
-import Layout01 from "@/layouts/Hero.astro";
 
-
+import { ButtonDefault } from "@/components/custom/ButtonMaterial";
 ---
 
-
-<Layout01 title="Welcome to Astro." />
-  
-
+<ButtonDefault client:load>Klik saya</ButtonDefault>
