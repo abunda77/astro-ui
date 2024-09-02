@@ -192,7 +192,7 @@ const PostSection: React.FC = () => {
   }
 
   return (
-    <section className="text-gray-800 bg-gradient-to-b from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
+    <section className="text-gray-800 bg-gradient-to-b from-white via-blue-50 to-blue-100 dark:from-white dark:via-gray-50 dark:to-gray-300">
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold">Property Listings</h2>
@@ -208,7 +208,7 @@ const PostSection: React.FC = () => {
               //   onValueChange={(value) => setSelectedCategory(Number(value))}
               onValueChange={handleCategoryChange}
             >
-              <SelectTrigger className="w-[180px] dark:bg-slate-900 dark:text-gray-200">
+              <SelectTrigger className="w-[180px] dark:bg-slate-700 dark:text-gray-200 hover:bg-gray-200">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
@@ -220,7 +220,7 @@ const PostSection: React.FC = () => {
                     <SelectItem
                       key={category.key}
                       value={category.key.toString()}
-                      className="dark:text-gray-200"
+                      className=" dark:text-gray-200 hover:bg-gray-200"
                     >
                       {category.value}
                     </SelectItem>
@@ -258,9 +258,9 @@ const PostSection: React.FC = () => {
                   <Typography type="h6" className="mb-2 text-foreground">
                     {property.title}
                   </Typography>
-                  <Typography className="mb-1 text-foreground">
+                  {/* <Typography className="mb-1 text-foreground">
                     {property.short_desc}
-                  </Typography>
+                  </Typography> */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <MapPin className="w-4 h-4 mr-1 text-green-600 dark:text-green-100" />
@@ -276,7 +276,14 @@ const PostSection: React.FC = () => {
                       variant="body2"
                       className="text-xs text-foreground"
                     >
-                      {new Date(property.created_at).toLocaleDateString()}
+                      {new Date(property.created_at).toLocaleDateString(
+                        "id-ID",
+                        {
+                          year: "numeric",
+                          month: "numeric",
+                          day: "numeric",
+                        }
+                      )}
                     </Typography>
                   </div>
                   <div className="flex items-center justify-between mt-4">
@@ -377,7 +384,7 @@ const PostSection: React.FC = () => {
               </a>
               <Card.Footer className="pt-3">
                 <Button
-                  className="text-gray-800 border border-green-600 bg-gray-50 dark:bg-green-500 dark:bg-green-700 dark:text-gray-100 hover:bg-green-200"
+                  className="text-gray-800 bg-green-100 border border-green-600 dark:bg-green-700 hover:dark:bg-green-500 dark:text-gray-100 hover:bg-green-200"
                   isFullWidth
                   onClick={() =>
                     (window.location.href = `/post/${property.id}`)
@@ -391,7 +398,7 @@ const PostSection: React.FC = () => {
         </div>
         <div className="flex justify-center mt-6">
           <Button
-            className="bg-gray-300 hover:bg-gray-100"
+            className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
             onClick={handleLoadMore}
             disabled={loading}
           >
