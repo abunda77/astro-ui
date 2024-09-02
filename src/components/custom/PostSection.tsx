@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useId, useRef } from "react";
-import { Button } from "@/components/ui/button";
+// import globals.css
+// import "@/styles/globals.css";
+// import { Button } from "@/components/ui/button";
 import { ArrowDownIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOutsideClick } from "@/hooks/use-outside-click";
@@ -17,12 +19,15 @@ import { Loader2 } from "lucide-react";
 import { CloseIcon } from "@/components/custom/CloseIcon";
 import { Loader, Placeholder } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
-import { MapPin, Banknote, House } from "lucide-react";
+import { MapPin, Banknote, House, CalendarDays } from "lucide-react";
 import {
   Card,
   Typography,
   IconButton,
+  Button,
   Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "@material-tailwind/react";
 import {
   HeartSolid,
@@ -31,7 +36,11 @@ import {
   Wifi,
   HomeSimple,
   ModernTv,
+  ElectronicsChip,
+  SecurityPass,
+  Internet,
   FireFlame,
+  HomeAltSlim,
 } from "iconoir-react";
 
 interface Property {
@@ -221,288 +230,172 @@ const PostSection: React.FC = () => {
             </Select>
           </div>
         </div>
-      </div>
-      {/* Mulai Card Grid */}
-      <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12 ">
-        {active && typeof active === "object" && (
-          <div className="fixed inset-0 z-10 w-full h-full bg-black/20" />
-        )}
-        {active && typeof active === "object" ? (
-          <div className="fixed inset-0 grid place-items-center z-[100]">
-            {/* --- Button Close --- */}
-            <button
-              key={`button-${active.title}-${id}`}
-              className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-500 rounded-full z-[102]"
-              onClick={() => setActive(null)}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {properties.map((property) => (
+            <Card
+              key={property.id}
+              className="transition-transform transform shadow-lg bg-green-50 dark:bg-gray-900 hover:border-blue-500"
             >
-              <CloseIcon />
-            </button>
-
-            <div
-              ref={ref}
-              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-green-100 dark:bg-neutral-900 sm:rounded-3xl overflow-hidden "
-            >
-              {/* --- Image --- */}
-              <div className="relative">
-                <img
-                  src={getImageUrl(active)}
-                  alt={active.title}
-                  className="object-cover object-top w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg"
-                />
-
-                {/* --- Category --- */}
+              <a href={`/post/${property.id}`} className="relative block">
                 <Badge
                   className={
-                    active.ads === "sell"
-                      ? "bg-red-500"
-                      : active.ads === "rent"
-                        ? "bg-blue-500"
-                        : ""
+                    categories.find((cat) => cat.key === property.category_id)
+                      ?.badgeColor || ""
                   }
+                  style={{ position: "absolute", zIndex: 10 }}
                 >
-                  {active.ads === "sell"
-                    ? "Dijual"
-                    : active.ads === "rent"
-                      ? "Disewakan"
-                      : active.ads}
+                  {
+                    categories.find((cat) => cat.key === property.category_id)
+                      ?.value
+                  }
                 </Badge>
-              </div>
-
-              <div>
-                <div className="flex items-start justify-between p-4">
-                  <div className="">
-                    {/* --Title ---*/}
-                    <h3 className="text-base font-medium text-neutral-700 dark:text-neutral-200">
-                      {active.title}
-                    </h3>
-
-                    {/* ---Shor Desc --- */}
-                    <p className="text-base text-neutral-600 dark:text-neutral-400">
-                      {active.short_desc}
-                    </p>
-                  </div>
-
-                  {/* --- Button Detail ---*/}
-                  <div>
-                    <Button
-                      className="flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-green-500 rounded-full"
-                      onClick={() => {
-                        setLoading(true);
-                        setTimeout(() => {
-                          window.location.href = `/post/${active.id}`;
-                        }, 1000);
-                      }}
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <Loader
-                          size="lg"
-                          content="Loading please wait..."
-                          vertical
-                        />
-                      ) : (
-                        <span className="mr-2">Detail</span>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                <div className="relative px-4 pt-4">
-                  <div className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
-                    <div className="text-xs">
-                      <p>
-                        Diiklankan tanggal :{" "}
-                        <strong>
-                          {new Date(active.created_at).toLocaleDateString(
-                            "id-ID",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}
-                        </strong>
-                      </p>
-                      <p>
-                        Diposting oleh:{" "}
-                        <strong>
-                          {active.user.profile.first_name}{" "}
-                          {active.user.profile.last_name}
-                        </strong>
-                      </p>
-                      <p>
-                        Developer:{" "}
-                        <strong>{active.user.profile.company_name}</strong>
-                      </p>
-                    </div>
-                    <span className="flex items-center text-xs font-bold text-gray-600 dark:text-gray-400">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {`${active.province.name}, ${active.district.name}, ${active.city.name}`}
-                    </span>
-
-                    <p className="flex items-center">
-                      <House className="w-4 h-4 mr-1" />
-                      {"   "}
-                      <Badge
-                        className={
-                          categories.find(
-                            (category) => category.key === active.category_id
-                          )?.badgeColor
-                        }
-                      >
-                        {
-                          categories.find(
-                            (category) => category.key === active.category_id
-                          )?.value
-                        }
-                      </Badge>
-                    </p>
-                    <p className="flex items-center font-bold">
-                      <Banknote className="w-4 h-4 mr-1" />
-                      Price: Rp {active.price.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : null}
-        {/* Mulai desain grid */}
-        <ul className="grid items-start w-full max-w-6xl grid-cols-1 gap-4 mx-auto md:grid-cols-2 lg:grid-cols-4">
-          {properties.map((property, index) => (
-            <Card
-              key={property.title}
-              className="w-full max-w-[26rem] shadow-lg"
-            >
-              <Card.Header className="relative p-0 overflow-hidden">
                 <img
                   src={getImageUrl(property)}
                   alt={property.title}
-                  className="object-cover object-top w-full h-60"
+                  className="object-cover w-full h-48 transition-transform transform hover:scale-105"
                 />
-                <div className="absolute inset-0 w-full h-full to-bg-black-10 bg-gradient-to-tr from-transparent via-transparent to-black/60 " />
-                <IconButton
-                  size="sm"
-                  color="secondary"
-                  className="!absolute right-2 top-2 rounded-full"
-                >
-                  <HeartSolid className="w-5 h-5" />
-                </IconButton>
-              </Card.Header>
-
-              <Card.Body>
-                <div className="flex items-center justify-between mb-2">
-                  <Typography variant="h6">{property.title}</Typography>
-                  <Typography className="flex items-center gap-1.5">
-                    <StarSolid className="h-[18px] w-[18px] text-yellow-700" />
-                    {property.ads === "sell" ? "Dijual" : "Disewakan"}
+                <div className="p-4">
+                  <Typography type="h6" className="mb-2 text-foreground">
+                    {property.title}
                   </Typography>
+                  <Typography className="mb-1 text-foreground">
+                    {property.short_desc}
+                  </Typography>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <MapPin className="w-4 h-4 mr-1 text-green-600 dark:text-green-100" />
+                      <Typography
+                        variant="body2"
+                        className="text-xs text-foreground"
+                      >
+                        {property.city.name}, {property.province.name}
+                      </Typography>
+                    </div>
+                    <CalendarDays className="w-4 h-4 mr-0 text-green-600 dark:text-green-100" />
+                    <Typography
+                      variant="body2"
+                      className="text-xs text-foreground"
+                    >
+                      {new Date(property.created_at).toLocaleDateString()}
+                    </Typography>
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    {/* fitur */}
+                    <div className="flex items-start">
+                      <Tooltip>
+                        <Tooltip.Trigger>
+                          <IconButton
+                            isCircular
+                            size="lg"
+                            color="secondary"
+                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                          >
+                            <Internet className="w-5 h-5" />
+                          </IconButton>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                          {property.facility?.internet}
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                      <Tooltip>
+                        <Tooltip.Trigger>
+                          <IconButton
+                            isCircular
+                            size="lg"
+                            color="secondary"
+                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                          >
+                            <Wifi className="w-5 h-5" />
+                          </IconButton>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                          {property.facility?.line_phone}
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                      <Tooltip>
+                        <Tooltip.Trigger>
+                          <IconButton
+                            isCircular
+                            size="lg"
+                            color="secondary"
+                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                          >
+                            <ElectronicsChip className="w-5 h-5" />
+                          </IconButton>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                          {property.facility?.electricity} kWh
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                      <Tooltip>
+                        <Tooltip.Trigger>
+                          <IconButton
+                            isCircular
+                            size="lg"
+                            color="secondary"
+                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                          >
+                            <SecurityPass className="w-5 h-5" />
+                          </IconButton>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                          {property.facility?.security}
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                      <Tooltip>
+                        <Tooltip.Trigger>
+                          <IconButton
+                            isCircular
+                            size="lg"
+                            color="secondary"
+                            className="cursor-pointer dark:border-none bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200 dark:hover:bg-red-200 dark:text-gray-100"
+                          >
+                            <HomeAltSlim className="w-5 h-5" />
+                          </IconButton>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                          {property.facility?.certificate}
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <Banknote className="mr-2 text-green-600 dark:text-green-100" />
+                    <Typography
+                      variant="h6"
+                      className="font-semibold text-gray-600 dark:text-gray-100"
+                    >
+                      Rp. {property.price.toLocaleString("id-ID")}
+                    </Typography>
+                  </div>
                 </div>
-
-                <Typography className="text-sm text-gray-600 dark:text-gray-400">
-                  {property.short_desc}
-                </Typography>
-
-                <div className="inline-flex flex-wrap items-center gap-3 mt-6 group">
-                  <Tooltip>
-                    <Tooltip.Trigger>
-                      <IconButton className="rounded-full">
-                        <Cash className="w-5 h-5" />
-                      </IconButton>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      Rp {property.price.toLocaleString("id-ID")}
-                      <Tooltip.Arrow />
-                    </Tooltip.Content>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <Tooltip.Trigger>
-                      <IconButton className="rounded-full">
-                        <Wifi className="w-5 h-5" />
-                      </IconButton>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      Internet: {property.facility.internet}
-                      <Tooltip.Arrow />
-                    </Tooltip.Content>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <Tooltip.Trigger>
-                      <IconButton className="rounded-full">
-                        <HomeSimple className="w-5 h-5" />
-                      </IconButton>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      Kondisi: {property.facility.condition}
-                      <Tooltip.Arrow />
-                    </Tooltip.Content>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <Tooltip.Trigger>
-                      <IconButton className="rounded-full">
-                        <ModernTv className="w-5 h-5" />
-                      </IconButton>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      Listrik: {property.facility.electricity} watt
-                      <Tooltip.Arrow />
-                    </Tooltip.Content>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <Tooltip.Trigger>
-                      <IconButton className="rounded-full">
-                        <FireFlame className="w-5 h-5" />
-                      </IconButton>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      Keamanan: {property.facility.security}
-                      <Tooltip.Arrow />
-                    </Tooltip.Content>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <Tooltip.Trigger>
-                      <IconButton className="rounded-full">+</IconButton>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      Lihat detail lainnya
-                      <Tooltip.Arrow />
-                    </Tooltip.Content>
-                  </Tooltip>
-                </div>
-              </Card.Body>
-
+              </a>
               <Card.Footer className="pt-3">
                 <Button
-                  onClick={() => {
-                    setLoading(true);
-                    setTimeout(() => {
-                      window.location.href = `/post/${property.id}`;
-                    }, 1000);
-                  }}
+                  className="text-gray-800 border border-green-600 bg-gray-50 dark:bg-green-500 dark:bg-green-700 dark:text-gray-100 hover:bg-green-200"
+                  isFullWidth
+                  onClick={() =>
+                    (window.location.href = `/post/${property.id}`)
+                  }
                 >
-                  {loading ? "Loading..." : "Lihat Detail"}
+                  Detail
                 </Button>
               </Card.Footer>
             </Card>
           ))}
-        </ul>
-        {/* Akhir desain grid */}
-        <div className="flex justify-center">
+        </div>
+        <div className="flex justify-center mt-6">
           <Button
+            className="bg-gray-300 hover:bg-gray-100"
             onClick={handleLoadMore}
-            variant="outline"
-            size="default"
-            className="flex items-center px-6 py-3 text-sm text-gray-600 bg-gray-300 rounded-md hover:underline dark:bg-gray-900 dark:text-gray-400 animate-bounce"
             disabled={loading}
           >
-            <span className="mr-2">
-              {loading ? "Loading..." : "Load more properties..."}
-            </span>
-            <ArrowDownIcon className="w-5 h-5 animate-bounce" />
+            {loading ? <Loader2 className="animate-spin" /> : "Load More"}
           </Button>
         </div>
       </div>

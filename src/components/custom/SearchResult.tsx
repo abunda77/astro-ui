@@ -7,7 +7,13 @@ import debounce from "lodash/debounce";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
-import { SearchIcon, ALargeSmall, LocateIcon } from "lucide-react";
+import {
+  SearchIcon,
+  ALargeSmall,
+  LocateIcon,
+  Check,
+  Clock,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Highlight } from "rsuite";
 
@@ -50,6 +56,33 @@ const SearchResult: React.FC = () => {
   const pageSize = 8;
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
   const suggestionsRef = useRef<HTMLDivElement>(null);
+
+  const brands = [
+    { name: "CNN", logo: "images/cnn.png" },
+    { name: "VICE", logo: "images/vice.png" },
+    { name: "Bloomberg", logo: "images/bloomberg.png" },
+    { name: "FASHIONISTA", logo: "images/fashionita.png" },
+    { name: "NEW YORK POST", logo: "images/newyorktime.png" },
+    // { name: "NEW YORK POST", logo: "images/newyorktime.png" },
+  ];
+
+  const customerLogos = [
+    { name: "HubSpot", logo: "images/hubspot.png" },
+    { name: "Shopify", logo: "images/shopify.png" },
+    { name: "eBay", logo: "images/ebay.png" },
+    { name: "DELL", logo: "images/dell.png" },
+    { name: "box", logo: "images/box.png" },
+    { name: "stackoverflow", logo: "images/stackoverflow.png" },
+  ];
+
+  const customerLogos2 = [
+    { name: "Kompas", logo: "images/kompas.png" },
+    { name: "Media Indonesia", logo: "images/mediaindonesia.png" },
+    { name: "RealEstate", logo: "images/realestate.webp" },
+    { name: "Seputar Indonesia", logo: "images/seputarindonesia.webp" },
+    { name: "Tech In Asia", logo: "images/techinasia.png" },
+    { name: "WarnerMedia", logo: "images/warnermedia.png" },
+  ];
 
   useOutsideClick(suggestionsRef, () => setShowSuggestions(false));
 
@@ -312,6 +345,117 @@ const SearchResult: React.FC = () => {
       {loading && (
         <div className="mt-4 text-center">
           <p>Loading...</p>
+        </div>
+      )}
+      {/* Customer logos */}
+      {properties.length === 0 && !loading && !noResults && (
+        <div className="flex flex-col items-center mt-8 mb-12">
+          <p className="mb-1 text-2xl text-gray-500">As Seen on </p>
+          <div className="flex flex-wrap items-center justify-center mt-2 space-x-4 space-y-8">
+            {customerLogos2.map((brand) => (
+              <div
+                key={brand.name}
+                className="flex items-center justify-center"
+              >
+                <img
+                  src={brand.logo}
+                  alt={`${brand.name} logo`}
+                  className="object-contain h-12"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 mt-8 md:grid-cols-3">
+            <div>
+              <h3 className="mb-4 text-lg font-semibold text-center">
+                Mengapa Memilih bosqproperti.com?
+              </h3>
+              <ul className="space-y-2">
+                {[
+                  "Database properti terlengkap",
+                  "Tim agen profesional berpengalaman",
+                  "Antarmuka website user-friendly",
+                  "Transaksi aman dan transparan",
+                  "Layanan pelanggan 24/7",
+                ].map((item) => (
+                  <li key={item} className="flex items-center">
+                    <Check className="mr-2 text-green-500" size={20} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="mb-4 text-lg font-semibold text-center">
+                Setiap Listing Properti di bosqproperti.com Meliputi:
+              </h3>
+              <ul className="space-y-2">
+                {[
+                  "Foto-foto berkualitas tinggi dari berbagai sudut",
+                  "Tur virtual 360 derajat ",
+                  "Deskripsi properti yang detail dan informatif",
+                  "Informasi lengkap mengenai fasilitas",
+                  "Peta lokasi yang akurat dan interaktif",
+                ].map((item) => (
+                  <li key={item} className="flex items-center">
+                    <Check className="mr-2 text-green-500" size={20} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="mb-4 text-lg font-semibold text-center">
+                Keuntungan Pemasaran di bosqproperti.com:
+              </h3>
+              <ul className="space-y-2">
+                {[
+                  "Target pasar luas",
+                  "Visibilitas online maksimal",
+                  "Laporan kinerja real-time",
+                  "Dukungan materi kreatif",
+                  "Fitur unggulan prioritas",
+                ].map((item) => (
+                  <li key={item} className="flex items-center">
+                    <Check className="mr-2 text-green-500" size={20} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <h2 className="mb-4 text-2xl font-semibold">
+              Testimoni & Pencapaian Kami
+            </h2>
+            <div className="text-4xl font-bold text-blue-500">1,234,567</div>
+            <div className="text-3xl">
+              Properti Terjual Melalui Platform Kami
+            </div>
+            <div className="mt-2 text-4xl">
+              dengan <span className="font-bold text-green-500">98.7%</span>{" "}
+              Tingkat Kepuasan Pelanggan!
+            </div>
+            <p className="mt-4 text-gray-600">
+              Bergabunglah dengan ribuan pemilik properti yang telah sukses.
+              Lihat contoh properti yang telah terjual dan testimoni pelanggan
+              kami.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center mt-12 mb-12 space-x-4 space-y-4">
+            {customerLogos.map((customer) => (
+              <img
+                key={customer.name}
+                src={customer.logo}
+                alt={`${customer.name} logo`}
+                className="object-contain h-8"
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

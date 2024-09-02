@@ -1,12 +1,8 @@
 ---
-import * as React from "react";
+import PostSection from "@/components/custom/PostSection";
+// import global.css
 import "@/styles/globals.css";
-
-import {
-  ButtonDefault,
-  ButtonPrimary,
-} from "@/components/custom/ButtonMaterial";
+import Layout from "@/layouts/Layout03.astro";
 ---
 
-<ButtonDefault client:load>Klik saya</ButtonDefault>
-<ButtonPrimary client:load>Klik saya</ButtonPrimary>
+<PostSection client:load />

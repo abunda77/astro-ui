@@ -1,8 +1,9 @@
-import { mtConfig } from "@material-tailwind/react";
+ import { mtConfig } from "@material-tailwind/react";
 /** @type {import('tailwindcss').Config} */
 export default {
 	darkMode: ["class"],
-	content: [ './pages/**/*.{ts,tsx}',
+	content: [ 
+		'./pages/**/*.{ts,tsx}',
 		'./components/**/*.{ts,tsx}',
 		'./app/**/*.{ts,tsx}',
 		'./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
