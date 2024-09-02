@@ -2,7 +2,6 @@ import React, { useState, useEffect, useId, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowDownIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import {
   Select,
@@ -15,11 +14,25 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
-import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 import { CloseIcon } from "@/components/custom/CloseIcon";
 import { Loader, Placeholder } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import { MapPin, Banknote, House } from "lucide-react";
+import {
+  Card,
+  Typography,
+  IconButton,
+  Tooltip,
+} from "@material-tailwind/react";
+import {
+  HeartSolid,
+  StarSolid,
+  Cash,
+  Wifi,
+  HomeSimple,
+  ModernTv,
+  FireFlame,
+} from "iconoir-react";
 
 interface Property {
   id: number;
@@ -46,6 +59,18 @@ interface Property {
       biodata_company: string | null;
       jobdesk: string | null;
     };
+  };
+  facility: {
+    certificate: string;
+    electricity: number;
+    line_phone: string;
+    internet: string;
+    road_width: string;
+    water_source: string;
+    hook: string;
+    condition: string;
+    security: string;
+    wastafel: string;
   };
 }
 
@@ -199,257 +224,273 @@ const PostSection: React.FC = () => {
       </div>
       {/* Mulai Card Grid */}
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12 ">
-        <AnimatePresence>
-          {active && typeof active === "object" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-10 w-full h-full bg-black/20"
-            />
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {active && typeof active === "object" ? (
-            <div className="fixed inset-0 grid place-items-center z-[100]">
-              {/* --- Button Close --- */}
-              <motion.button
-                key={`button-${active.title}-${id}`}
-                layout
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                  transition: {
-                    duration: 0.05,
-                  },
-                }}
-                className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-500 rounded-full z-[102]"
-                onClick={() => setActive(null)}
-              >
-                <CloseIcon />
-              </motion.button>
+        {active && typeof active === "object" && (
+          <div className="fixed inset-0 z-10 w-full h-full bg-black/20" />
+        )}
+        {active && typeof active === "object" ? (
+          <div className="fixed inset-0 grid place-items-center z-[100]">
+            {/* --- Button Close --- */}
+            <button
+              key={`button-${active.title}-${id}`}
+              className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-500 rounded-full z-[102]"
+              onClick={() => setActive(null)}
+            >
+              <CloseIcon />
+            </button>
 
-              <motion.div
-                layoutId={`card-${active.title}-${id}`}
-                ref={ref}
-                className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-green-100 dark:bg-neutral-900 sm:rounded-3xl overflow-hidden "
-              >
-                {/* --- Image --- */}
-                <motion.div
-                  layoutId={`image-${active.title}-${id}`}
-                  className="relative"
-                >
-                  <img
-                    src={getImageUrl(active)}
-                    alt={active.title}
-                    className="object-cover object-top w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg"
-                  />
+            <div
+              ref={ref}
+              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-green-100 dark:bg-neutral-900 sm:rounded-3xl overflow-hidden "
+            >
+              {/* --- Image --- */}
+              <div className="relative">
+                <img
+                  src={getImageUrl(active)}
+                  alt={active.title}
+                  className="object-cover object-top w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg"
+                />
 
-                  {/* --- Category --- */}
-                  <Badge
-                    className={
-                      active.ads === "sell"
-                        ? "bg-red-500"
-                        : active.ads === "rent"
-                          ? "bg-blue-500"
-                          : ""
-                    }
-                  >
-                    {active.ads === "sell"
-                      ? "Dijual"
+                {/* --- Category --- */}
+                <Badge
+                  className={
+                    active.ads === "sell"
+                      ? "bg-red-500"
                       : active.ads === "rent"
-                        ? "Disewakan"
-                        : active.ads}
-                  </Badge>
-                </motion.div>
+                        ? "bg-blue-500"
+                        : ""
+                  }
+                >
+                  {active.ads === "sell"
+                    ? "Dijual"
+                    : active.ads === "rent"
+                      ? "Disewakan"
+                      : active.ads}
+                </Badge>
+              </div>
 
-                <div>
-                  <div className="flex items-start justify-between p-4">
-                    <div className="">
-                      {/* --Title ---*/}
-                      <motion.h3
-                        layoutId={`title-${active.title}-${id}`}
-                        className="text-base font-medium text-neutral-700 dark:text-neutral-200"
-                      >
-                        {active.title}
-                      </motion.h3>
+              <div>
+                <div className="flex items-start justify-between p-4">
+                  <div className="">
+                    {/* --Title ---*/}
+                    <h3 className="text-base font-medium text-neutral-700 dark:text-neutral-200">
+                      {active.title}
+                    </h3>
 
-                      {/* ---Shor Desc --- */}
-                      <motion.p
-                        layoutId={`description-${active.short_desc}-${id}`}
-                        className="text-base text-neutral-600 dark:text-neutral-400"
-                      >
-                        {active.short_desc}
-                      </motion.p>
-                    </div>
-
-                    {/* --- Button Detail ---*/}
-                    <motion.div
-                      layout
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    >
-                      <Button
-                        className="flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-green-500 rounded-full"
-                        onClick={() => {
-                          setLoading(true);
-                          setTimeout(() => {
-                            window.location.href = `/post/${active.id}`;
-                          }, 1000);
-                        }}
-                        disabled={loading}
-                      >
-                        {loading ? (
-                          <Loader
-                            size="lg"
-                            content="Loading please wait..."
-                            vertical
-                          />
-                        ) : (
-                          <span className="mr-2">Detail</span>
-                        )}
-                      </Button>
-                    </motion.div>
+                    {/* ---Shor Desc --- */}
+                    <p className="text-base text-neutral-600 dark:text-neutral-400">
+                      {active.short_desc}
+                    </p>
                   </div>
-                  <div className="relative px-4 pt-4">
-                    <motion.div
-                      layout
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
-                    >
-                      <div className="text-xs">
-                        <p>
-                          Diiklankan tanggal :{" "}
-                          <strong>
-                            {new Date(active.created_at).toLocaleDateString(
-                              "id-ID",
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            )}
-                          </strong>
-                        </p>
-                        <p>
-                          Diposting oleh:{" "}
-                          <strong>
-                            {active.user.profile.first_name}{" "}
-                            {active.user.profile.last_name}
-                          </strong>
-                        </p>
-                        <p>
-                          Developer:{" "}
-                          <strong>{active.user.profile.company_name}</strong>
-                        </p>
-                      </div>
-                      <span className="flex items-center text-xs font-bold text-gray-600 dark:text-gray-400">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {`${active.province.name}, ${active.district.name}, ${active.city.name}`}
-                      </span>
 
-                      <p className="flex items-center">
-                        <House className="w-4 h-4 mr-1" />
-                        {"   "}
-                        <Badge
-                          className={
-                            categories.find(
-                              (category) => category.key === active.category_id
-                            )?.badgeColor
-                          }
-                        >
-                          {
-                            categories.find(
-                              (category) => category.key === active.category_id
-                            )?.value
-                          }
-                        </Badge>
-                      </p>
-                      <p className="flex items-center font-bold">
-                        <Banknote className="w-4 h-4 mr-1" />
-                        Price: Rp {active.price.toLocaleString()}
-                      </p>
-                    </motion.div>
+                  {/* --- Button Detail ---*/}
+                  <div>
+                    <Button
+                      className="flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-green-500 rounded-full"
+                      onClick={() => {
+                        setLoading(true);
+                        setTimeout(() => {
+                          window.location.href = `/post/${active.id}`;
+                        }, 1000);
+                      }}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <Loader
+                          size="lg"
+                          content="Loading please wait..."
+                          vertical
+                        />
+                      ) : (
+                        <span className="mr-2">Detail</span>
+                      )}
+                    </Button>
                   </div>
                 </div>
-              </motion.div>
-            </div>
-          ) : null}
-        </AnimatePresence>
-        {/* mulai desain grid */}
-        <ul className="grid items-start w-full max-w-6xl grid-cols-1 gap-4 mx-auto md:grid-cols-2 lg:grid-cols-4">
-          {properties.map((property, index) => (
-            <motion.div
-              layoutId={`card-${property.title}-${id}`}
-              key={property.title}
-              onClick={() => setActive(property)}
-              className="flex flex-col p-4 transition-transform transform shadow-lg cursor-pointer bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-600 rounded-xl hover:scale-105 hover:border-blue-500"
-            >
-              <div className="flex flex-col w-full gap-4">
-                <div className="flex flex-col items-start justify-center">
-                  <motion.div
-                    layoutId={`image-${property.title}-${id}`}
-                    className="relative w-full"
-                  >
-                    <img
-                      src={getImageUrl(property)}
-                      alt={property.title}
-                      className="object-cover object-top w-full rounded-lg h-60"
-                    />
-                    <motion.p
-                      layoutId={`category-${property.category_id}-${id}`}
-                      className={`absolute top-2 right-2 text-sm ${
-                        categories.find(
-                          (category) => category.key === property.category_id
-                        )?.badgeColor
-                      }`}
-                    >
-                      {
-                        categories.find(
-                          (category) => category.key === property.category_id
-                        )?.value
-                      }
-                    </motion.p>
-                  </motion.div>
-                  <motion.h3
-                    layoutId={`title-${property.title}-${id}`}
-                    className="mt-4 text-lg font-semibold text-left text-gray-800 transition-colors duration-300 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400"
-                  >
-                    {property.title}
-                  </motion.h3>
-                  <motion.p
-                    layoutId={`description-${property.short_desc}-${id}`}
-                    className="mt-2 text-sm text-left transition-all duration-300 text-neutral-600 dark:text-gray-400 line-clamp-2 hover:line-clamp-none"
-                  >
-                    {property.short_desc}
-                  </motion.p>
-                  <motion.p
-                    layoutId={`description-${property.price}-${id}`}
-                    className="mt-2 text-base font-bold text-left text-gray-600 dark:text-gray-400"
-                  >
-                    <Banknote className="inline-block w-4 h-4 mr-1 text-green-600 dark:text-green-400" />
-                    {`Rp ${property.price.toLocaleString("id-ID")}`}
-                  </motion.p>
-                  <motion.p
-                    layoutId={`description-${property.district.name}-${id}`}
-                    className="py-1 mt-2 text-xs font-semibold text-left rounded-full text-neutral-500 dark:text-gray-400 "
-                  >
-                    <MapPin className="inline-block w-4 h-4 mr-1 text-green-600 dark:text-green-400" />
-                    {property.district.name}
-                  </motion.p>
+                <div className="relative px-4 pt-4">
+                  <div className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
+                    <div className="text-xs">
+                      <p>
+                        Diiklankan tanggal :{" "}
+                        <strong>
+                          {new Date(active.created_at).toLocaleDateString(
+                            "id-ID",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
+                        </strong>
+                      </p>
+                      <p>
+                        Diposting oleh:{" "}
+                        <strong>
+                          {active.user.profile.first_name}{" "}
+                          {active.user.profile.last_name}
+                        </strong>
+                      </p>
+                      <p>
+                        Developer:{" "}
+                        <strong>{active.user.profile.company_name}</strong>
+                      </p>
+                    </div>
+                    <span className="flex items-center text-xs font-bold text-gray-600 dark:text-gray-400">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      {`${active.province.name}, ${active.district.name}, ${active.city.name}`}
+                    </span>
+
+                    <p className="flex items-center">
+                      <House className="w-4 h-4 mr-1" />
+                      {"   "}
+                      <Badge
+                        className={
+                          categories.find(
+                            (category) => category.key === active.category_id
+                          )?.badgeColor
+                        }
+                      >
+                        {
+                          categories.find(
+                            (category) => category.key === active.category_id
+                          )?.value
+                        }
+                      </Badge>
+                    </p>
+                    <p className="flex items-center font-bold">
+                      <Banknote className="w-4 h-4 mr-1" />
+                      Price: Rp {active.price.toLocaleString()}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
+          </div>
+        ) : null}
+        {/* Mulai desain grid */}
+        <ul className="grid items-start w-full max-w-6xl grid-cols-1 gap-4 mx-auto md:grid-cols-2 lg:grid-cols-4">
+          {properties.map((property, index) => (
+            <Card
+              key={property.title}
+              className="w-full max-w-[26rem] shadow-lg"
+            >
+              <Card.Header className="relative p-0 overflow-hidden">
+                <img
+                  src={getImageUrl(property)}
+                  alt={property.title}
+                  className="object-cover object-top w-full h-60"
+                />
+                <div className="absolute inset-0 w-full h-full to-bg-black-10 bg-gradient-to-tr from-transparent via-transparent to-black/60 " />
+                <IconButton
+                  size="sm"
+                  color="secondary"
+                  className="!absolute right-2 top-2 rounded-full"
+                >
+                  <HeartSolid className="w-5 h-5" />
+                </IconButton>
+              </Card.Header>
+
+              <Card.Body>
+                <div className="flex items-center justify-between mb-2">
+                  <Typography variant="h6">{property.title}</Typography>
+                  <Typography className="flex items-center gap-1.5">
+                    <StarSolid className="h-[18px] w-[18px] text-yellow-700" />
+                    {property.ads === "sell" ? "Dijual" : "Disewakan"}
+                  </Typography>
+                </div>
+
+                <Typography className="text-sm text-gray-600 dark:text-gray-400">
+                  {property.short_desc}
+                </Typography>
+
+                <div className="inline-flex flex-wrap items-center gap-3 mt-6 group">
+                  <Tooltip>
+                    <Tooltip.Trigger>
+                      <IconButton className="rounded-full">
+                        <Cash className="w-5 h-5" />
+                      </IconButton>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      Rp {property.price.toLocaleString("id-ID")}
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <Tooltip.Trigger>
+                      <IconButton className="rounded-full">
+                        <Wifi className="w-5 h-5" />
+                      </IconButton>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      Internet: {property.facility.internet}
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <Tooltip.Trigger>
+                      <IconButton className="rounded-full">
+                        <HomeSimple className="w-5 h-5" />
+                      </IconButton>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      Kondisi: {property.facility.condition}
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <Tooltip.Trigger>
+                      <IconButton className="rounded-full">
+                        <ModernTv className="w-5 h-5" />
+                      </IconButton>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      Listrik: {property.facility.electricity} watt
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <Tooltip.Trigger>
+                      <IconButton className="rounded-full">
+                        <FireFlame className="w-5 h-5" />
+                      </IconButton>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      Keamanan: {property.facility.security}
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <Tooltip.Trigger>
+                      <IconButton className="rounded-full">+</IconButton>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      Lihat detail lainnya
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Tooltip>
+                </div>
+              </Card.Body>
+
+              <Card.Footer className="pt-3">
+                <Button
+                  onClick={() => {
+                    setLoading(true);
+                    setTimeout(() => {
+                      window.location.href = `/post/${property.id}`;
+                    }, 1000);
+                  }}
+                >
+                  {loading ? "Loading..." : "Lihat Detail"}
+                </Button>
+              </Card.Footer>
+            </Card>
           ))}
         </ul>
+        {/* Akhir desain grid */}
         <div className="flex justify-center">
           <Button
             onClick={handleLoadMore}
