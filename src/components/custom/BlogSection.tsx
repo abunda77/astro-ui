@@ -74,7 +74,7 @@ const BlogSection: React.FC = () => {
   }
 
   return (
-    <section className="py-8 bg-gradient-to-t from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
+    <section className="py-8 bg-gradient-to-b from-blue-100 via-blue-50 to-blue-200 dark:from-gray-300 dark:via-gray-50 dark:to-gray-500">
       <div className="container mx-auto">
         <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-700">
           Blog Terbaru

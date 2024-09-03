@@ -13,12 +13,13 @@ import { Loader2 } from "lucide-react";
 import { CloseIcon } from "@/components/custom/CloseIcon";
 import { Loader, Placeholder } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
-import { MapPin, Banknote, House, CalendarDays } from "lucide-react";
+import { MapPin, Banknote, House, CalendarDays, Building2 } from "lucide-react";
 import {
   Card,
   Typography,
   IconButton,
   Button,
+  Spinner,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -57,7 +58,7 @@ interface Property {
       phone: string;
       email: string;
       whatsapp: string | null;
-      company_name: string;
+      company_name: string | null;
       avatar: string;
       biodata_company: string | null;
       jobdesk: string | null;
@@ -398,6 +399,18 @@ const PostSection: React.FC = () => {
                     Rp. {property.price.toLocaleString("id-ID")}
                   </Typography>
                 </div>
+                <div className="flex items-center mt-2">
+                  <Building2 className="w-4 h-4 mr-2 text-xs text-green-600 dark:text-blue-100" />
+                  <Typography
+                    variant="small"
+                    className="text-xs text-gray-600 dark:text-gray-100"
+                  >
+                    {property.user?.profile?.company_name ||
+                      (property.user?.profile?.company_name === null
+                        ? "Perusahaan tidak diketahui"
+                        : "Error: Data tidak tersedia")}
+                  </Typography>
+                </div>
               </div>
 
               <Card.Footer className="pt-3">
@@ -408,7 +421,13 @@ const PostSection: React.FC = () => {
                     (window.location.href = `/post/${property.id}`)
                   }
                 >
-                  Detail
+                  {loading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <span className="transition-opacity duration-500">
+                      Detail
+                    </span>
+                  )}
                 </Button>
               </Card.Footer>
             </Card>

@@ -65,12 +65,14 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
     <section className="py-12 bg-gradient-to-t from-blue-200 via-blue-100 to-white dark:from-gray-800 dark:via-gray-700 dark:to-gray-600">
       <div className="max-w-4xl p-8 mx-auto text-gray-900 bg-white rounded-lg shadow-lg sm:p-12 md:p-20 dark:bg-gray-700 dark:text-gray-200">
         <div className="flex justify-start mb-8">
-          <a
+          <Button
+            appearance="primary"
+            color="green"
             href="/blog"
-            className="px-6 py-3 text-sm font-bold text-white bg-blue-600 rounded-full hover:bg-blue-800"
+            className="transition-colors"
           >
             Kembali ke Blog
-          </a>
+          </Button>
         </div>
         <div className="flex justify-center">
           <AspectRatio ratio={16 / 9} className="w-full max-w-7xl">
