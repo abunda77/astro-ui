@@ -182,223 +182,339 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
     return value;
   };
   return (
-    <div className="p-5 mx-auto text-gray-100 bg-gray-200 sm:p-10 md:p-16 dark:bg-gray-800 dark:text-gray-800">
-      <div className="flex justify-start">
-        <Button appearance="primary" href="/">
-          Kembali ke Beranda
-        </Button>
-      </div>
-
-      <div className="flex flex-col max-w-3xl mx-auto overflow-hidden rounded">
-        <DotPattern
-          width={20}
-          height={20}
-          cx={1}
-          cy={1}
-          cr={1}
-          className={cn(
-            "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]"
-          )}
-        />
-
-        <div className="w-full ">
-          <Carousel autoplay className="custom-slider" shape={shape}>
-            {getAllImage(property).map((imageUrl, index) => (
-              <img
-                src={imageUrl}
-                alt={renderValue(property.title) || "Property Image"}
-                className="object-cover rounded-lg dark:bg-gray-900"
-              />
-            ))}
-          </Carousel>
+    <div className="container max-w-4xl px-4 py-12 mx-auto ">
+      <div className="container px-4 mx-auto">
+        <div className="mb-8">
+          <Button
+            appearance="primary"
+            href="/"
+            className="transition-colors hover:bg-blue-600"
+          >
+            Kembali ke Beranda
+          </Button>
         </div>
 
-        <div className="flex flex-col justify-center w-full p-6 pt-12 pb-12 m-4 mx-auto space-y-6 bg-gray-900 lg:max-w-2xl sm:px-10 sm:mx-12 lg:rounded-md dark:bg-gray-50">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold sm:text-3xl">
-                {renderValue(property.title)}
-              </h1>
-              <p className="text-xs text-gray-400 dark:text-gray-600">
-                By
-                <span className="text-xs hover:underline">
-                  {renderValue(property.user?.name) || "Unknown User"}
-                </span>
-              </p>
+        <div className="overflow-hidden bg-gray-200 rounded-lg shadow-xl dark:bg-gray-800">
+          <div className="relative">
+            <div className="relative">
+              <Carousel autoplay className="custom-slider" shape={shape}>
+                {getAllImage(property).map((imageUrl, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={imageUrl}
+                      alt={renderValue(property.title) || "Property Image"}
+                      className="object-cover w-full h-full rounded-t-lg"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                  </div>
+                ))}
+              </Carousel>
             </div>
-            <Avatar className="w-32 h-32 mb-4">
-              <AvatarImage
-                src={
-                  property.user?.profile?.avatar
-                    ? `${homedomain}/storage/${property.user.profile.avatar}`
-                    : "images/avatar-fallback.gif"
-                }
-                alt={renderValue(property.user.name)}
-              />
-              <AvatarFallback>{property.user.name.charAt(0)}</AvatarFallback>
-            </Avatar>
           </div>
 
-          <div className="text-gray-100 dark:text-gray-800">
-            <p>{renderValue(property.short_desc)}</p>
-            <p className="mt-4 font-bold">
-              Harga: Rp {renderValue(property.price)?.toLocaleString() || "N/A"}
-            </p>
-            <p>Address: {renderValue(property.address) || "N/A"}</p>
-            <p>
-              Location:{" "}
-              {property.province && property.district && property.city
-                ? `${property.province.name}, ${property.district.name}, ${property.city.name}`
-                : "N/A"}
-            </p>
-          </div>
+          <div className="p-8">
+            <DotPattern
+              width={20}
+              height={20}
+              cx={1}
+              cy={1}
+              cr={1}
+              className={cn(
+                "relative inset-0 opacity-100 [mask-image:linear-gradient(to_bottom,white,transparent)]"
+              )}
+            />
+            <div className="flex flex-col items-start justify-between mb-8 md:flex-row md:items-center">
+              <div>
+                <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
+                  {renderValue(property.title)}
+                </h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  By
+                  <span className="ml-1 font-medium hover:underline">
+                    {renderValue(property.user?.name) || "Unknown User"}
+                  </span>
+                </p>
+              </div>
+              <Avatar className="w-24 h-24 mt-4 md:mt-0">
+                <AvatarImage
+                  src={
+                    property.user?.profile?.avatar
+                      ? `${homedomain}/storage/${property.user.profile.avatar}`
+                      : "images/avatar-fallback.gif"
+                  }
+                  alt={renderValue(property.user.name)}
+                />
+                <AvatarFallback>{property.user.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </div>
 
-          <div className="space-y-2">
-            <h2 className="text-xl font-semibold">Specifications</h2>
-            <Accordion type="single" collapsible>
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Specifications</AccordionTrigger>
-                <AccordionContent>
-                  <ul>
-                    {property.specification ? (
-                      <>
-                        <li>
-                          Carport:{" "}
-                          {renderValue(property.specification.carport) || "N/A"}
-                        </li>
-                        <li>
-                          Dining Room:{" "}
-                          {renderValue(property.specification.dining_room) ||
-                            "N/A"}
-                        </li>
-                        <li>
-                          Living Room:{" "}
-                          {renderValue(property.specification.living_room) ||
-                            "N/A"}
-                        </li>
-                        <li>
-                          Land Size:{" "}
-                          {renderValue(property.specification.land_size) ||
-                            "N/A"}{" "}
-                          m²
-                        </li>
-                        <li>
-                          Building Size:{" "}
-                          {renderValue(property.specification.building_size) ||
-                            "N/A"}{" "}
-                          m²
-                        </li>
-                        <li>
-                          Bedrooms:{" "}
-                          {renderValue(property.specification.bedroom) || "N/A"}
-                        </li>
-                        <li>
-                          Bathrooms:{" "}
-                          {renderValue(property.specification.bathroom) ||
-                            "N/A"}
-                        </li>
-                        <li>
-                          Floors:{" "}
-                          {renderValue(property.specification.floors) || "N/A"}
-                        </li>
-                      </>
-                    ) : (
-                      <li>No specifications available</li>
-                    )}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+            <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
+              <div>
+                <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                  Deskripsi Singkat
+                </h2>
+                <p className="text-gray-700 dark:text-gray-300">
+                  {renderValue(property.short_desc)}
+                </p>
+              </div>
+              <div>
+                <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                  Informasi Utama
+                </h2>
+                <p className="mb-2 text-xl font-bold text-green-600 dark:text-green-400">
+                  Harga: Rp{" "}
+                  {renderValue(property.price)?.toLocaleString() || "N/A"}
+                </p>
+                <p className="text-gray-700 dark:text-gray-300">
+                  Alamat: {renderValue(property.address) || "N/A"}
+                </p>
+                <p className="text-gray-700 dark:text-gray-300">
+                  Lokasi:{" "}
+                  {property.province && property.district && property.city
+                    ? `${property.province.name}, ${property.district.name}, ${property.city.name}`
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
 
-          <div className="space-y-2">
-            <h2 className="text-xl font-semibold">Facilities</h2>
-            <Accordion type="single" collapsible>
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Facilities</AccordionTrigger>
-                <AccordionContent>
-                  <ul>
-                    {property.facility ? (
-                      <>
-                        <li>
-                          Line Phone:{" "}
-                          {renderValue(property.facility.line_phone) || "N/A"}
-                        </li>
-                        <li>
-                          Road Width:{" "}
-                          {renderValue(property.facility.road_width) || "N/A"} m
-                        </li>
-                        <li>
-                          Hook: {renderValue(property.facility.hook) || "N/A"}
-                        </li>
-                        <li>
-                          Condition:{" "}
-                          {renderValue(property.facility.condition) || "N/A"}
-                        </li>
-                        <li>
-                          Security:{" "}
-                          {renderValue(property.facility.security) || "N/A"}
-                        </li>
-                        <li>
-                          Wastafel:{" "}
-                          {renderValue(property.facility.wastafel) || "N/A"}
-                        </li>
-                        <li>
-                          Certificate:{" "}
-                          {renderValue(property.facility.certificate) || "N/A"}
-                        </li>
-                        <li>
-                          Electricity:{" "}
-                          {renderValue(property.facility.electricity) || "N/A"}{" "}
-                          VA
-                        </li>
-                        <li>
-                          Internet:{" "}
-                          {renderValue(property.facility.internet) || "N/A"}
-                        </li>
-                        <li>
-                          Water Source:{" "}
-                          {renderValue(property.facility.water_source) || "N/A"}
-                        </li>
-                      </>
-                    ) : (
-                      <li>No facilities available</li>
-                    )}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+            <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
+              <div>
+                <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                  Spesifikasi
+                </h2>
 
-          <div>
-            <h2 className="mb-2 text-xl font-semibold">Description</h2>
-            <Accordion type="single" collapsible>
-              <AccordionItem value="description">
-                <AccordionTrigger>Description</AccordionTrigger>
-                <AccordionContent>
-                  <p>
-                    {renderValue(property.description) ||
-                      "No description available"}
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="transition-all duration-300 bg-white rounded-md shadow-md dark:bg-gray-800"
+                >
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      Spesifikasi Detail
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                      <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                        {property.specification ? (
+                          <>
+                            <li className="flex justify-between">
+                              <span>Carport:</span>
+                              <span className="font-medium">
+                                {renderValue(property.specification.carport) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Ruang Makan:</span>
+                              <span className="font-medium">
+                                {renderValue(
+                                  property.specification.dining_room
+                                ) || "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Ruang Tamu:</span>
+                              <span className="font-medium">
+                                {renderValue(
+                                  property.specification.living_room
+                                ) || "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Luas Tanah:</span>
+                              <span className="font-medium">
+                                {renderValue(
+                                  property.specification.land_size
+                                ) || "N/A"}{" "}
+                                m²
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Luas Bangunan:</span>
+                              <span className="font-medium">
+                                {renderValue(
+                                  property.specification.building_size
+                                ) || "N/A"}{" "}
+                                m²
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Kamar Tidur:</span>
+                              <span className="font-medium">
+                                {renderValue(property.specification.bedroom) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Kamar Mandi:</span>
+                              <span className="font-medium">
+                                {renderValue(property.specification.bathroom) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Jumlah Lantai:</span>
+                              <span className="font-medium">
+                                {renderValue(property.specification.floors) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                          </>
+                        ) : (
+                          <li className="italic text-center">
+                            Tidak ada spesifikasi tersedia
+                          </li>
+                        )}
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
 
-          <div>
-            <h2 className="mb-2 text-xl font-semibold">Map</h2>
-            {property.coordinates ? (
-              <iframe
-                width="100%"
-                height="450"
-                frameBorder="0"
-                style={{ border: 0 }}
-                src={`https://www.google.com/maps?q=${property.coordinates}&output=embed`}
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <p>No coordinates available</p>
-            )}
+              <div>
+                <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                  Fasilitas
+                </h2>
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="bg-white rounded-lg shadow-md dark:bg-gray-800"
+                >
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      Fasilitas Detail
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                      <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                        {property.facility ? (
+                          <>
+                            <li className="flex justify-between">
+                              <span>Telepon:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.line_phone) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Lebar Jalan:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.road_width) ||
+                                  "N/A"}{" "}
+                                m
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Hook:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.hook) || "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Kondisi:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.condition) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Keamanan:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.security) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Wastafel:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.wastafel) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Sertifikat:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.certificate) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Listrik:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.electricity) ||
+                                  "N/A"}{" "}
+                                VA
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Internet:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.internet) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex justify-between">
+                              <span>Sumber Air:</span>
+                              <span className="font-medium">
+                                {renderValue(property.facility.water_source) ||
+                                  "N/A"}
+                              </span>
+                            </li>
+                          </>
+                        ) : (
+                          <li className="italic text-center">
+                            Tidak ada fasilitas tersedia
+                          </li>
+                        )}
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </div>
+
+            <div className="mb-8">
+              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                Deskripsi Lengkap
+              </h2>
+              <Accordion
+                type="single"
+                collapsible
+                className="bg-white rounded-lg shadow-md dark:bg-gray-800"
+              >
+                <AccordionItem value="description">
+                  <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Lihat Deskripsi
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {renderValue(property.description) ||
+                        "Tidak ada deskripsi tersedia"}
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+
+            <div>
+              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                Peta Lokasi
+              </h2>
+              {property.coordinates ? (
+                <div className="overflow-hidden rounded-lg">
+                  <iframe
+                    width="100%"
+                    height="450"
+                    frameBorder="0"
+                    style={{ border: 0 }}
+                    src={`https://www.google.com/maps?q=${property.coordinates}&output=embed`}
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ) : (
+                <p className="text-gray-700 dark:text-gray-300">
+                  Koordinat tidak tersedia
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
