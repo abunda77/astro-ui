@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import DotPattern from "@/components/magicui/dot-pattern";
@@ -128,6 +128,7 @@ interface PropertyResponse {
   items: Property[];
 }
 const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
+
 const getImageUrl = (property: Property) => {
   const primaryImage = property.images.find((img) => img.is_primary);
 
@@ -136,7 +137,7 @@ const getImageUrl = (property: Property) => {
     : "images/home_fallback.png";
 };
 const getAllImage = (property: Property) => {
-  console.log("Status: Mengambil semua gambar properti");
+  property.images.forEach((image, index) => {});
   return property.images.length > 0
     ? property.images.map((img) => {
         let imageUrl = img.image_url.startsWith("/")
@@ -152,6 +153,7 @@ interface SingleSectionProps {
   property: Property;
 }
 const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
+  const [shape, setShape] = useState<"bar" | "dot" | undefined>("bar");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -200,20 +202,18 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
         />
 
         <div className="w-full ">
-          <Carousel autoplay className="custom-slider">
+          <Carousel autoplay className="custom-slider" shape={shape}>
             {getAllImage(property).map((imageUrl, index) => (
-              <AspectRatio key={index} ratio={16 / 9}>
-                <img
-                  src={imageUrl}
-                  alt={renderValue(property.title) || "Property Image"}
-                  className="object-cover my-4 bg-gray-500 rounded-md dark:bg-gray-500"
-                />
-              </AspectRatio>
+              <img
+                src={imageUrl}
+                alt={renderValue(property.title) || "Property Image"}
+                className="object-cover rounded-lg dark:bg-gray-900"
+              />
             ))}
           </Carousel>
         </div>
 
-        <div className="flex flex-col justify-center flex-grow w-full p-6 pt-12 pb-12 m-4 mx-auto space-y-6 bg-gray-900 lg:max-w-2xl sm:px-10 sm:mx-12 lg:rounded-md dark:bg-gray-50">
+        <div className="flex flex-col justify-center w-full p-6 pt-12 pb-12 m-4 mx-auto space-y-6 bg-gray-900 lg:max-w-2xl sm:px-10 sm:mx-12 lg:rounded-md dark:bg-gray-50">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold sm:text-3xl">
