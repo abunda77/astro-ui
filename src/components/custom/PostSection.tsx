@@ -5,16 +5,10 @@ import React, { useState, useEffect, useId, useRef } from "react";
 import { ArrowDownIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectLabel,
-} from "@/components/ui/select";
+import { SelectPicker, Stack } from "rsuite";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { CloseIcon } from "@/components/custom/CloseIcon";
 import { Loader, Placeholder } from "rsuite";
@@ -98,28 +92,50 @@ const PostSection: React.FC = () => {
   const [active, setActive] = useState<Property | boolean | null>(null);
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
+  const [showNoDataAlert, setShowNoDataAlert] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(Number(value));
+  const handleCategoryChange = (
+    value: string | null,
+    event: React.SyntheticEvent
+  ) => {
+    setSelectedCategory(value ? Number(value) : null);
     setCurrentPage(1);
     setProperties([]);
   };
 
   const categories = [
     { key: 0, value: "All" },
-    { key: 11, value: "Home", badgeColor: "bg-blue-500 rounded-lg p-2" },
-    { key: 12, value: "Apartment", badgeColor: "bg-red-500 rounded-lg p-2" },
-    { key: 13, value: "Kavling", badgeColor: "bg-yellow-500 rounded-lg p-2" },
-    { key: 14, value: "Office", badgeColor: "bg-purple-500 rounded-lg p-2" },
-    { key: 15, value: "Warehouse", badgeColor: "bg-green-500 rounded-lg p-2" },
+    {
+      key: 11,
+      value: "Home",
+      badgeColor: "bg-blue-500 dark:bg-blue-400 rounded-lg p-2 border-none",
+    },
+    {
+      key: 12,
+      value: "Apartment",
+      badgeColor: "bg-red-500 dark:bg-red-400 rounded-lg p-2 border-none",
+    },
+    {
+      key: 13,
+      value: "Kavling",
+      badgeColor: "bg-yellow-500 dark:bg-yellow-400 rounded-lg p-2 border-none",
+    },
+    {
+      key: 14,
+      value: "Office",
+      badgeColor: "bg-purple-500 dark:bg-purple-400 rounded-lg p-2 border-none",
+    },
+    {
+      key: 15,
+      value: "Warehouse",
+      badgeColor: "bg-green-500 dark:bg-green-400 rounded-lg p-2 border-none",
+    },
   ];
-
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
-        // Buat URL dengan filter kategori jika dipilih
         let url;
         if (selectedCategory !== null && selectedCategory !== 0) {
           url = `${urlendpoint}/properties/search/?category=${selectedCategory}&page=${currentPage}&size=${pageSize}`;
@@ -132,23 +148,31 @@ const PostSection: React.FC = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: PropertyResponse = await response.json();
-        const sortedProperties = data.items.sort((a, b) => {
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-        });
-        setProperties((prevProperties) => [
-          ...prevProperties,
-          ...sortedProperties,
-        ]);
+
+        if (data.items.length === 0) {
+          setShowNoDataAlert(true);
+        } else {
+          setShowNoDataAlert(false);
+          const sortedProperties = data.items.sort((a, b) => {
+            return (
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+            );
+          });
+          setProperties((prevProperties) => [
+            ...prevProperties,
+            ...sortedProperties,
+          ]);
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching properties:", error);
         setLoading(false);
+        setShowNoDataAlert(true);
       }
     };
     fetchProperties();
-  }, [currentPage, selectedCategory]);
+  }, [currentPage, selectedCategory, urlendpoint, pageSize]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -203,188 +227,182 @@ const PostSection: React.FC = () => {
             >
               Filter by Category
             </label>
-            <Select
-              value={selectedCategory?.toString() ?? ""}
-              //   onValueChange={(value) => setSelectedCategory(Number(value))}
-              onValueChange={handleCategoryChange}
+            <Stack
+              spacing={10}
+              direction="column"
+              alignItems="flex-start"
+              className="bg-gray-100"
             >
-              <SelectTrigger className="w-[180px] dark:bg-slate-700 dark:text-gray-200 hover:bg-gray-200">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel className="dark:text-gray-300">
-                    Categories
-                  </SelectLabel>
-                  {categories.map((category) => (
-                    <SelectItem
-                      key={category.key}
-                      value={category.key.toString()}
-                      className=" dark:text-gray-200 hover:bg-gray-200"
-                    >
-                      {category.value}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+              <SelectPicker
+                data={categories.map((category) => ({
+                  label: category.value,
+                  value: category.key.toString(),
+                }))}
+                value={selectedCategory?.toString() ?? ""}
+                onChange={handleCategoryChange}
+                style={{ width: 224 }}
+                searchable={false}
+                placeholder="Select a category"
+                className="bg-gray-300"
+                appearance="subtle"
+              />
+            </Stack>
           </div>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {properties.map((property) => (
             <Card
               key={property.id}
-              className="transition-transform transform shadow-lg bg-green-50 dark:bg-gray-900 hover:border-blue-500"
+              className="transition-transform transform shadow-lg hover:scale-105 bg-blue-50 dark:bg-gray-900 hover:border-blue-500"
             >
-              <a href={`/post/${property.id}`} className="relative block">
-                <Badge
-                  className={
-                    categories.find((cat) => cat.key === property.category_id)
-                      ?.badgeColor || ""
-                  }
-                  style={{ position: "absolute", zIndex: 10 }}
+              <Badge
+                className={
+                  categories.find((cat) => cat.key === property.category_id)
+                    ?.badgeColor || ""
+                }
+                style={{ position: "absolute", zIndex: 10 }}
+              >
+                {
+                  categories.find((cat) => cat.key === property.category_id)
+                    ?.value
+                }
+              </Badge>
+              <img
+                src={getImageUrl(property)}
+                alt={property.title}
+                className="object-cover w-full h-48 transition-transform transform hover:scale-105"
+              />
+              <div className="p-4">
+                <Typography
+                  type="h6"
+                  className="mb-2 transform text-foreground hover:scale-105"
                 >
-                  {
-                    categories.find((cat) => cat.key === property.category_id)
-                      ?.value
-                  }
-                </Badge>
-                <img
-                  src={getImageUrl(property)}
-                  alt={property.title}
-                  className="object-cover w-full h-48 transition-transform transform hover:scale-105"
-                />
-                <div className="p-4">
-                  <Typography type="h6" className="mb-2 text-foreground">
-                    {property.title}
-                  </Typography>
-                  {/* <Typography className="mb-1 text-foreground">
+                  {property.title}
+                </Typography>
+                {/* <Typography className="mb-1 text-foreground">
                     {property.short_desc}
                   </Typography> */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-1 text-green-600 dark:text-green-100" />
-                      <Typography
-                        variant="body2"
-                        className="text-xs text-foreground"
-                      >
-                        {property.city.name}, {property.province.name}
-                      </Typography>
-                    </div>
-                    <CalendarDays className="w-4 h-4 mr-0 text-green-600 dark:text-green-100" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <MapPin className="w-4 h-4 mr-1 text-green-600 dark:text-green-100" />
                     <Typography
                       variant="body2"
                       className="text-xs text-foreground"
                     >
-                      {new Date(property.created_at).toLocaleDateString(
-                        "id-ID",
-                        {
-                          year: "numeric",
-                          month: "numeric",
-                          day: "numeric",
-                        }
-                      )}
+                      {property.city.name}, {property.province.name}
                     </Typography>
                   </div>
-                  <div className="flex items-center justify-between mt-4">
-                    {/* fitur */}
-                    <div className="flex items-start">
-                      <Tooltip>
-                        <Tooltip.Trigger>
-                          <IconButton
-                            isCircular
-                            size="lg"
-                            color="secondary"
-                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                          >
-                            <Internet className="w-5 h-5" />
-                          </IconButton>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                          {property.facility?.internet}
-                          <Tooltip.Arrow />
-                        </Tooltip.Content>
-                      </Tooltip>
-                      <Tooltip>
-                        <Tooltip.Trigger>
-                          <IconButton
-                            isCircular
-                            size="lg"
-                            color="secondary"
-                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                          >
-                            <Wifi className="w-5 h-5" />
-                          </IconButton>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                          {property.facility?.line_phone}
-                          <Tooltip.Arrow />
-                        </Tooltip.Content>
-                      </Tooltip>
-                      <Tooltip>
-                        <Tooltip.Trigger>
-                          <IconButton
-                            isCircular
-                            size="lg"
-                            color="secondary"
-                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                          >
-                            <ElectronicsChip className="w-5 h-5" />
-                          </IconButton>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                          {property.facility?.electricity} kWh
-                          <Tooltip.Arrow />
-                        </Tooltip.Content>
-                      </Tooltip>
-                      <Tooltip>
-                        <Tooltip.Trigger>
-                          <IconButton
-                            isCircular
-                            size="lg"
-                            color="secondary"
-                            className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                          >
-                            <SecurityPass className="w-5 h-5" />
-                          </IconButton>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                          {property.facility?.security}
-                          <Tooltip.Arrow />
-                        </Tooltip.Content>
-                      </Tooltip>
-                      <Tooltip>
-                        <Tooltip.Trigger>
-                          <IconButton
-                            isCircular
-                            size="lg"
-                            color="secondary"
-                            className="cursor-pointer dark:border-none bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200 dark:hover:bg-red-200 dark:text-gray-100"
-                          >
-                            <HomeAltSlim className="w-5 h-5" />
-                          </IconButton>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                          {property.facility?.certificate}
-                          <Tooltip.Arrow />
-                        </Tooltip.Content>
-                      </Tooltip>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Banknote className="mr-2 text-green-600 dark:text-green-100" />
-                    <Typography
-                      variant="h6"
-                      className="font-semibold text-gray-600 dark:text-gray-100"
-                    >
-                      Rp. {property.price.toLocaleString("id-ID")}
-                    </Typography>
+                  <CalendarDays className="w-4 h-4 mr-0 text-green-600 dark:text-green-100" />
+                  <Typography
+                    variant="body2"
+                    className="text-xs text-foreground"
+                  >
+                    {new Date(property.created_at).toLocaleDateString("id-ID", {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    })}
+                  </Typography>
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  {/* fitur */}
+                  <div className="flex items-start">
+                    <Tooltip>
+                      <Tooltip.Trigger>
+                        <IconButton
+                          isCircular
+                          size="lg"
+                          color="secondary"
+                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                        >
+                          <Internet className="w-5 h-5" />
+                        </IconButton>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content>
+                        {property.facility?.internet}
+                        <Tooltip.Arrow />
+                      </Tooltip.Content>
+                    </Tooltip>
+                    <Tooltip>
+                      <Tooltip.Trigger>
+                        <IconButton
+                          isCircular
+                          size="lg"
+                          color="secondary"
+                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                        >
+                          <Wifi className="w-5 h-5" />
+                        </IconButton>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content>
+                        {property.facility?.line_phone}
+                        <Tooltip.Arrow />
+                      </Tooltip.Content>
+                    </Tooltip>
+                    <Tooltip>
+                      <Tooltip.Trigger>
+                        <IconButton
+                          isCircular
+                          size="lg"
+                          color="secondary"
+                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                        >
+                          <ElectronicsChip className="w-5 h-5" />
+                        </IconButton>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content>
+                        {property.facility?.electricity} kWh
+                        <Tooltip.Arrow />
+                      </Tooltip.Content>
+                    </Tooltip>
+                    <Tooltip>
+                      <Tooltip.Trigger>
+                        <IconButton
+                          isCircular
+                          size="lg"
+                          color="secondary"
+                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
+                        >
+                          <SecurityPass className="w-5 h-5" />
+                        </IconButton>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content>
+                        {property.facility?.security}
+                        <Tooltip.Arrow />
+                      </Tooltip.Content>
+                    </Tooltip>
+                    <Tooltip>
+                      <Tooltip.Trigger>
+                        <IconButton
+                          isCircular
+                          size="lg"
+                          color="secondary"
+                          className="cursor-pointer dark:border-none bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200 dark:hover:bg-red-200 dark:text-gray-100"
+                        >
+                          <HomeAltSlim className="w-5 h-5" />
+                        </IconButton>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content>
+                        {property.facility?.certificate}
+                        <Tooltip.Arrow />
+                      </Tooltip.Content>
+                    </Tooltip>
                   </div>
                 </div>
-              </a>
+                <div className="flex items-center">
+                  <Banknote className="mr-2 text-green-600 dark:text-green-100" />
+                  <Typography
+                    variant="h6"
+                    className="font-semibold text-gray-600 dark:text-gray-100"
+                  >
+                    Rp. {property.price.toLocaleString("id-ID")}
+                  </Typography>
+                </div>
+              </div>
+
               <Card.Footer className="pt-3">
                 <Button
-                  className="text-gray-800 bg-green-100 border border-green-600 dark:bg-green-700 hover:dark:bg-green-500 dark:text-gray-100 hover:bg-green-200"
+                  className="text-gray-800 bg-yellow-400 border-none dark:bg-yellow-400 hover:dark:bg-yellow-500 dark:text-gray-700 hover:bg-yellow-500"
                   isFullWidth
                   onClick={() =>
                     (window.location.href = `/post/${property.id}`)
@@ -396,11 +414,23 @@ const PostSection: React.FC = () => {
             </Card>
           ))}
         </div>
+        {showNoDataAlert && (
+          <Alert
+            variant="destructive"
+            className="max-w-sm p-4 mx-auto mt-6 bg-red-100 border-none shadow-lg sm:max-w-2xl sm:p-6"
+          >
+            <AlertCircle className="w-4 h-4" />
+            <AlertTitle>Oops...!</AlertTitle>
+            <AlertDescription>
+              Maaf, sudah tidak ada data lagi yang tersedia.
+            </AlertDescription>
+          </Alert>
+        )}
         <div className="flex justify-center mt-6">
           <Button
             className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
             onClick={handleLoadMore}
-            disabled={loading}
+            disabled={loading || showNoDataAlert}
           >
             {loading ? <Loader2 className="animate-spin" /> : "Load More"}
           </Button>
