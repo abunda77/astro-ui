@@ -4,6 +4,8 @@ import "@/styles/globals.css";
 import Header01 from "@/layouts/Header01.astro";
 import SingleSection from "@/components/custom/SingleSection";
 import Footer01 from "@/layouts/Footer01.astro";
+// import toaster
+import { Toaster } from "@/components/ui/toaster";
 
 export async function getStaticPaths() {
   const urlEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
@@ -137,8 +139,8 @@ const { property } = Astro.props as { property: Property };
     <Header01 />
     <SingleSection property={property} client:load />
 
-    <!-- <RegisterForm client:load />
-    <Toaster client:load /> -->
+    <!-- <RegisterForm client:load />-->
+    <Toaster client:load />
     <Footer01 />
     <slot />
   </body>

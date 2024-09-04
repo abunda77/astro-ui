@@ -44,7 +44,15 @@ import {
   CircleCheckBig,
   Mail,
   MessageCircle,
+  RefreshCcw,
+  Loader2,
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 interface Property {
   user_id: number;
@@ -146,6 +154,7 @@ interface Property {
 interface PropertyResponse {
   items: Property[];
 }
+
 const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
 
 const getImageUrl = (property: Property) => {
@@ -174,6 +183,142 @@ interface SingleSectionProps {
 const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   const [shape, setShape] = useState<"bar" | "dot" | undefined>("bar");
   const [isLoading, setIsLoading] = useState(true);
+
+  const [captchaText, setCaptchaText] = useState("");
+  const [userCaptcha, setUserCaptcha] = useState("");
+  const [noWa, setNoWa] = useState("");
+  const [alertStatus, setAlertStatus] = useState<"success" | "error" | null>(
+    null
+  );
+  const [isLoading2, setIsLoading2] = useState(false);
+  const [result, setResult] = useState("");
+  const [subject, setSubject] = useState("Pesan Pengunjung");
+  const [name, setName] = useState("");
+  const [toName] = useState(
+    `${property.user.profile.first_name} ${property.user.profile.last_name}`
+  );
+  const [toEmail] = useState(property.user.profile.email);
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  // tambahkan const untuk url referensi dari title property
+  const [referenceTitle] = useState(property.title);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (userCaptcha !== captchaText) {
+      toast({
+        title: "Error",
+        description: "Captcha salah. Silakan coba lagi.",
+        variant: "destructive",
+      });
+      setAlertStatus("error");
+      return;
+    }
+
+    setIsLoading2(true);
+    setResult("Mohon tunggu...");
+
+    const formData = {
+      access_key: import.meta.env.PUBLIC_APIKEY_BREVO,
+      sender: {
+        email: import.meta.env.PUBLIC_MAIL_FROM_ADDRESS,
+        name: name,
+      },
+      to: [
+        {
+          name: toName,
+          email: toEmail,
+        },
+      ],
+      replyTo: {
+        email: email,
+      },
+      subject,
+      htmlContent: `<p><strong>Nama:</strong> ${name}</p>
+                  <p><strong>Nomor WhatsApp:</strong> ${noWa}</p>
+                  <p><strong>Email:</strong> ${email}</p>
+                  <p><strong>Berkaitan dengan :</strong> ${referenceTitle}</p>
+                  <p><strong>Pesan:</strong> ${message}</p>`,
+    };
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.PUBLIC_URL_BREVO}/v3/smtp/email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "api-key": import.meta.env.PUBLIC_APIKEY_BREVO,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const json = await response.json();
+
+      if (response.status === 200 || response.status === 201) {
+        setResult(json.message);
+        toast({
+          title: "Sukses",
+          description: "Pesan berhasil terkirim",
+        });
+        setAlertStatus("success");
+        // Reset form fields after successful submission
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        console.log(response);
+        setResult(json.message);
+        toast({
+          title: "Error",
+          description: "Terjadi kesalahan saat mengirim pesan",
+          variant: "destructive",
+        });
+        setAlertStatus("error");
+      }
+    } catch (error) {
+      console.error("Error saat mengirim email:", error);
+      setResult("Terjadi kesalahan!");
+      toast({
+        title: "Error",
+        description: "Gagal mengirim email. Silakan coba lagi.",
+        variant: "destructive",
+      });
+      setAlertStatus("error");
+    } finally {
+      setIsLoading2(false);
+
+      setTimeout(() => {
+        setResult("");
+        setAlertStatus(null);
+      }, 3000);
+    }
+  };
+
+  const generateCaptcha = () => {
+    const randomString = Math.random().toString(36).substring(2, 8);
+    setCaptchaText(randomString);
+  };
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
+
+  const [showDiv, setShowDiv] = useState(false);
+  const toggleDiv = () => {
+    setShowDiv(!showDiv);
+  };
+
+  const [showDiv2, setShowDiv2] = useState(false);
+  const toggleDiv2 = () => {
+    setShowDiv2(!showDiv2);
+  };
+
+  const [showDiv3, setShowDiv3] = useState(false);
+  const toggleDiv3 = () => {
+    setShowDiv3(!showDiv3);
+  };
 
   useEffect(() => {
     // Simulasikan proses loading
@@ -733,13 +878,17 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     trigger="hover"
                     speaker={
                       <Popover title="Email">
-                        <p>Kirim email ke pemilik properti</p>
+                        <p>
+                          Kirim email ke pemilik properti :{" "}
+                          {property.user?.profile?.email}
+                        </p>
                       </Popover>
                     }
                   >
                     <Button
                       appearance="ghost"
                       color="green"
+                      onClick={toggleDiv3}
                       className="flex items-center"
                     >
                       <Mail className="w-4 h-4 mr-2" />
@@ -764,47 +913,240 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       appearance="ghost"
                       color="green"
                       className="flex items-center"
+                      onClick={toggleDiv2}
                     >
                       <Phone className="w-4 h-4 mr-2" />
                       Telepon
                     </Button>
                   </Whisper>
 
-                  <Whisper
-                    placement="top"
-                    trigger="hover"
-                    speaker={
-                      <Popover title="WhatsApp">
-                        <p>Kirim pesan WhatsApp ke pemilik properti</p>
-                        {window.innerWidth > 768 ? (
-                          <a
-                            href={`https://web.whatsapp.com/send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${renderValue(property.title)}`)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Buka WhatsApp Web
-                          </a>
-                        ) : (
-                          <a
-                            href={`whatsapp://send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${renderValue(property.title)}`)}`}
-                          >
-                            Buka Aplikasi WhatsApp
-                          </a>
-                        )}
-                      </Popover>
-                    }
-                    enterable
-                  >
-                    <Button
-                      appearance="ghost"
-                      color="green"
-                      className="flex items-center"
+                  <div>
+                    <Whisper
+                      placement="top"
+                      trigger="click"
+                      speaker={
+                        <Popover title="WhatsApp">
+                          <p>Kirim pesan WhatsApp ke pemilik properti</p>
+                          {window.innerWidth > 768 ? (
+                            <a
+                              href={`https://web.whatsapp.com/send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Buka WhatsApp Web
+                            </a>
+                          ) : (
+                            <a
+                              href={`whatsapp://send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
+                            >
+                              Buka Aplikasi WhatsApp
+                            </a>
+                          )}
+                        </Popover>
+                      }
+                      enterable
                     >
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      WhatsApp
-                    </Button>
-                  </Whisper>
+                      <Button
+                        appearance="ghost"
+                        color="green"
+                        className="flex items-center"
+                        onClick={toggleDiv}
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        WhatsApp
+                      </Button>
+                    </Whisper>
+                  </div>
                 </div>
+                {/* show div element 1 */}
+                {showDiv && (
+                  <div className="p-2 mt-2 bg-green-100 rounded">
+                    <p>
+                      Nomor WhatsApp:{" "}
+                      {property.user?.profile?.whatsapp || "Tidak tersedia"}
+                      <a
+                        href={`https://web.whatsapp.com/send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Buka WhatsApp Web
+                      </a>
+                    </p>
+                  </div>
+                )}
+                {/* Show div element 2 */}
+                {showDiv2 && (
+                  <div className="p-2 mt-2 bg-green-100 rounded">
+                    <p>
+                      Nomor WhatsApp:{" "}
+                      {property.user?.profile?.whatsapp || "Tidak tersedia"}
+                      <a
+                        href={`https://web.whatsapp.com/send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Buka WhatsApp Web
+                      </a>
+                    </p>
+                  </div>
+                )}
+                {/* show element div3 */}
+                {alertStatus === "success" && (
+                  <Alert className="mb-4 bg-green-200">
+                    <Terminal className="w-4 h-4" />
+                    <AlertTitle>Sukses!</AlertTitle>
+                    <AlertDescription>
+                      Pesan Anda berhasil terkirim ke pemilik iklan.
+                    </AlertDescription>
+                  </Alert>
+                )}
+                {alertStatus === "error" && (
+                  <Alert variant="destructive" className="mb-4">
+                    <Terminal className="w-4 h-4" />
+                    <AlertTitle>Error!</AlertTitle>
+                    <AlertDescription>
+                      Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.
+                    </AlertDescription>
+                  </Alert>
+                )}
+                {showDiv3 && (
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                      <Label
+                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                        htmlFor="name"
+                      >
+                        Nama
+                      </Label>
+                      <Input
+                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="Nama"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <Label
+                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                        htmlFor="email"
+                      >
+                        Email
+                      </Label>
+                      <Input
+                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <Label
+                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                        htmlFor="subject"
+                      >
+                        Subject
+                      </Label>
+                      <Input
+                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
+                        id="subject"
+                        name="subject"
+                        type="text"
+                        placeholder="Subject"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <Label
+                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                        htmlFor="message"
+                      >
+                        Pesan
+                      </Label>
+                      <Textarea
+                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
+                        id="message"
+                        name="message"
+                        placeholder="Pesan"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <Label
+                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                        htmlFor="noWa"
+                      >
+                        No. WhatsApp
+                      </Label>
+                      <Input
+                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
+                        id="noWa"
+                        name="noWa"
+                        type="text"
+                        placeholder="Masukan No. WhatsApp Anda"
+                        value={noWa}
+                        onChange={(e) => setNoWa(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <Label
+                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                        htmlFor="captcha"
+                      >
+                        Captcha
+                      </Label>
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          className="px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none w-36 focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
+                          id="captcha"
+                          name="captcha"
+                          type="text"
+                          placeholder="Masukkan captcha di atas"
+                          value={userCaptcha}
+                          onChange={(e) => setUserCaptcha(e.target.value)}
+                          required
+                        />
+                        <div className="p-2 text-green-600 bg-gray-200 rounded dark:bg-gray-600 dark:text-green-400">
+                          {captchaText}
+                        </div>
+                        <Button
+                          type="button"
+                          onClick={generateCaptcha}
+                          className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-300 dark:hover:bg-blue-500"
+                        >
+                          <RefreshCcw className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Button
+                        appearance="primary"
+                        color="blue"
+                        type="submit"
+                        className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline dark:bg-blue-700 dark:hover:bg-blue-800"
+                        disabled={isLoading2}
+                      >
+                        {isLoading2 ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : null}
+                        Kirim
+                      </Button>
+                    </div>
+                    {result && <div id="result">{result}</div>}
+                  </form>
+                )}
               </div>
             </div>
           </div>
