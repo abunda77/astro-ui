@@ -750,9 +750,13 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                   <Whisper
                     placement="top"
                     trigger="hover"
+                    enterable
                     speaker={
                       <Popover title="Telepon">
                         <p>Hubungi pemilik properti melalui telepon</p>
+                        <p>
+                          <strong>{property.user?.profile?.phone}</strong>
+                        </p>
                       </Popover>
                     }
                   >
