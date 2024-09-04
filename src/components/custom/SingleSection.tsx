@@ -15,7 +15,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Loader, Placeholder } from "rsuite";
+import { Loader, Placeholder, Popover, Whisper } from "rsuite";
 import {
   Button,
   ButtonGroup,
@@ -42,6 +42,8 @@ import {
   Map,
   Banknote,
   CircleCheckBig,
+  Mail,
+  MessageCircle,
 } from "lucide-react";
 
 interface Property {
@@ -511,12 +513,14 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                             {property.nearby.split(",").map((item, index) => (
                               <div key={index} className="flex items-center">
                                 <CircleCheckBig className="w-5 h-5 mr-2 text-green-500" />
-                                <span>{item.trim()}</span>
+                                <span className="text-gray-700 dark:text-gray-300">
+                                  {item.trim()}
+                                </span>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <p className="italic text-gray-500">
+                          <p className="italic text-gray-500 dark:text-gray-400">
                             Tidak ada informasi lokasi terdekat tersedia
                           </p>
                         )}
@@ -687,22 +691,116 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                   <Map className="inline-block w-6 h-6 mr-2 text-gray-800 dark:text-gray-200" />
                   Peta Lokasi
                 </h2>
-                {property.coordinates ? (
-                  <div className="overflow-hidden rounded-lg">
-                    <iframe
-                      width="100%"
-                      height="450"
-                      frameBorder="0"
-                      style={{ border: 0 }}
-                      src={`https://www.google.com/maps?q=${property.coordinates}&output=embed`}
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : (
-                  <p className="text-gray-700 dark:text-gray-300">
-                    Koordinat tidak tersedia
-                  </p>
-                )}
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="bg-white rounded-lg shadow-md dark:bg-gray-800"
+                >
+                  <AccordionItem value="map">
+                    <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      Lihat Peta
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                      {property.coordinates ? (
+                        <div className="overflow-hidden rounded-lg">
+                          <iframe
+                            width="100%"
+                            height="450"
+                            frameBorder="0"
+                            style={{ border: 0 }}
+                            src={`https://www.google.com/maps?q=${property.coordinates}&output=embed`}
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                      ) : (
+                        <p className="text-gray-700 dark:text-gray-300">
+                          Koordinat tidak tersedia
+                        </p>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+
+              <div className="mt-4 ">
+                <h2 className="mb-4 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
+                  <Phone className="inline-block w-6 h-6 mr-2 text-gray-800 dark:text-gray-200" />
+                  Kontak
+                </h2>
+                <div className="flex justify-center space-x-4">
+                  <Whisper
+                    placement="top"
+                    trigger="hover"
+                    speaker={
+                      <Popover title="Email">
+                        <p>Kirim email ke pemilik properti</p>
+                      </Popover>
+                    }
+                  >
+                    <Button
+                      appearance="ghost"
+                      color="green"
+                      className="flex items-center"
+                    >
+                      <Mail className="w-4 h-4 mr-2" />
+                      Email
+                    </Button>
+                  </Whisper>
+
+                  <Whisper
+                    placement="top"
+                    trigger="hover"
+                    speaker={
+                      <Popover title="Telepon">
+                        <p>Hubungi pemilik properti melalui telepon</p>
+                      </Popover>
+                    }
+                  >
+                    <Button
+                      appearance="ghost"
+                      color="green"
+                      className="flex items-center"
+                    >
+                      <Phone className="w-4 h-4 mr-2" />
+                      Telepon
+                    </Button>
+                  </Whisper>
+
+                  <Whisper
+                    placement="top"
+                    trigger="hover"
+                    speaker={
+                      <Popover title="WhatsApp">
+                        <p>Kirim pesan WhatsApp ke pemilik properti</p>
+                        {window.innerWidth > 768 ? (
+                          <a
+                            href={`https://web.whatsapp.com/send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${renderValue(property.title)}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Buka WhatsApp Web
+                          </a>
+                        ) : (
+                          <a
+                            href={`whatsapp://send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${renderValue(property.title)}`)}`}
+                          >
+                            Buka Aplikasi WhatsApp
+                          </a>
+                        )}
+                      </Popover>
+                    }
+                    enterable
+                  >
+                    <Button
+                      appearance="ghost"
+                      color="green"
+                      className="flex items-center"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      WhatsApp
+                    </Button>
+                  </Whisper>
+                </div>
               </div>
             </div>
           </div>
