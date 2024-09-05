@@ -195,7 +195,7 @@ const SearchResult: React.FC = () => {
             renderMark={(match, index) => (
               <mark
                 key={index}
-                className="text-gray-800 bg-yellow-200 dark:bg-gray-100 dark:text-red-700"
+                className="ml-2 italic text-gray-800 bg-yellow-200 roboto-font dark:bg-gray-100 dark:text-red-700"
               >
                 {match}
               </mark>

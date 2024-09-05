@@ -15,7 +15,6 @@ import { Loader, Placeholder } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import { MapPin, Banknote, House, CalendarDays } from "lucide-react";
 import {
-  Card,
   Typography,
   IconButton,
   Button,
@@ -36,6 +35,7 @@ import {
   FireFlame,
   HomeAltSlim,
 } from "iconoir-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Property {
   id: number;
@@ -214,7 +214,23 @@ const PostSection: React.FC = () => {
       </div>
     );
   }
-
+  function formatPrice(price: number): string {
+    if (price >= 1000000000) {
+      return (
+        (price / 1000000000).toLocaleString("id-ID", {
+          maximumFractionDigits: 3,
+        }) + " Milyar"
+      );
+    } else if (price >= 1000000) {
+      return (
+        (price / 1000000).toLocaleString("id-ID", {
+          maximumFractionDigits: 0,
+        }) + " Juta"
+      );
+    } else {
+      return price.toLocaleString("id-ID");
+    }
+  }
   return (
     <section className="text-gray-800 bg-gradient-to-b from-white via-blue-50 to-blue-100 dark:from-white dark:via-gray-50 dark:to-gray-300">
       <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
@@ -253,153 +269,82 @@ const PostSection: React.FC = () => {
           {properties.map((property) => (
             <Card
               key={property.id}
-              className="transition-transform transform shadow-lg hover:scale-105 bg-blue-50 dark:bg-gray-900 hover:border-blue-500"
+              className="transition-transform transform bg-white shadow-lg hover:scale-105 dark:bg-gray-900"
             >
-              <Badge
-                className={
-                  categories.find((cat) => cat.key === property.category_id)
-                    ?.badgeColor || ""
-                }
-                style={{ position: "absolute", zIndex: 10 }}
-              >
-                {
-                  categories.find((cat) => cat.key === property.category_id)
-                    ?.value
-                }
-              </Badge>
-              <img
-                src={getImageUrl(property)}
-                alt={property.title}
-                className="object-cover w-full h-48 transition-transform transform hover:scale-105"
-              />
-              <div className="p-4">
-                <Typography
-                  type="h6"
-                  className="mb-2 transform text-foreground hover:scale-105"
+              <div className="relative">
+                <img
+                  src={getImageUrl(property)}
+                  alt={property.title}
+                  className="object-cover w-full h-48"
+                  width="350"
+                  height="200"
+                  style={{ aspectRatio: "350/200", objectFit: "cover" }}
+                />
+                <Badge
+                  className={`absolute top-2 left-2 ${categories.find((cat) => cat.key === property.category_id)?.badgeColor || "bg-yellow-500"} text-white`}
                 >
-                  {property.title}
-                </Typography>
-                {/* <Typography className="mb-1 text-foreground">
-                    {property.short_desc}
-                  </Typography> */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-1 text-green-600 dark:text-green-100" />
-                    <Typography
-                      variant="body2"
-                      className="text-xs text-foreground"
-                    >
-                      {property.city.name}, {property.province.name}
-                    </Typography>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between mt-4">
-                  {/* fitur */}
-                  <div className="flex items-start">
-                    <Tooltip>
-                      <Tooltip.Trigger>
-                        <IconButton
-                          isCircular
-                          size="lg"
-                          color="secondary"
-                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                        >
-                          <Internet className="w-5 h-5" />
-                        </IconButton>
-                      </Tooltip.Trigger>
-                      <Tooltip.Content>
-                        {property.facility?.internet}
-                        <Tooltip.Arrow />
-                      </Tooltip.Content>
-                    </Tooltip>
-                    <Tooltip>
-                      <Tooltip.Trigger>
-                        <IconButton
-                          isCircular
-                          size="lg"
-                          color="secondary"
-                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                        >
-                          <Wifi className="w-5 h-5" />
-                        </IconButton>
-                      </Tooltip.Trigger>
-                      <Tooltip.Content>
-                        {property.facility?.line_phone}
-                        <Tooltip.Arrow />
-                      </Tooltip.Content>
-                    </Tooltip>
-                    <Tooltip>
-                      <Tooltip.Trigger>
-                        <IconButton
-                          isCircular
-                          size="lg"
-                          color="secondary"
-                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                        >
-                          <ElectronicsChip className="w-5 h-5" />
-                        </IconButton>
-                      </Tooltip.Trigger>
-                      <Tooltip.Content>
-                        {property.facility?.electricity} kWh
-                        <Tooltip.Arrow />
-                      </Tooltip.Content>
-                    </Tooltip>
-                    <Tooltip>
-                      <Tooltip.Trigger>
-                        <IconButton
-                          isCircular
-                          size="lg"
-                          color="secondary"
-                          className="cursor-pointer border border-surface bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200"
-                        >
-                          <SecurityPass className="w-5 h-5" />
-                        </IconButton>
-                      </Tooltip.Trigger>
-                      <Tooltip.Content>
-                        {property.facility?.security}
-                        <Tooltip.Arrow />
-                      </Tooltip.Content>
-                    </Tooltip>
-                    <Tooltip>
-                      <Tooltip.Trigger>
-                        <IconButton
-                          isCircular
-                          size="lg"
-                          color="secondary"
-                          className="cursor-pointer dark:border-none bg-surface-light transition-all hover:!opacity-100 group-hover:opacity-70 hover:bg-red-200 dark:hover:bg-red-200 dark:text-gray-100"
-                        >
-                          <HomeAltSlim className="w-5 h-5" />
-                        </IconButton>
-                      </Tooltip.Trigger>
-                      <Tooltip.Content>
-                        {property.facility?.certificate}
-                        <Tooltip.Arrow />
-                      </Tooltip.Content>
-                    </Tooltip>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <Banknote className="mr-2 text-green-600 dark:text-green-100" />
-                  <Typography
-                    variant="h6"
-                    className="font-semibold text-gray-600 dark:text-gray-100"
-                  >
-                    Rp. {property.price.toLocaleString("id-ID")}
-                  </Typography>
-                </div>
+                  {
+                    categories.find((cat) => cat.key === property.category_id)
+                      ?.value
+                  }
+                </Badge>
               </div>
-
-              <Card.Footer className="pt-3">
+              <CardContent>
+                <h2 className="text-lg font-semibold text-left text-gray-800 dark:text-gray-200">
+                  {property.title}
+                </h2>
+                <p className="text-sm text-left text-gray-500 dark:text-gray-400">
+                  <MapPin className="inline-block w-4 h-4 mr-1" />{" "}
+                  {property.city.name}, {property.province.name}
+                </p>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex space-x-2 text-gray-500 dark:text-gray-400">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Internet className="w-4 h-4" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {property.facility?.internet}
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Wifi className="w-4 h-4" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {property.facility?.line_phone}
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <ElectronicsChip className="w-4 h-4" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {property.facility?.electricity} kWh
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <SecurityPass className="w-4 h-4" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {property.facility?.security}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <p className="text-base font-semibold text-right text-green-600 dark:text-green-400">
+                    Rp. {formatPrice(property.price)}
+                  </p>
+                </div>
                 <Button
-                  className="text-gray-800 bg-yellow-400 border-none dark:bg-yellow-400 hover:dark:bg-yellow-500 dark:text-gray-700 hover:bg-yellow-500"
-                  isFullWidth
+                  className="w-full mt-4 text-white bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-500 dark:hover:bg-yellow-600"
                   onClick={() =>
                     (window.location.href = `/post/${property.id}`)
                   }
                 >
                   Detail
                 </Button>
-              </Card.Footer>
+              </CardContent>
             </Card>
           ))}
         </div>

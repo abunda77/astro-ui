@@ -73,6 +73,7 @@ const KPRCalculator2 = () => {
               }
               max={50}
               step={1}
+              className="mt-1 text-blue-300 bg-green-200 dark:bg-yellow-700"
             />
           </div>
           <Input

@@ -492,7 +492,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     {renderValue(property.price)?.toLocaleString() || "N/A"}
                     <Whisper
                       trigger="click"
-                      placement="leftEnd"
+                      placement={window.innerWidth > 768 ? "bottom" : "right"}
                       speaker={
                         <Popover className="p-4 bg-white rounded-md shadow-md dark:bg-gray-800">
                           <KPRCalculator
