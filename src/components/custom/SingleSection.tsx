@@ -53,6 +53,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
+import KPRCalculator from "@/components/custom/CalculatorKPR";
 
 interface Property {
   user_id: number | null;
@@ -489,7 +490,23 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     <Banknote className="inline-block w-6 h-6 mr-1 text-green-600 dark:text-green-400" />
                     Harga: Rp{" "}
                     {renderValue(property.price)?.toLocaleString() || "N/A"}
+                    <Whisper
+                      trigger="click"
+                      placement="leftEnd"
+                      speaker={
+                        <Popover className="p-4 bg-white rounded-md shadow-md dark:bg-gray-800">
+                          <KPRCalculator
+                            propertyPrice={renderValue(property.price)}
+                          />
+                        </Popover>
+                      }
+                    >
+                      <span className="inline-block px-3 py-1 ml-2 text-sm font-semibold text-white bg-blue-600 rounded-full cursor-pointer">
+                        Simulasi KPR
+                      </span>
+                    </Whisper>
                   </p>
+
                   <Accordion
                     type="single"
                     collapsible

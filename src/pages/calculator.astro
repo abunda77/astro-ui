@@ -1,0 +1,47 @@
+---
+import "@/styles/globals.css";
+import { Button } from "rsuite";
+import Layout from "@/layouts/Layout03.astro";
+import Footer01 from "@/layouts/Footer01.astro";
+import { Phone } from "lucide-react";
+import KPRCalculator2 from "@/components/custom/CalculatorKPR2";
+---
+
+<Layout title="Kalkulator KPR" />
+
+<div
+  class="min-h-screen px-4 py-12 bg-gradient-to-b from-blue-200 to-white dark:from-gray-800 dark:to-gray-900 sm:px-6 lg:px-8"
+>
+  <div class="max-w-3xl mx-auto">
+    <h1
+      class="mb-10 text-5xl font-extrabold text-center text-blue-900 dark:text-blue-200"
+    >
+      Kalkulator KPR
+    </h1>
+
+    <div class="p-10 mb-10 bg-white shadow-2xl rounded-xl dark:bg-gray-700">
+      <h2 class="mb-6 text-3xl font-bold text-blue-800 dark:text-blue-300">
+        Hitung KPR Anda dengan Mudah
+      </h2>
+      <p class="mb-8 text-lg text-gray-800 dark:text-gray-200">
+        Gunakan kalkulator KPR kami untuk menghitung estimasi cicilan bulanan
+        Anda. Masukkan detail properti dan informasi keuangan Anda untuk
+        memulai.
+      </p>
+      <KPRCalculator2 client:load />
+    </div>
+
+    <div class="text-center">
+      <Button
+        size="lg"
+        color="green"
+        appearance="primary"
+        className="font-semibold"
+      >
+        <a href="/contact" class="text-white no-underline">Konsultasi Gratis</a>
+      </Button>
+    </div>
+  </div>
+</div>
+
+<Footer01 />
