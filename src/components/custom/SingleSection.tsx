@@ -55,37 +55,37 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 
 interface Property {
-  user_id: number;
-  category_id: number;
-  title: string;
-  short_desc: string;
-  description: string;
-  price: number;
-  period: string;
-  address: string;
-  province_id: string;
-  district_id: string;
-  city_id: string;
-  village_id: string;
-  coordinates: string;
-  nearby: string;
+  user_id: number | null;
+  category_id: number | null;
+  title: string | null;
+  short_desc: string | null;
+  description: string | null;
+  price: number | null;
+  period: string | null;
+  address: string | null;
+  province_id: string | null;
+  district_id: string | null;
+  city_id: string | null;
+  village_id: string | null;
+  coordinates: string | null;
+  nearby: string | null;
 
-  ads: string;
-  status: string;
-  views_count: number;
+  ads: string | null;
+  status: string | null;
+  views_count: number | null;
   meta_title: string | null;
   meta_description: string | null;
-  keywords: string;
-  id: number;
-  created_at: string;
-  updated_at: string;
+  keywords: string | null;
+  id: number | null;
+  created_at: string | null;
+  updated_at: string | null;
   facility: {
-    certificate: string;
-    electricity: number;
-    line_phone: string;
-    internet: string;
-    road_width: string;
-    water_source: string;
+    certificate: string | null;
+    electricity: number | null;
+    line_phone: string | null;
+    internet: string | null;
+    road_width: string | null;
+    water_source: string | null;
     hook: string | null;
     condition: string | null;
     security: string | null;
@@ -94,13 +94,13 @@ interface Property {
   };
   specification: {
     land_size: number | null;
-    building_size: number;
-    bedroom: number;
+    building_size: number | null;
+    bedroom: number | null;
     carport: string | null;
-    bathroom: number;
+    bathroom: number | null;
     dining_room: string | null;
     living_room: string | null;
-    floors: number;
+    floors: number | null;
     id: number;
   };
   images: {
@@ -138,15 +138,15 @@ interface Property {
     created_at: string;
     updated_at: string;
     profile: {
-      first_name: string;
-      last_name: string;
-      phone: string;
-      email: string;
-      whatsapp: string;
-      company_name: string;
+      first_name: string | null;
+      last_name: string | null;
+      phone: string | null;
+      email: string | null;
+      whatsapp: string | null;
+      company_name: string | null;
       avatar: string | null;
-      biodata_company: string;
-      jobdesk: string;
+      biodata_company: string | null;
+      jobdesk: string | null;
     };
   };
 }
@@ -192,10 +192,12 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   );
   const [isLoading2, setIsLoading2] = useState(false);
   const [result, setResult] = useState("");
-  const [subject, setSubject] = useState("Pesan Pengunjung");
+  const [subject, setSubject] = useState(
+    `Pertanyaan Pengunjung tentang ${property.title}`
+  );
   const [name, setName] = useState("");
   const [toName] = useState(
-    `${property.user.profile.first_name} ${property.user.profile.last_name}`
+    `${property.user?.profile?.first_name} ${property.user?.profile?.last_name}`
   );
   const [toEmail] = useState(property.user.profile.email);
   const [email, setEmail] = useState("");
@@ -306,18 +308,31 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   }, []);
 
   const [showDiv, setShowDiv] = useState(false);
+  const [showDiv2, setShowDiv2] = useState(false);
+  const [showDiv3, setShowDiv3] = useState(false);
+
   const toggleDiv = () => {
     setShowDiv(!showDiv);
+    if (!showDiv) {
+      setShowDiv2(false);
+      setShowDiv3(false);
+    }
   };
 
-  const [showDiv2, setShowDiv2] = useState(false);
   const toggleDiv2 = () => {
     setShowDiv2(!showDiv2);
+    if (!showDiv2) {
+      setShowDiv(false);
+      setShowDiv3(false);
+    }
   };
 
-  const [showDiv3, setShowDiv3] = useState(false);
   const toggleDiv3 = () => {
     setShowDiv3(!showDiv3);
+    if (!showDiv3) {
+      setShowDiv(false);
+      setShowDiv2(false);
+    }
   };
 
   useEffect(() => {
@@ -962,15 +977,32 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                 {showDiv && (
                   <div className="p-2 mt-2 bg-green-100 rounded">
                     <p>
-                      Nomor WhatsApp:{" "}
-                      {property.user?.profile?.whatsapp || "Tidak tersedia"}
-                      <a
-                        href={`https://web.whatsapp.com/send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Buka WhatsApp Web
-                      </a>
+                      Chat WhatsApp pada Pemilik Properti:{" "}
+                      {window.innerWidth > 768 ? (
+                        <Button
+                          as="a"
+                          href={`https://web.whatsapp.com/send?phone=${property.user?.profile?.whatsapp}&text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          appearance="primary"
+                          color="green"
+                          className="flex items-center"
+                        >
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                          Buka WhatsApp Web
+                        </Button>
+                      ) : (
+                        <Button
+                          as="a"
+                          href={`whatsapp://send?phone=${property.user?.profile?.whatsapp}&text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
+                          appearance="primary"
+                          color="green"
+                          className="flex items-center"
+                        >
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                          Buka Aplikasi WhatsApp
+                        </Button>
+                      )}
                     </p>
                   </div>
                 )}
@@ -978,21 +1010,29 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                 {showDiv2 && (
                   <div className="p-2 mt-2 bg-green-100 rounded">
                     <p>
-                      Nomor WhatsApp:{" "}
-                      {property.user?.profile?.whatsapp || "Tidak tersedia"}
-                      <a
-                        href={`https://web.whatsapp.com/send?text=${encodeURIComponent(`Saya tertarik dengan properti: ${property.title}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Buka WhatsApp Web
-                      </a>
+                      Nomor Telepon Pemilik Properti :{" "}
+                      {window.innerWidth > 768 ? (
+                        <span>
+                          {property.user?.profile?.phone || "Tidak tersedia"}
+                        </span>
+                      ) : (
+                        <Button
+                          as="a"
+                          href={`tel:${property.user?.profile?.phone}`}
+                          appearance="ghost"
+                          color="green"
+                          className="flex items-center"
+                        >
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                          Hubungi via Telepon
+                        </Button>
+                      )}
                     </p>
                   </div>
                 )}
                 {/* show element div3 */}
                 {alertStatus === "success" && (
-                  <Alert className="mb-4 bg-green-200">
+                  <Alert className="mb-4 bg-green-200 dark:bg-green-100 dark:text-gray-700">
                     <Terminal className="w-4 h-4" />
                     <AlertTitle>Sukses!</AlertTitle>
                     <AlertDescription>
@@ -1010,142 +1050,145 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                   </Alert>
                 )}
                 {showDiv3 && (
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                      <Label
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
-                        htmlFor="name"
-                      >
-                        Nama
-                      </Label>
-                      <Input
-                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
-                        id="name"
-                        name="name"
-                        type="text"
-                        placeholder="Nama"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <Label
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
-                        htmlFor="email"
-                      >
-                        Email
-                      </Label>
-                      <Input
-                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <Label
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
-                        htmlFor="subject"
-                      >
-                        Subject
-                      </Label>
-                      <Input
-                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
-                        id="subject"
-                        name="subject"
-                        type="text"
-                        placeholder="Subject"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <Label
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
-                        htmlFor="message"
-                      >
-                        Pesan
-                      </Label>
-                      <Textarea
-                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
-                        id="message"
-                        name="message"
-                        placeholder="Pesan"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <Label
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
-                        htmlFor="noWa"
-                      >
-                        No. WhatsApp
-                      </Label>
-                      <Input
-                        className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
-                        id="noWa"
-                        name="noWa"
-                        type="text"
-                        placeholder="Masukan No. WhatsApp Anda"
-                        value={noWa}
-                        onChange={(e) => setNoWa(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <Label
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
-                        htmlFor="captcha"
-                      >
-                        Captcha
-                      </Label>
-                      <div className="flex items-center space-x-2">
+                  <div className="p-2 mt-2 rounded bg-gray-50 dark:bg-gray-900">
+                    <form onSubmit={handleSubmit}>
+                      <div className="mb-4">
+                        <Label
+                          className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                          htmlFor="name"
+                        >
+                          Nama
+                        </Label>
                         <Input
-                          className="px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none w-36 focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:text-gray-300"
-                          id="captcha"
-                          name="captcha"
+                          className="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded shadow dark:bg-gray-600 dark:text-gray-300 focus:border-green-800 dark:focus:border-green-100"
+                          id="name"
+                          name="name"
                           type="text"
-                          placeholder="Masukkan captcha di atas"
-                          value={userCaptcha}
-                          onChange={(e) => setUserCaptcha(e.target.value)}
+                          placeholder="Nama"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                           required
                         />
-                        <div className="p-2 text-green-600 bg-gray-200 rounded dark:bg-gray-600 dark:text-green-400">
-                          {captchaText}
-                        </div>
-                        <Button
-                          type="button"
-                          onClick={generateCaptcha}
-                          className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-300 dark:hover:bg-blue-500"
+                      </div>
+                      <div className="mb-4">
+                        <Label
+                          className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                          htmlFor="email"
                         >
-                          <RefreshCcw className="w-4 h-4" />
+                          Email
+                        </Label>
+                        <Input
+                          className="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded shadow dark:bg-gray-600 dark:text-gray-300 focus:border-green-800 dark:focus:border-green-100"
+                          id="email"
+                          name="email"
+                          type="email"
+                          placeholder="Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <Label
+                          className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                          htmlFor="subject"
+                        >
+                          Subject
+                        </Label>
+                        <Input
+                          className="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded shadow dark:bg-gray-600 dark:text-gray-300 focus:border-green-800 dark:focus:border-green-100"
+                          id="subject"
+                          name="subject"
+                          type="text"
+                          placeholder="Subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          required
+                          readOnly
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <Label
+                          className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                          htmlFor="message"
+                        >
+                          Pesan
+                        </Label>
+                        <Textarea
+                          className="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded shadow dark:bg-gray-600 dark:text-gray-300 "
+                          id="message"
+                          name="message"
+                          placeholder={`Tuliskan Pesan Anda di sini yang berkaitan dengan properti: ${property.title}`}
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <Label
+                          className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                          htmlFor="noWa"
+                        >
+                          No. WhatsApp
+                        </Label>
+                        <Input
+                          className="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded shadow dark:bg-gray-600 dark:text-gray-300 focus:border-green-800 dark:focus:border-green-100"
+                          id="noWa"
+                          name="noWa"
+                          type="text"
+                          placeholder="Masukan No. WhatsApp Anda"
+                          value={noWa}
+                          onChange={(e) => setNoWa(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <Label
+                          className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300"
+                          htmlFor="captcha"
+                        >
+                          Captcha
+                        </Label>
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            className="px-3 py-2 text-gray-700 bg-gray-200 rounded shadow w-36 dark:bg-gray-600 dark:text-gray-300 focus:border-green-800 dark:focus:border-green-100"
+                            id="captcha"
+                            name="captcha"
+                            type="text"
+                            placeholder="Masukkan captcha di samping"
+                            value={userCaptcha}
+                            onChange={(e) => setUserCaptcha(e.target.value)}
+                            required
+                          />
+                          <div className="p-2 text-green-600 bg-gray-200 rounded dark:bg-gray-600 dark:text-green-400">
+                            {captchaText}
+                          </div>
+                          <Button
+                            type="button"
+                            onClick={generateCaptcha}
+                            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-300 dark:hover:bg-blue-500"
+                          >
+                            <RefreshCcw className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Button
+                          appearance="primary"
+                          color="blue"
+                          type="submit"
+                          className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline dark:bg-blue-700 dark:hover:bg-blue-800"
+                          disabled={isLoading2}
+                        >
+                          {isLoading2 ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : null}
+                          Kirim
                         </Button>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Button
-                        appearance="primary"
-                        color="blue"
-                        type="submit"
-                        className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline dark:bg-blue-700 dark:hover:bg-blue-800"
-                        disabled={isLoading2}
-                      >
-                        {isLoading2 ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        ) : null}
-                        Kirim
-                      </Button>
-                    </div>
-                    {result && <div id="result">{result}</div>}
-                  </form>
+                      {result && <div id="result">{result}</div>}
+                    </form>
+                  </div>
                 )}
               </div>
             </div>
