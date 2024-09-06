@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,21 +16,27 @@ interface MenuItem {
   badge?: boolean;
 }
 
+interface MainNavigationProps {
+  menuitems: MenuItem[];
+}
+
 const MenuItem = ({ item }: { item: MenuItem }) => {
   if (item.items) {
     return (
       <NavigationMenuItem>
-        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+        <NavigationMenuTrigger className="hover:bg-gray-400 dark:hover:bg-gray-600 dark:text-gray-200">
+          {item.title}
+        </NavigationMenuTrigger>
         <NavigationMenuContent>
-          <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+          <ul className="grid w-[400px] gap-2 p-1 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
             {item.items.map((subItem, index) => (
-              <li key={index}>
+              <li key={index} className="mb-2">
                 <NavigationMenuLink asChild>
                   <a
                     href={subItem.path}
-                    className="block p-3 space-y-1 leading-none no-underline transition-colors rounded-md outline-none select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                    className="block p-1 transition-colors duration-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-700"
                   >
-                    <div className="text-sm font-medium leading-none">
+                    <div className="mb-1 text-sm font-medium leading-none">
                       {subItem.title}
                     </div>
                     <p className="text-sm leading-snug line-clamp-2 text-muted-foreground">
@@ -49,10 +56,13 @@ const MenuItem = ({ item }: { item: MenuItem }) => {
   return (
     <NavigationMenuItem>
       <NavigationMenuLink asChild>
-        <a href={item.path} className={navigationMenuTriggerStyle()}>
+        <a
+          href={item.path}
+          className={`${navigationMenuTriggerStyle()} hover:bg-gray-400 dark:hover:bg-gray-600 dark:text-gray-200 `}
+        >
           {item.title}
           {item.badge && (
-            <span className="px-2 py-1 ml-2 text-xs font-semibold rounded-full bg-primary text-primary-foreground">
+            <span className="px-2 py-1 ml-2 text-xs font-semibold rounded-full bg-primary text-primary-foreground hover:bg-primary-dark">
               {item.badge}
             </span>
           )}
@@ -62,7 +72,7 @@ const MenuItem = ({ item }: { item: MenuItem }) => {
   );
 };
 
-const MainNavigation = ({ menuitems }: { menuitems: MenuItem[] }) => {
+const MainNavigation: React.FC<MainNavigationProps> = ({ menuitems }) => {
   return (
     <NavigationMenu>
       <NavigationMenuList>

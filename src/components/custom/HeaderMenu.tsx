@@ -7,12 +7,11 @@ import { ModeToggle } from "@/components/custom/ModeToggle";
 import AvatarComponent from "@/components/custom/AvatarComponent";
 import LoginButtons from "@/components/custom/LoginButtons";
 
-interface MenuItem {
+type MenuItem = {
   title: string;
-  path: string;
-  badge?: boolean;
-  children?: MenuItem[];
-}
+  path?: string;
+  items?: { title: string; path: string }[];
+};
 
 interface HeaderMenuProps {
   menuitems: MenuItem[];
@@ -33,20 +32,19 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuitems }) => {
 
       {isMenuOpen && (
         <div className="absolute left-0 right-0 z-50 bg-gray-100 dark:bg-gray-900">
-          <ul className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <ul>
             {menuitems.map((item, index) => (
               <li key={index}>
-                <a
-                  href={item.path}
-                  className="block px-3 py-2 text-base font-medium text-gray-800 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
-                  {item.title}
-                  {item.badge && (
-                    <span className="ml-1 px-2 py-0.5 text-[10px] animate-pulse font-semibold uppercase text-white bg-indigo-600 rounded-full">
-                      New
-                    </span>
-                  )}
-                </a>
+                <a href={item.path}>{item.title}</a>
+                {item.items && (
+                  <ul>
+                    {item.items.map((subItem, subIndex) => (
+                      <li key={subIndex}>
+                        <a href={subItem.path}>{subItem.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>

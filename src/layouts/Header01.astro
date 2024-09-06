@@ -23,18 +23,18 @@ const menuitems: MenuItem[] = [
       { title: "Rumah", path: "/properti/rumah" },
       { title: "Apartemen", path: "/properti/apartemen" },
       { title: "Tanah", path: "/properti/tanah" },
-      { title: "Ruko", path: "/properti/ruko" },
+      { title: "Calclutaor KPR", path: "/calculator" },
     ],
   },
   {
-    title: "Tentang Kami",
+    title: "Abou Us",
     items: [
-      { title: "Profil Perusahaan", path: "/tentang-kami/profil" },
-      { title: "Tim Kami", path: "/tentang-kami/tim" },
-      { title: "Karir", path: "/tentang-kami/karir" },
+      { title: "Our Profile", path: "/about" },
+      { title: "Layanan", path: "/layanan" },
+      { title: "Privacy", path: "/privacy" },
     ],
   },
-  { title: "Kontak", path: "/kontak" },
+  { title: "Kontak", path: "/contact" },
 ];
 
 import {
@@ -50,28 +50,50 @@ import {
 import "rsuite/dist/rsuite-no-reset.min.css";
 ---
 
-<header
-  class="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
->
-  <div class="container flex items-center h-16">
-    <div class="mr-4">
-      <a href="/" class="flex items-center space-x-2">
-        <img src="/images/logo.svg" alt="Logo" class="w-6 h-6" />
-        <span class="hidden font-bold sm:inline-block">Properti Kita</span>
-      </a>
-    </div>
-    <div class="flex-1 hidden md:flex">
-      <MainNavigation client:load menuitems={menuitems} />
-    </div>
-    <div class="flex items-center justify-end flex-1 space-x-4">
-      <LoginButtons client:load />
-      <ModeToggle client:load />
-      <HeaderMenu client:load menuitems={menuitems as MenuItem[]} />
+<header class="w-full bg-gray-100 shadow-md dark:bg-gray-900">
+  <div class="px-4 mx-auto container-lg">
+    <div class="flex items-center justify-between h-16">
+      {/* Logo and Welcome Message */}
+      <div class="flex items-center ml-10 space-x-4">
+        <div class="flex-shrink-0">
+          <a href="/">
+            <img
+              id="themeLogo"
+              class="w-auto h-10"
+              alt="Logo"
+              src="/images/logo.svg"
+            />
+          </a>
+        </div>
+      </div>
+      {/* Desktop Menu */}
+      <div class="hidden lg:flex">
+        <div class="justify-center flex-1 hidden ml-80 md:flex">
+          <MainNavigation client:load menuitems={menuitems} />
+        </div>
+      </div>
+
+      {/* Right side items */}
+      <div class="items-center hidden mr-10 space-x-8 lg:flex">
+        <!-- <AvatarComponent client:load /> -->
+        <LoginButtons client:load />
+
+        <div
+          id="welcomeMessage"
+          class="text-sm font-medium dark:text-gray-300 animate-pulse"
+        >
+        </div>
+        <div class="items-end hidden space-x-8 md:flex">
+          <ModeToggle client:load />
+        </div>
+      </div>
+      {/* Mobile menu */}
+      <HeaderMenu client:load menuitems={menuitems as any} />
     </div>
   </div>
 </header>
 
-<!-- <HeaderClientScript client:load /> -->
+{/* Running Text */}
 
 <style is:global>
   @keyframes marquee {
