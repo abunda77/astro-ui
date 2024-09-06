@@ -1,3 +1,8 @@
+// Fungsi-fungsi untuk:
+// - Memperbarui logo berdasarkan mode gelap/terang
+// - Mengelola preferensi mode gelap
+// - Menampilkan pesan selamat datang
+
 import React, { useEffect } from "react";
 
 const HeaderClientScript = () => {

@@ -1,3 +1,4 @@
+// Toggle option Light or Dark Mode
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { Toggle } from "rsuite";

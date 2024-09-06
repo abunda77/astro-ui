@@ -7,154 +7,75 @@ import Dropdown from "@/components/dropdown.astro";
 import LoginButtons from "@/components/custom/LoginButtons";
 import HeaderClientScript from "@/components/custom/HeaderClientScript";
 import HeaderMenu from "@/components/custom/HeaderMenu";
-
-import { Navbar, Nav } from "rsuite";
-import "rsuite/dist/rsuite-no-reset.min.css";
-
-type MenuItem = {
-  title?: string;
-  path?: string;
-  badge?: boolean;
-};
-
-const menuitems: MenuItem[] = [
+import MainNavigation from "@/components/custom/MainNavigation";
+const menuitems = [
+  { title: "Beranda", path: "/" },
   {
-    title: "Home",
-    path: "/",
+    title: "Properti",
+    items: [
+      { title: "Rumah", path: "/properti/rumah" },
+      { title: "Apartemen", path: "/properti/apartemen" },
+      { title: "Tanah", path: "/properti/tanah" },
+      { title: "Ruko", path: "/properti/ruko" },
+    ],
   },
   {
-    title: "Type Properti",
-    path: "#",
-    // children: [
-    //   { title: "Apartement", path: "#" },
-    //   { title: "Kavling", path: "#" },
-    //   { title: "Gudang", path: "#" },
-    //   { title: "Office", path: "# " },
-    // ],
+    title: "Tentang Kami",
+    items: [
+      { title: "Profil Perusahaan", path: "/tentang-kami/profil" },
+      { title: "Tim Kami", path: "/tentang-kami/tim" },
+      { title: "Karir", path: "/tentang-kami/karir" },
+    ],
   },
-  { title: "Layanan", path: "/layanan" },
-  { title: "About", path: "/about" },
-  { title: "Blog", path: "/blog" },
-  { title: "Contact", badge: true, path: "/contact" },
-  {
-    // title: "PROMO MERDEKA",
-    // badge: true,
-    // path: "#",
-  },
+  { title: "Kontak", path: "/kontak" },
 ];
+
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+
+import "rsuite/dist/rsuite-no-reset.min.css";
 ---
 
-<header class="w-full bg-gray-100 shadow-md dark:bg-gray-900">
-  <div class="px-4 mx-auto container-lg">
-    <div class="flex items-center justify-between h-16">
-      {/* Logo and Welcome Message */}
-      <div class="flex items-center ml-10 space-x-4">
-        <div class="flex-shrink-0">
-          <a href="/">
-            <img
-              id="themeLogo"
-              class="w-auto h-10"
-              alt="Logo"
-              src="/images/logo.svg"
-            />
-          </a>
-        </div>
-      </div>
-      {/* Desktop Menu */}
-      <div class="hidden lg:flex">
-        <div class="flex items-center space-x-4 ml-80">
-          <Astronav>
-            <MenuItems class="hidden w-full mt-2 lg:w-auto lg:flex lg:mt-0">
-              <ul class="flex flex-col lg:flex-row lg:gap-3">
-                {
-                  menuitems.map((item) => (
-                    <li>
-                      <a
-                        href={item.path}
-                        class="px-3 py-2 text-sm font-medium text-gray-800 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
-                      >
-                        <span>{item.title}</span>
-                        {item.badge && (
-                          <span class="ml-1 px-2 py-0.5 text-[10px] animate-pulse font-semibold uppercase text-white bg-indigo-600 rounded-full">
-                            New
-                          </span>
-                        )}
-                      </a>
-                    </li>
-                  ))
-                }
-              </ul>
-            </MenuItems>
-          </Astronav>
-        </div>
-      </div>
-      {/* Right side items */}
-      <div class="items-center hidden mr-10 space-x-8 lg:flex">
-        <!-- <AvatarComponent client:load /> -->
-        <LoginButtons client:load />
-
-        <div
-          id="welcomeMessage"
-          class="text-sm font-medium dark:text-gray-300 animate-pulse"
+<header
+  class="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+>
+  <div class="container flex items-center h-16">
+    <div class="mr-4">
+      <a href="/" class="flex items-center space-x-2">
+        <img src="/images/logo.svg" alt="Logo" class="w-6 h-6" />
+        <span class="hidden font-bold sm:inline-block">Properti Kita</span>
+      </a>
+    </div>
+    <div class="flex-1 hidden md:flex">
+      <MainNavigation client:load menuitems={menuitems} />
+    </div>
+    <div class="flex items-center justify-end flex-1 space-x-4">
+      <div class="w-full md:w-auto md:flex-none">
+        <Button
+          variant="outline"
+          className="relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
         >
-        </div>
-        <div class="items-end hidden space-x-8 md:flex">
-          <ModeToggle client:load />
-        </div>
+          <span class="hidden lg:inline-flex">Cari properti...</span>
+          <span class="inline-flex lg:hidden">Cari...</span>
+          <kbd
+            class="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex"
+          >
+            <span class="text-xs">⌘</span>K
+          </kbd>
+        </Button>
       </div>
-      {/* Mobile menu */}
-      <HeaderMenu client:load menuitems={menuitems as any} />
+      <LoginButtons client:load />
+      <ModeToggle client:load />
+      <HeaderMenu client:load menuitems={menuitems} />
     </div>
   </div>
 </header>
 
-{/* Running Text */}
-
-<!-- <div class="w-screen overflow-hidden bg-gray-300 dark:bg-gray-800">
-  <div class="container mx-auto">
-    <div
-      class="py-2 text-sm font-medium text-gray-800 dark:text-gray-300 whitespace-nowrap"
-    >
-      <span class="inline-block animate-marquee"
-        >Welcome to our website! We're very very glad you're here.</span
-      >
-    </div>
-  </div>
-</div> -->
-<style is:global>
-  @keyframes marquee {
-    0% {
-      transform: translateX(75%);
-    }
-    100% {
-      transform: translateX(20%);
-    }
-  }
-
-  @keyframes vertical-move {
-    0% {
-      transform: translateY(100%); /* Mulai dari bawah layar */
-    }
-    100% {
-      transform: translateY(-100%); /* Berakhir di atas layar */
-    }
-  }
-
-  .animate-marquee {
-    animation: vertical-move 5s linear infinite; /* Gunakan animasi vertikal */
-    display: inline-flex; /* Untuk menengahkan secara horizontal */
-    align-items: center; /* Untuk menengahkan secara vertikal */
-  }
-
-  @media (max-width: 640px) {
-    .animate-marquee {
-      animation: vertical-move 15s linear infinite; /* Animasi yang sama untuk mobile */
-    }
-  }
-
-  .animate-horizontal-move {
-    animation: horizontal-move 10s linear infinite;
-  }
-</style>
-
-<HeaderClientScript client:load />
+<!-- <HeaderClientScript client:load /> -->
