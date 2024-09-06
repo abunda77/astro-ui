@@ -8,12 +8,11 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-
 interface MenuItem {
   title: string;
   path?: string;
-  items?: MenuItem[];
-  badge?: string;
+  items?: { title: string; path: string }[];
+  badge?: boolean;
 }
 
 const MenuItem = ({ item }: { item: MenuItem }) => {

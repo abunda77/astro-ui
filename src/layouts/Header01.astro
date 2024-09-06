@@ -8,7 +8,14 @@ import LoginButtons from "@/components/custom/LoginButtons";
 import HeaderClientScript from "@/components/custom/HeaderClientScript";
 import HeaderMenu from "@/components/custom/HeaderMenu";
 import MainNavigation from "@/components/custom/MainNavigation";
-const menuitems = [
+
+type MenuItem = {
+  title: string;
+  path?: string;
+  items?: { title: string; path: string }[];
+};
+
+const menuitems: MenuItem[] = [
   { title: "Beranda", path: "/" },
   {
     title: "Properti",
@@ -57,25 +64,47 @@ import "rsuite/dist/rsuite-no-reset.min.css";
       <MainNavigation client:load menuitems={menuitems} />
     </div>
     <div class="flex items-center justify-end flex-1 space-x-4">
-      <div class="w-full md:w-auto md:flex-none">
-        <Button
-          variant="outline"
-          className="relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
-        >
-          <span class="hidden lg:inline-flex">Cari properti...</span>
-          <span class="inline-flex lg:hidden">Cari...</span>
-          <kbd
-            class="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex"
-          >
-            <span class="text-xs">⌘</span>K
-          </kbd>
-        </Button>
-      </div>
       <LoginButtons client:load />
       <ModeToggle client:load />
-      <HeaderMenu client:load menuitems={menuitems} />
+      <HeaderMenu client:load menuitems={menuitems as MenuItem[]} />
     </div>
   </div>
 </header>
 
 <!-- <HeaderClientScript client:load /> -->
+
+<style is:global>
+  @keyframes marquee {
+    0% {
+      transform: translateX(75%);
+    }
+    100% {
+      transform: translateX(20%);
+    }
+  }
+
+  @keyframes vertical-move {
+    0% {
+      transform: translateY(100%); /* Mulai dari bawah layar */
+    }
+    100% {
+      transform: translateY(-100%); /* Berakhir di atas layar */
+    }
+  }
+
+  .animate-marquee {
+    animation: vertical-move 5s linear infinite; /* Gunakan animasi vertikal */
+    display: inline-flex; /* Untuk menengahkan secara horizontal */
+    align-items: center; /* Untuk menengahkan secara vertikal */
+  }
+
+  @media (max-width: 640px) {
+    .animate-marquee {
+      animation: vertical-move 15s linear infinite; /* Animasi yang sama untuk mobile */
+    }
+  }
+
+  .animate-horizontal-move {
+    animation: horizontal-move 10s linear infinite;
+  }
+</style>
