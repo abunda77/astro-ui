@@ -58,7 +58,7 @@ const MenuItem = ({ item }: { item: MenuItem }) => {
       <NavigationMenuLink asChild>
         <a
           href={item.path}
-          className={`${navigationMenuTriggerStyle()} hover:bg-gray-400 dark:hover:bg-gray-600 dark:text-gray-200 `}
+          className={`${navigationMenuTriggerStyle()} hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 `}
         >
           {item.title}
           {item.badge && (
