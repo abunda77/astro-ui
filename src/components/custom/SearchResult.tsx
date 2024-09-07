@@ -57,22 +57,32 @@ const SearchResult: React.FC = () => {
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
-  const brands = [
-    { name: "CNN", logo: "images/cnn.png" },
-    { name: "VICE", logo: "images/vice.png" },
-    { name: "Bloomberg", logo: "images/bloomberg.png" },
-    { name: "FASHIONISTA", logo: "images/fashionita.png" },
-    { name: "NEW YORK POST", logo: "images/newyorktime.png" },
+  const customerLogos3 = [
+    { name: "BJB", logo: "images/bjb.webp" },
+    { name: "mega", logo: "images/bankmega.webp" },
+    { name: "Bca", logo: "images/bca.webp" },
+    { name: "bcasyariah", logo: "images/bcasyariah.webp" },
+    { name: "bni", logo: "images/bni.webp" },
+    { name: "cimb", logo: "images/cimb.webp" },
+    { name: "danamon", logo: "images/danamon.webp" },
+    { name: "icbc", logo: "images/icbc.webp" },
+    { name: "mandiri", logo: "images/mandiri.webp" },
+    { name: "maybank", logo: "images/maybank.webp" },
+    { name: "muamalat", logo: "images/muamalat.webp" },
+    { name: "ocbc", logo: "images/ocbc.webp" },
+    { name: "panin", logo: "images/panin.webp" },
+    { name: "permata", logo: "images/permata.webp" },
+    { name: "uob", logo: "images/uob.webp" },
     // { name: "NEW YORK POST", logo: "images/newyorktime.png" },
   ];
 
   const customerLogos = [
-    { name: "HubSpot", logo: "images/hubspot.png" },
-    { name: "Shopify", logo: "images/shopify.png" },
-    { name: "eBay", logo: "images/ebay.png" },
-    { name: "DELL", logo: "images/dell.png" },
-    { name: "box", logo: "images/box.png" },
-    { name: "stackoverflow", logo: "images/stackoverflow.png" },
+    { name: "Agung Podomoro", logo: "images/agungpodomoro.webp" },
+
+    { name: "Damai Putra", logo: "images/damaiputra.webp" },
+    { name: "Duta Putra Land", logo: "images/dutaputraland.webp" },
+    { name: "Sinarmas", logo: "images/sinarmas.webp" },
+    { name: "Summarecon", logo: "images/summarecon.webp" },
   ];
 
   const customerLogos2 = [
@@ -195,7 +205,7 @@ const SearchResult: React.FC = () => {
             renderMark={(match, index) => (
               <mark
                 key={index}
-                className="ml-2 italic text-gray-800 bg-yellow-200 roboto-font dark:bg-gray-100 dark:text-red-700"
+                className="italic text-gray-800 bg-yellow-200 roboto-font dark:bg-gray-100 dark:text-red-700"
               >
                 {match}
               </mark>
@@ -351,16 +361,16 @@ const SearchResult: React.FC = () => {
       {properties.length === 0 && !loading && !noResults && (
         <div className="flex flex-col items-center mt-8 mb-12">
           <p className="mb-1 text-2xl text-gray-500">As Seen on </p>
-          <div className="flex flex-wrap items-center justify-center mt-2 space-x-4 space-y-8">
-            {customerLogos2.map((brand) => (
+          <div className="grid grid-cols-3 gap-4 mt-12 mb-12 sm:grid-cols-6">
+            {customerLogos2.map((customer) => (
               <div
-                key={brand.name}
+                key={customer.name}
                 className="flex items-center justify-center"
               >
                 <img
-                  src={brand.logo}
-                  alt={`${brand.name} logo`}
-                  className="object-contain h-12"
+                  src={customer.logo}
+                  alt={`${customer.name} logo`}
+                  className="object-contain w-auto h-20"
                 />
               </div>
             ))}
@@ -446,15 +456,43 @@ const SearchResult: React.FC = () => {
               kami.
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center mt-12 mb-12 space-x-4 space-y-4">
-            {customerLogos.map((customer) => (
-              <img
-                key={customer.name}
-                src={customer.logo}
-                alt={`${customer.name} logo`}
-                className="object-contain h-8"
-              />
-            ))}
+          <div>
+            <div className="mt-16 mb-6 text-2xl font-semibold text-center">
+              Mitra Pengembang
+            </div>
+            <div className="grid grid-cols-3 gap-8 mt-12 mb-12 sm:grid-cols-6">
+              {customerLogos.map((customer) => (
+                <div
+                  key={customer.name}
+                  className="flex items-center justify-center"
+                >
+                  <img
+                    src={customer.logo}
+                    alt={`${customer.name} logo`}
+                    className="object-contain w-auto h-16"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="mt-16 mb-6 text-2xl font-semibold text-center">
+              Mitra Perbankan
+            </div>
+            <div className="grid grid-cols-3 gap-4 mt-8 mb-8 sm:grid-cols-5 place-items-center">
+              {customerLogos3.map((customer) => (
+                <div
+                  key={customer.name}
+                  className="flex items-center justify-center"
+                >
+                  <img
+                    src={customer.logo}
+                    alt={`${customer.name} logo`}
+                    className="object-contain w-auto h-5"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

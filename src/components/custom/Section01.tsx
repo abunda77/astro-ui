@@ -2,7 +2,7 @@ import React from "react";
 import { Check, Clock } from "lucide-react";
 
 const Section01 = () => {
-  const brands = [
+  const customerLogos3 = [
     { name: "CNN", logo: "images/cnn.png" },
     { name: "VICE", logo: "images/vice.png" },
     { name: "Bloomberg", logo: "images/bloomberg.png" },
@@ -12,12 +12,12 @@ const Section01 = () => {
   ];
 
   const customerLogos = [
-    { name: "HubSpot", logo: "images/hubspot.png" },
-    { name: "Shopify", logo: "images/shopify.png" },
-    { name: "eBay", logo: "images/ebay.png" },
-    { name: "DELL", logo: "images/dell.png" },
-    { name: "box", logo: "images/box.png" },
-    { name: "stackoverflow", logo: "images/stackoverflow.png" },
+    { name: "Agung Podomoro", logo: "images/agungpodomoro.webp" },
+    { name: "Agusng Sedayu", logo: "images/agungsedayu.webp" },
+    { name: "Damai Putra", logo: "images/damaiputra.png" },
+    { name: "Duta Putra Land", logo: "images/dutaputraland.webp" },
+    { name: "Sinarmas", logo: "images/sinarmas.webp" },
+    { name: "Summarecon", logo: "images/sumamarecon.webp" },
   ];
 
   const customerLogos2 = [
@@ -45,7 +45,7 @@ const Section01 = () => {
                 <img
                   src={brand.logo}
                   alt={`${brand.name} logo`}
-                  className="object-contain h-12"
+                  className="object-contain h-8"
                 />
               </div>
             ))}
@@ -123,7 +123,7 @@ const Section01 = () => {
           <h2 className="mb-4 text-2xl font-semibold">
             Testimoni & Pencapaian Kami
           </h2>
-          <div className="text-4xl font-bold text-blue-500">1,234,567</div>
+          <div className="text-4xl font-bold text-blue-500">1,345,567</div>
           <div className="text-3xl">Properti Terjual Melalui Platform Kami</div>
           <div className="mt-2 text-4xl">
             dengan <span className="font-bold text-green-500">98.7%</span>{" "}
@@ -147,7 +147,7 @@ const Section01 = () => {
           ))}
         </div>
         <div className="flex flex-wrap items-center justify-center mt-12 space-x-4 space-y-4">
-          {customerLogos2.map((customer) => (
+          {customerLogos3.map((customer) => (
             <img
               key={customer.name}
               src={customer.logo}
