@@ -36,6 +36,7 @@ import {
   HomeAltSlim,
 } from "iconoir-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { createUniqueSlug } from "@/lib/utils";
 
 interface Property {
   id: number;
@@ -345,7 +346,7 @@ const PostSection: React.FC = () => {
                 <Button
                   className="w-full mt-4 text-white bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-500 dark:hover:bg-yellow-600"
                   onClick={() =>
-                    (window.location.href = `/post/${property.id}`)
+                    (window.location.href = `/post/${createUniqueSlug(property.id, property.title)}`)
                   }
                 >
                   Detail

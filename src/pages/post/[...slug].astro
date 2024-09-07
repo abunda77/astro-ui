@@ -7,6 +7,7 @@ import Footer01 from "@/layouts/Footer01.astro";
 // import toaster
 import { Toaster } from "@/components/ui/toaster";
 import { AstroSeo } from "@astrolib/seo";
+import { createUniqueSlug } from "@/lib/utils";
 
 export async function getStaticPaths() {
   const urlEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
@@ -20,13 +21,17 @@ export async function getStaticPaths() {
 
     const data = await response.json();
 
-    return data.items.map((property: { title: string; id: string }) => ({
-      params: { slug: `${property.id}` },
-      props: { property },
-    }));
+    return data.items.map((property: { id: number; title: string }) => {
+      const slug = createUniqueSlug(property.id, property.title); // Gunakan fungsi createUniqueSlug
+
+      return {
+        params: { slug }, // Ubah 'slug' menjadi slug yang sudah dibuat
+        props: { property },
+      };
+    });
   } catch (error) {
     console.error("Error fetching properties:", error);
-    return []; // Return an empty array if there's an error
+    return [];
   }
 }
 interface Property {
@@ -125,6 +130,7 @@ interface Property {
   };
 }
 const { property } = Astro.props as { property: Property };
+const uniqueSlug = createUniqueSlug(property.id, property.title);
 ---
 
 <html lang="en">
@@ -139,9 +145,9 @@ const { property } = Astro.props as { property: Property };
     <AstroSeo
       title={property.title}
       description={property.short_desc || "Deskripsi properti tidak tersedia"}
-      canonical={`${import.meta.env.PUBLIC_HOME_DOMAIN}/post/${property.id}`}
+      canonical={`${import.meta.env.PUBLIC_HOME_DOMAIN}/post/${uniqueSlug}`}
       openGraph={{
-        url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/post/${property.id}`,
+        url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/post/${uniqueSlug}`,
         title: property.title,
         description: property.short_desc || "Deskripsi properti tidak tersedia",
         images:
