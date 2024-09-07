@@ -54,6 +54,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 import KPRCalculator from "@/components/custom/CalculatorKPR";
+import SocialShare from "./SocialShare";
 
 interface Property {
   user_id: number | null;
@@ -366,7 +367,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
     <section className="py-12 bg-gradient-to-t from-blue-200 via-blue-100 to-white dark:from-gray-800 dark:via-gray-700 dark:to-gray-600">
       <div className="container max-w-4xl px-4 py-12 mx-auto">
         <div className="container px-4 mx-auto">
-          <div className="mb-8">
+          <div className="flex items-center justify-between mb-8">
             <Button
               appearance="primary"
               color="green"
@@ -376,6 +377,14 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
               <Home className="w-4 h-4 mr-2 text-white dark:text-gray-300" />
               Kembali ke Beranda
             </Button>
+            <div className="p-2 bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <SocialShare
+                url={window.location.href}
+                title={property.title || ""}
+                short_desc={property.short_desc || ""}
+                image_url={property.images?.[0]?.image_url || ""}
+              />
+            </div>
           </div>
 
           <div className="overflow-hidden bg-gray-200 rounded-lg shadow-xl dark:bg-gray-800">
