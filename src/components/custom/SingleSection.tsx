@@ -358,7 +358,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
 
   const renderValue = (value: any) => {
     if (value === null || value === undefined) {
-      return <span>Data kosong</span>;
+      return <span>N/A</span>;
     }
     return value;
   };
@@ -416,8 +416,30 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                   "relative inset-0 opacity-100 [mask-image:linear-gradient(to_bottom,white,transparent)]"
                 )}
               />
-              <div className="flex flex-col items-start justify-between mb-8 md:flex-row md:items-center">
-                <div className="flex flex-col space-y-4">
+              <div className="flex flex-col items-center justify-between mb-8">
+                <Avatar className="w-24 h-24 mb-4 -mt-28">
+                  <AvatarImage
+                    src={
+                      property.user?.profile?.avatar
+                        ? `${homedomain}/storage/${property.user.profile.avatar}`
+                        : "images/avatar-fallback.gif"
+                    }
+                    alt={renderValue(property.user.name)}
+                  />
+                  <AvatarFallback>
+                    {property.user.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="mb-6 text-center">
+                  <p className="font-semibold">
+                    {renderValue(property.user?.profile?.first_name)}{" "}
+                    {renderValue(property.user?.profile?.last_name)}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {renderValue(property.user?.profile?.jobdesk)}
+                  </p>
+                </div>
+                <div className="flex flex-col space-y-4 text-center">
                   <h1 className="text-4xl font-extrabold leading-tight text-blue-600 dark:text-blue-400">
                     <Home className="inline-block w-8 h-8 mr-2 text-blue-600 dark:text-blue-400" />
                     {renderValue(property.title)}
@@ -465,19 +487,6 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     </Accordion>
                   </div>
                 </div>
-                <Avatar className="w-24 h-24 mt-4 md:mt-0">
-                  <AvatarImage
-                    src={
-                      property.user?.profile?.avatar
-                        ? `${homedomain}/storage/${property.user.profile.avatar}`
-                        : "images/avatar-fallback.gif"
-                    }
-                    alt={renderValue(property.user.name)}
-                  />
-                  <AvatarFallback>
-                    {property.user.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
               </div>
 
               <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
@@ -486,9 +495,22 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     <Info className="inline-block w-6 h-6 mr-2 text-indigo-600 dark:text-indigo-400" />
                     Deskripsi Singkat
                   </h2>
-                  <p className="text-left text-gray-700 dark:text-gray-300">
-                    {renderValue(property.short_desc)}
-                  </p>
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="transition-all duration-300 bg-white rounded-md shadow-md dark:bg-gray-800"
+                  >
+                    <AccordionItem value="deskripsi-singkat">
+                      <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        Lihat Deskripsi Singkat
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                        <p className="text-left text-gray-700 dark:text-gray-300">
+                          {renderValue(property.short_desc)}
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
                 <div>
                   <h2 className="mb-4 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">

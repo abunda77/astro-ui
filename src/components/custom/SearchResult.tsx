@@ -361,17 +361,22 @@ const SearchResult: React.FC = () => {
       {properties.length === 0 && !loading && !noResults && (
         <div className="flex flex-col items-center mt-8 mb-12">
           <p className="mb-1 text-2xl text-gray-500">As Seen on </p>
-          <div className="grid grid-cols-3 gap-4 mt-12 mb-12 sm:grid-cols-6">
+          <div className="flex flex-wrap items-center justify-center gap-8">
             {customerLogos2.map((customer) => (
               <div
                 key={customer.name}
-                className="flex items-center justify-center"
+                className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-2xl"
               >
-                <img
-                  src={customer.logo}
-                  alt={`${customer.name} logo`}
-                  className="object-contain w-auto h-20"
-                />
+                {loading ? (
+                  <Skeleton className="w-auto h-10 animate-pulse" />
+                ) : (
+                  <img
+                    src={customer.logo}
+                    alt={`${customer.name} logo`}
+                    className="object-contain w-auto h-10"
+                    loading="lazy"
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -456,43 +461,50 @@ const SearchResult: React.FC = () => {
               kami.
             </p>
           </div>
-          <div>
-            <div className="mt-16 mb-6 text-2xl font-semibold text-center">
-              Mitra Pengembang
-            </div>
-            <div className="grid grid-cols-3 gap-8 mt-12 mb-12 sm:grid-cols-6">
-              {customerLogos.map((customer) => (
-                <div
-                  key={customer.name}
-                  className="flex items-center justify-center"
-                >
-                  <img
-                    src={customer.logo}
-                    alt={`${customer.name} logo`}
-                    className="object-contain w-auto h-16"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <div className="mt-16 mb-6 text-2xl font-semibold text-center">
-              Mitra Perbankan
-            </div>
-            <div className="grid grid-cols-3 gap-4 mt-8 mb-8 sm:grid-cols-5 place-items-center">
-              {customerLogos3.map((customer) => (
-                <div
-                  key={customer.name}
-                  className="flex items-center justify-center"
-                >
-                  <img
-                    src={customer.logo}
-                    alt={`${customer.name} logo`}
-                    className="object-contain w-auto h-5"
-                  />
-                </div>
-              ))}
-            </div>
+          <div className="container px-4 py-16 mx-auto">
+            {/* Mitra Pengembang Section */}
+            <section className="mb-20">
+              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800">
+                Mitra Pengembang
+              </h2>
+              <div className="flex flex-wrap items-center justify-center gap-8">
+                {customerLogos.map((customer) => (
+                  <div
+                    key={customer.name}
+                    className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-2xl"
+                  >
+                    <img
+                      src={customer.logo}
+                      alt={`${customer.name} logo`}
+                      className="object-contain w-auto h-10 "
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Mitra Perbankan Section */}
+            <section>
+              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800">
+                Mitra Perbankan
+              </h2>
+              <div className="flex flex-wrap items-center justify-center gap-6">
+                {customerLogos3.map((customer) => (
+                  <div
+                    key={customer.name}
+                    className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-2xl"
+                  >
+                    <img
+                      src={customer.logo}
+                      alt={`${customer.name} logo`}
+                      className="object-contain w-auto h-6"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         </div>
       )}

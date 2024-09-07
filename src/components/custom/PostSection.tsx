@@ -209,8 +209,10 @@ const PostSection: React.FC = () => {
 
   if (loading && currentPage === 1) {
     return (
-      <div className="skeleton">
-        <Skeleton className="w-[100px] h-[20px] rounded-md" />
+      <div className="flex items-center justify-center">
+        <div className="skeleton">
+          <Loader size="md" />
+        </div>
       </div>
     );
   }
@@ -272,14 +274,18 @@ const PostSection: React.FC = () => {
               className="transition-transform transform bg-white shadow-lg hover:scale-105 dark:bg-gray-900"
             >
               <div className="relative">
-                <img
-                  src={getImageUrl(property)}
-                  alt={property.title}
-                  className="object-cover w-full h-48"
-                  width="350"
-                  height="200"
-                  style={{ aspectRatio: "350/200", objectFit: "cover" }}
-                />
+                {loading ? (
+                  <Skeleton className="w-full h-48" />
+                ) : (
+                  <img
+                    src={getImageUrl(property)}
+                    alt={property.title}
+                    className="object-cover w-full h-48"
+                    width="350"
+                    height="200"
+                    style={{ aspectRatio: "350/200", objectFit: "cover" }}
+                  />
+                )}
                 <Badge
                   className={`absolute top-2 left-2 ${categories.find((cat) => cat.key === property.category_id)?.badgeColor || "bg-yellow-500"} text-white`}
                 >
