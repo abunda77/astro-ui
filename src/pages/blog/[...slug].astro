@@ -4,7 +4,7 @@ import Header01 from "@/layouts/Header01.astro";
 
 import SingleBlogSection from "@/components/custom/SingleBlogSection";
 import Footer01 from "@/layouts/Footer01.astro";
-
+import { AstroSeo } from "@astrolib/seo";
 export async function getStaticPaths() {
   // Ambil semua ID artikel yang tersedia
   const response = await fetch(
@@ -17,13 +17,19 @@ export async function getStaticPaths() {
     return [];
   }
 
-  return data.data.map((post: { id: number | string; title: string }) => ({
-    params: { slug: post.id.toString() },
-    props: { postId: post.id, title: post.title },
-  }));
+  return data.data.map(
+    (post: { id: number | string; title: string; feature_image: string }) => ({
+      params: { slug: post.id.toString() },
+      props: {
+        postId: post.id,
+        title: post.title,
+        featureImage: post.feature_image,
+      },
+    })
+  );
 }
 
-const { postId, title } = Astro.props;
+const { postId, title, featureImage } = Astro.props;
 ---
 
 <html lang="id">
@@ -33,7 +39,36 @@ const { postId, title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
     <title>{title}</title>
+
+    <AstroSeo
+      title={title}
+      description="Detail Artikel"
+      canonical={`${import.meta.env.PUBLIC_HOME_DOMAIN}/blog/${postId}`}
+      openGraph={{
+        url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/blog/${postId}`,
+        title: title,
+        description: "Detail Artikel",
+        images: [
+          {
+            url: featureImage
+              ? `${import.meta.env.PUBLIC_HOME_DOMAIN}/storage/${(featureImage as string).replace(/[",/\\]/g, "")}`
+              : `${import.meta.env.PUBLIC_HOME_DOMAIN}/og-image.jpg`,
+            width: 800,
+            height: 600,
+            alt: `Gambar ${title}`,
+            type: "image/jpeg",
+          },
+        ],
+        site_name: "Bosque Properti",
+      }}
+      twitter={{
+        handle: "@bosqproperti",
+        site: "@bosqproperti",
+        cardType: "summary_large_image",
+      }}
+    />
   </head>
   <body>
     <Header01 />
