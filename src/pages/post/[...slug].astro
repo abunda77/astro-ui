@@ -148,7 +148,7 @@ const { property } = Astro.props as { property: Property };
           property.images && property.images.length > 0
             ? [
                 {
-                  url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/storage/${property.images[0].image_url}`,
+                  url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/storage/${property.images[0].image_url.replace(/[",/\\]/g, "")}`,
                   width: 800,
                   height: 600,
                   alt: `Gambar ${property.title}`,
