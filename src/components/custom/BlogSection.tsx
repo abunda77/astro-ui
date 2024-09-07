@@ -9,7 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
-import { Loader, Placeholder } from "rsuite";
+import { Loader } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 
 interface BlogSection {
@@ -19,6 +19,14 @@ interface BlogSection {
   feature_image: string;
   created_at: string;
   updated_at: string;
+}
+
+function createUniqueSlug(id: number | string, title: string) {
+  const baseSlug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+  return `${id}-${baseSlug}`;
 }
 
 const BlogSection: React.FC = () => {
@@ -62,7 +70,6 @@ const BlogSection: React.FC = () => {
   if (isLoading) {
     return (
       <div className="text-center">
-        {" "}
         <hr />
         <Loader size="lg" content="Loading please wait..." vertical />
       </div>
@@ -97,7 +104,7 @@ const BlogSection: React.FC = () => {
                         />
                         <h3 className="mt-4 text-lg font-semibold text-center text-gray-800 dark:text-gray-700 hover:text-blue-500">
                           <a
-                            href={`/blog/${post.id}`}
+                            href={`/blog/${createUniqueSlug(post.id, post.title)}`}
                             className="hover:underline"
                           >
                             {post.title.length > 40

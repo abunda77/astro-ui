@@ -3,8 +3,11 @@ import "@/styles/globals.css";
 import Header01 from "@/layouts/Header01.astro";
 
 import SingleBlogSection from "@/components/custom/SingleBlogSection";
+// import createUniqueSlug from "@/components/custom/SingleBlogSection";
 import Footer01 from "@/layouts/Footer01.astro";
 import { AstroSeo } from "@astrolib/seo";
+import { createUniqueSlug } from "@/lib/utils";
+
 export async function getStaticPaths() {
   // Ambil semua ID artikel yang tersedia
   const response = await fetch(
@@ -19,7 +22,7 @@ export async function getStaticPaths() {
 
   return data.data.map(
     (post: { id: number | string; title: string; feature_image: string }) => ({
-      params: { slug: post.id.toString() },
+      params: { slug: createUniqueSlug(post.id, post.title) },
       props: {
         postId: post.id,
         title: post.title,
@@ -41,13 +44,12 @@ const { postId, title, featureImage } = Astro.props;
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
-
     <AstroSeo
       title={title}
       description="Detail Artikel"
-      canonical={`${import.meta.env.PUBLIC_HOME_DOMAIN}/blog/${postId}`}
+      canonical={`${import.meta.env.PUBLIC_HOME_DOMAIN}/blog/${createUniqueSlug(postId, title)}`}
       openGraph={{
-        url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/blog/${postId}`,
+        url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/blog/${createUniqueSlug(postId, title)}`,
         title: title,
         description: "Detail Artikel",
         images: [

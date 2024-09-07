@@ -5,6 +5,7 @@ import { Loader, Placeholder } from "rsuite";
 import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import { Skeleton } from "@/components/ui/skeleton";
+import { createUniqueSlug } from "@/lib/utils";
 
 interface BlogPost {
   id: number;
@@ -106,7 +107,10 @@ const BlogPost: React.FC = () => {
                   <Skeleton className="w-3/4 h-6 mb-2" />
                 ) : (
                   <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-700 hover:text-blue-500">
-                    <a href={`/blog/${post.id}`} className="hover:underline">
+                    <a
+                      href={`/blog/${createUniqueSlug(post.id, post.title)}`}
+                      className="hover:underline"
+                    >
                       {post.title}
                     </a>
                   </h3>
@@ -126,7 +130,7 @@ const BlogPost: React.FC = () => {
                   <Skeleton className="w-1/3 h-4 mt-auto" />
                 ) : (
                   <a
-                    href={`/blog/${post.id}`}
+                    href={`/blog/${createUniqueSlug(post.id, post.title)}`}
                     className="mt-auto text-blue-500 hover:underline"
                   >
                     Baca selengkapnya

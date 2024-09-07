@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import AttractiveLoadingAnimation from "@/components/custom/AttractiveLoadingAnimation";
 import { Loader, Placeholder } from "rsuite";
 import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
+import { createUniqueSlug } from "@/lib/utils";
 
 interface BlogPost {
   id: number;
@@ -34,6 +35,11 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
         }
         const data = await response.json();
         setPost(data.data);
+        // Update URL after fetching post data
+        if (data.data && data.data.title) {
+          const uniqueSlug = createUniqueSlug(data.data.id, data.data.title);
+          window.history.replaceState(null, "", `/blog/${uniqueSlug}`);
+        }
       } catch (error) {
         console.error("Error fetching post:", error);
         setError("Gagal memuat artikel. Silakan coba lagi nanti.");
