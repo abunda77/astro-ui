@@ -6,6 +6,7 @@ import SingleSection from "@/components/custom/SingleSection";
 import Footer01 from "@/layouts/Footer01.astro";
 // import toaster
 import { Toaster } from "@/components/ui/toaster";
+import { AstroSeo } from "@astrolib/seo";
 
 export async function getStaticPaths() {
   const urlEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
@@ -134,6 +135,35 @@ const { property } = Astro.props as { property: Property };
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{property.title}</title>
+
+    <AstroSeo
+      title={property.title}
+      description={property.short_desc || "Deskripsi properti tidak tersedia"}
+      canonical={`${import.meta.env.PUBLIC_HOME_DOMAIN}/post/${property.id}`}
+      openGraph={{
+        url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/post/${property.id}`,
+        title: property.title,
+        description: property.short_desc || "Deskripsi properti tidak tersedia",
+        images:
+          property.images && property.images.length > 0
+            ? [
+                {
+                  url: `${import.meta.env.PUBLIC_HOME_DOMAIN}/storage/${property.images[0].image_url}`,
+                  width: 800,
+                  height: 600,
+                  alt: `Gambar ${property.title}`,
+                  type: "image/jpeg",
+                },
+              ]
+            : [],
+        site_name: "Bosque Properti",
+      }}
+      twitter={{
+        handle: "@bosqproperti",
+        site: "@bosqproperti",
+        cardType: "summary_large_image",
+      }}
+    />
   </head>
   <body>
     <Header01 />
