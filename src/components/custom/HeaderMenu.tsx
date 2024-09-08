@@ -17,6 +17,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
+import { Nav } from "rsuite";
+
 type MenuItem = {
   title: string;
   path?: string;
@@ -42,54 +44,37 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuitems }) => {
       </Button>
 
       {isMenuOpen && (
-        <div className="absolute left-0 right-0 z-50 bg-gray-100 rounded-b-lg shadow-lg dark:bg-gray-900">
-          <NavigationMenu className="w-full">
-            <NavigationMenuList className="flex flex-col w-full">
-              {menuitems.map((item, index) => (
-                <NavigationMenuItem key={index} className="w-full">
-                  {item.items ? (
-                    <>
-                      <NavigationMenuTrigger className="justify-between w-full px-4 py-3 hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-gray-200">
-                        {item.title}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent className="w-screen">
-                        <ul className="grid w-full gap-2 p-4 md:grid-cols-2">
-                          {item.items.map((subItem, subIndex) => (
-                            <li key={subIndex} className="mb-2">
-                              <NavigationMenuLink asChild>
-                                <a
-                                  href={subItem.path}
-                                  className="block p-3 transition-colors duration-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
-                                >
-                                  <div className="mb-1 text-sm font-medium leading-none">
-                                    {subItem.title}
-                                  </div>
-                                  <p className="text-xs leading-snug line-clamp-2 text-muted-foreground">
-                                    Deskripsi singkat tentang{" "}
-                                    {subItem.title.toLowerCase()}.
-                                  </p>
-                                </a>
-                              </NavigationMenuLink>
-                            </li>
-                          ))}
-                        </ul>
-                      </NavigationMenuContent>
-                    </>
-                  ) : (
-                    <NavigationMenuLink asChild>
-                      <a
-                        href={item.path}
-                        className={`${navigationMenuTriggerStyle()} w-full justify-start hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-gray-200 py-3 px-4`}
-                      >
-                        {item.title}
-                      </a>
-                    </NavigationMenuLink>
-                  )}
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
-          <div className="pt-4 pb-3 border-t border-gray-300 dark:border-gray-700">
+        <div className="absolute left-0 right-0 z-50 bg-white rounded-b-lg shadow-lg dark:bg-gray-900">
+          <Nav className="w-full text-gray-800 dark:text-gray-200">
+            {menuitems.map((item, index) =>
+              item.items ? (
+                <Nav.Menu
+                  key={index}
+                  title={item.title}
+                  className="hover:bg-gray-200 dark:hover:bg-gray-800"
+                >
+                  {item.items.map((subItem, subIndex) => (
+                    <Nav.Item
+                      key={subIndex}
+                      href={subItem.path}
+                      className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      {subItem.title}
+                    </Nav.Item>
+                  ))}
+                </Nav.Menu>
+              ) : (
+                <Nav.Item
+                  key={index}
+                  href={item.path}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  {item.title}
+                </Nav.Item>
+              )
+            )}
+          </Nav>
+          <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between px-5 py-2">
               <div className="flex items-center space-x-3">
                 <AvatarComponent />
