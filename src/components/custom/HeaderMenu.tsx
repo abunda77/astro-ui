@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Home, Settings, Users, FileText, Folder } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { ModeToggle } from "@/components/custom/ModeToggle";
 import AvatarComponent from "@/components/custom/AvatarComponent";
 import LoginButtons from "@/components/custom/LoginButtons";
@@ -14,19 +14,6 @@ type MenuItem = {
   items?: { title: string; path: string; icon?: string }[];
   badge?: boolean;
   icon?: string;
-};
-
-const icons: { [key: string]: React.ComponentType<{ className?: string }> } = {
-  Home,
-  Settings,
-  Users,
-  FileText,
-  Folder,
-};
-
-const getIcon = (iconName: string) => {
-  const IconComponent = icons[iconName] || Folder;
-  return <IconComponent className="w-5 h-5 mr-3" />;
 };
 
 interface HeaderMenuProps {
@@ -53,10 +40,7 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuitems }) => {
               item.items ? (
                 <details key={index} className="group">
                   <summary className="flex items-center justify-between p-4 font-medium text-gray-800 transition-colors duration-200 cursor-pointer hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">
-                    <span className="flex items-center">
-                      {item.icon && getIcon(item.icon)}
-                      {item.title}
-                    </span>
+                    <span className="flex items-center">{item.title}</span>
                     <svg
                       className="w-4 h-4 text-gray-600 transition-transform group-open:rotate-180 dark:text-gray-400"
                       xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +63,6 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuitems }) => {
                           href={subItem.path}
                           className="flex items-center p-2 text-sm text-gray-700 transition-colors duration-200 rounded-md hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
-                          {subItem.icon && getIcon(subItem.icon)}
                           {subItem.title}
                         </a>
                       </li>
@@ -92,7 +75,6 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuitems }) => {
                   href={item.path}
                   className="flex items-center p-4 text-gray-800 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white"
                 >
-                  {item.icon && getIcon(item.icon)}
                   {item.title}
                 </a>
               )
