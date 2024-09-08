@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import Captcha from "@/components/custom/Captcha";
 
 const AUTH_LOGIN_ENDPOINT = import.meta.env.PUBLIC_AUTH_LOGIN_ENDPOINT;
 
@@ -27,6 +28,7 @@ const LoginModal: React.FC<{ onLoginSuccess: (username: string) => void }> = ({
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ username: "", password: "" });
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
   const { toast } = useToast();
 
   const validateForm = () => {
@@ -40,6 +42,14 @@ const LoginModal: React.FC<{ onLoginSuccess: (username: string) => void }> = ({
     if (!password.trim()) {
       newErrors.password = "Password is required";
       isValid = false;
+    }
+    if (!isCaptchaValid) {
+      isValid = false;
+      toast({
+        title: "Error",
+        description: "Please complete the captcha",
+        variant: "destructive",
+      });
     }
 
     setErrors(newErrors);
@@ -186,11 +196,11 @@ const LoginModal: React.FC<{ onLoginSuccess: (username: string) => void }> = ({
               <p className="text-xs text-red-500">{errors.password}</p>
             )}
           </div>
+          <Captcha onValidate={setIsCaptchaValid} />
           <Button
             type="submit"
             className="w-full text-white bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500"
             disabled={isLoading}
-            //aria-disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
           </Button>
