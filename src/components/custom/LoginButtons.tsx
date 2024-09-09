@@ -92,9 +92,9 @@ const LoginButtons = () => {
           <LoginModal onLoginSuccess={handleLoginSuccess} />
           <Button
             className="text-white bg-green-500 dark:text-white hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600"
-            onClick={() => (window.location.href = "/auth/register")}
+            onClick={() => (window.location.href = "/loginpage")}
           >
-            Register
+            Login / Register
           </Button>
         </>
       )}

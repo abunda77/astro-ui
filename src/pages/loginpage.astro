@@ -1,8 +1,11 @@
 ---
 import "@/styles/globals.css";
 import FormLoginRegister from "@/components/custom/FormLoginRegister";
-import QuotesLocal3 from "@/components/custom/QuotesLocal";
+import Layout02 from "@/layouts/Layout02.astro";
+import { Toaster } from "@/components/ui/toaster";
 ---
 
+<Layout02 title="Halaman Register Login." />
 <FormLoginRegister client:load />
+<Toaster client:load />
 <!-- <QuotesLocal3 client:load /> -->

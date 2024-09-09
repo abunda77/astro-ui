@@ -35,7 +35,7 @@ const Captcha: React.FC<CaptchaProps> = ({ onValidate }) => {
           onClick={generateCaptcha}
           variant="outline"
           size="icon"
-          className="dark:border-gray-600 dark:text-gray-300"
+          className="bg-blue-300 dark:border-gray-600 dark:text-gray-300"
         >
           <RefreshCcw className="w-4 h-4" />
         </Button>
@@ -45,7 +45,8 @@ const Captcha: React.FC<CaptchaProps> = ({ onValidate }) => {
         placeholder="Masukkan captcha"
         value={userInput}
         onChange={handleInputChange}
-        className="dark:bg-gray-800 dark:text-white dark:border-gray-600"
+        className="w-36 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+        maxLength={10}
       />
     </div>
   );
