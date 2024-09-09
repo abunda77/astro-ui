@@ -1,4 +1,54 @@
 ---
-
+import "@/styles/globals.css";
+import FormLoginRegister from "@/components/custom/FormLoginRegister";
 ---
 
+<FormLoginRegister client:load />
+
+<style is:global>
+  .login {
+    height: auto;
+    width: 100%;
+    margin: auto;
+    border: none;
+    padding: 0;
+  }
+
+  .login input {
+    padding: 0;
+    margin: 0;
+  }
+
+  .form-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .form-input {
+    margin-bottom: 15px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .form-input {
+    font-size: 14px;
+  }
+
+  @media (max-width: 768px) {
+    .form-container {
+      padding: 15px;
+    }
+  }
+
+  .form-container {
+    transition: all 0.3s ease;
+  }
+</style>

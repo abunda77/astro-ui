@@ -37,7 +37,7 @@ const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const isMaintenanceMode = () => {
   // Logika untuk menentukan apakah dalam mode maintenance
   // Misalnya, bisa menggunakan variabel lingkungan atau kondisi tertentu
-  return true; // Ganti menjadi true untuk mengaktifkan mode maintenance
+  return false; // Ganti menjadi true untuk mengaktifkan mode maintenance
 };
 
 const RegisterForm: React.FC = () => {
