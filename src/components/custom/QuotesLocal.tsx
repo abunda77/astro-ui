@@ -53,7 +53,7 @@ const QuotesLocal: React.FC = () => {
   return (
     <>
       {quote && (
-        <blockquote className="absolute mb-1 text-lg italic text-center top-8 left-8 right-8 animate-pulse">
+        <blockquote className="absolute mb-1 text-lg italic text-center top-1 left-8 right-8 animate-pulse">
           "{quote.quotes}"
           <footer className="mt-2 text-sm">- {quote.author}</footer>
         </blockquote>

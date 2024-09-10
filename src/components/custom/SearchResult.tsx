@@ -188,14 +188,6 @@ const SearchResult: React.FC = () => {
     setShowSuggestions(false);
   };
 
-  const handleClear = () => {
-    setSearchTerm("");
-    setSearchLocation("");
-    setProperties([]);
-    setNoResults(false);
-    setCurrentPage(1);
-  };
-
   return (
     <div className="container relative z-20 px-4 mx-auto sm:px-6 sm:-mt-[100px]">
       <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-800 sm:max-w-2xl sm:p-6">
@@ -233,22 +225,28 @@ const SearchResult: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="keyword">
-              <input
-                type="text"
-                placeholder="Cari kata kunci (min. 3 karakter)"
-                className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
-                onChange={(e) => setSearchTerm(e.target.value)}
-                value={searchTerm}
-              />
+              <div className="relative">
+                <Input
+                  type="search"
+                  placeholder="Cari kata kunci (min. 3 karakter)"
+                  className="w-full h-10 py-1 pl-10 pr-3 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-10 sm:py-3"
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm}
+                />
+                <SearchIcon className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+              </div>
             </TabsContent>
             <TabsContent value="location">
-              <input
-                type="text"
-                placeholder="Lokasi (min. 3 karakter)"
-                className="w-full h-10 px-3 py-1 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-4 sm:py-3"
-                onChange={(e) => setSearchLocation(e.target.value)}
-                value={searchLocation}
-              />
+              <div className="relative">
+                <Input
+                  type="search"
+                  placeholder="Lokasi (min. 3 karakter)"
+                  className="w-full h-10 py-1 pl-10 pr-3 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-10 sm:py-3"
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  value={searchLocation}
+                />
+                <SearchIcon className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+              </div>
             </TabsContent>
           </Tabs>
           <div className="flex flex-col sm:mt-10 sm:flex-row sm:items-center">
@@ -264,12 +262,6 @@ const SearchResult: React.FC = () => {
               ) : (
                 "Search"
               )}
-            </Button>
-            <Button
-              className="w-full px-4 py-2 mt-2 text-sm font-medium text-gray-700 transition duration-300 border border-gray-700 rounded-md dark:border-gray-500 dark:text-gray-100 sm:w-auto sm:mt-2 sm:ml-2 bg-gray-50 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-500 sm:text-base"
-              onClick={handleClear}
-            >
-              Clear
             </Button>
           </div>
 
