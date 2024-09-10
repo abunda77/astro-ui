@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { cn } from "@/lib/utils";
+
 import DotPattern from "@/components/magicui/dot-pattern";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -55,6 +55,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 import KPRCalculator from "@/components/custom/CalculatorKPR";
 import SocialShare from "./SocialShare";
+import { cn, createUniqueSlug } from "@/lib/utils";
 
 interface Property {
   user_id: number | null;
@@ -71,7 +72,6 @@ interface Property {
   village_id: string | null;
   coordinates: string | null;
   nearby: string | null;
-
   ads: string | null;
   status: string | null;
   views_count: number | null;
@@ -201,11 +201,15 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   const [toName] = useState(
     `${property.user?.profile?.first_name} ${property.user?.profile?.last_name}`
   );
-  const [toEmail] = useState(property.user.profile.email);
+  const [toEmail] = useState(property.user?.profile?.email);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   // tambahkan const untuk url referensi dari title property
   const [referenceTitle] = useState(property.title);
+  const uniqueSlug = createUniqueSlug(
+    property.id as number,
+    property.title ?? ""
+  );
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -375,11 +379,11 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
               className="transition-colors"
             >
               <Home className="w-4 h-4 mr-2 text-white dark:text-gray-300" />
-              Kembali ke Beranda
+              Kembali
             </Button>
             <div className="p-2 bg-white rounded-lg shadow-md dark:bg-gray-800">
               <SocialShare
-                url={window.location.href}
+                url={`${window.location.origin}/post/${uniqueSlug}`}
                 title={property.title || ""}
                 short_desc={property.short_desc || ""}
                 image_url={property.images?.[0]?.image_url || ""}
