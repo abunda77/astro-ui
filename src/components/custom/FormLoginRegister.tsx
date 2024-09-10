@@ -279,7 +279,7 @@ const FormLoginRegister: React.FC = () => {
                 <p className="mb-6 text-gray-600">
                   Selamat datang kembali! Silakan masukkan detail Anda.
                 </p>
-                <form className="space-y-4" onSubmit={handleLogin}>
+                <form id="login" className="space-y-4" onSubmit={handleLogin}>
                   <div>
                     <Label htmlFor="username">Username</Label>
                     <Input
@@ -314,7 +314,7 @@ const FormLoginRegister: React.FC = () => {
                       <span className="ml-2 text-sm">Ingat saya</span>
                     </label>
                     <a
-                      href="#"
+                      href="#forgot-password"
                       onClick={toggleForgotPasswordForm}
                       className="text-sm text-purple-600 hover:underline"
                     >
@@ -333,7 +333,7 @@ const FormLoginRegister: React.FC = () => {
                 <p className="mt-6 text-sm text-center">
                   Belum punya akun?{" "}
                   <a
-                    href="#"
+                    href="#register"
                     onClick={toggleForm}
                     className="text-purple-600 hover:underline"
                   >
@@ -347,7 +347,11 @@ const FormLoginRegister: React.FC = () => {
                 <p className="mb-6 text-gray-600">
                   Masukkan email Anda untuk mengatur ulang kata sandi.
                 </p>
-                <form className="space-y-4" onSubmit={handleForgotPassword}>
+                <form
+                  id="forgot-password"
+                  className="space-y-4"
+                  onSubmit={handleForgotPassword}
+                >
                   <div>
                     <Label htmlFor="forgotPasswordEmail">Email</Label>
                     <Input
@@ -370,7 +374,7 @@ const FormLoginRegister: React.FC = () => {
                 <p className="mt-6 text-sm text-center">
                   Ingat kata sandi Anda?{" "}
                   <a
-                    href="#"
+                    href="#login"
                     onClick={() => setIsForgotPasswordForm(false)}
                     className="text-purple-600 hover:underline"
                   >
@@ -384,7 +388,11 @@ const FormLoginRegister: React.FC = () => {
                 <p className="mb-6 text-gray-600">
                   Silakan isi informasi Anda untuk mendaftar.
                 </p>
-                <form className="space-y-4" onSubmit={handleRegister}>
+                <form
+                  id="register"
+                  className="space-y-4"
+                  onSubmit={handleRegister}
+                >
                   <div>
                     <Label htmlFor="fullName">Nama Lengkap</Label>
                     <Input
@@ -452,7 +460,7 @@ const FormLoginRegister: React.FC = () => {
                 <p className="mt-6 text-sm text-center">
                   Sudah punya akun?{" "}
                   <a
-                    href="#"
+                    href="#login"
                     onClick={toggleForm}
                     className="text-purple-600 hover:underline"
                   >

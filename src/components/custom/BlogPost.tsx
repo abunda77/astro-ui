@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { Loader, Placeholder } from "rsuite";
+import { Loader2 } from "lucide-react";
 import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -74,7 +75,7 @@ const BlogPost: React.FC = () => {
   const initialPosts = posts.slice(0, currentPage * postsPerPage);
 
   return (
-    <section className="py-8 bg-gradient-to-t from-blue-100 via-blue-50 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
+    <section className="py-8 bg-gradient-to-t from-blue-500 via-blue-100 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
       <div className="container px-4 mx-auto">
         <h2 className="mb-8 text-2xl font-semibold text-center text-gray-800 dark:text-gray-700">
           Blog Terbaru
@@ -122,9 +123,15 @@ const BlogPost: React.FC = () => {
                     <Skeleton className="w-3/4 h-4 mb-4" />
                   </>
                 ) : (
-                  <p className="flex-grow mb-4 text-sm text-gray-600 dark:text-gray-400">
-                    {post.body.substring(0, 100)}...
-                  </p>
+                  <>
+                    <p className="flex-grow mb-2 text-sm text-gray-600 dark:text-gray-700">
+                      {post.body.substring(0, 100)}...
+                    </p>
+                    <p className="mb-4 text-xs text-gray-600 dark:text-gray-700">
+                      Dibuat pada:{" "}
+                      {new Date(post.created_at).toLocaleDateString("id-ID")}
+                    </p>
+                  </>
                 )}
                 {isLoading ? (
                   <Skeleton className="w-1/3 h-4 mt-auto" />
@@ -145,9 +152,14 @@ const BlogPost: React.FC = () => {
           <div className="mt-8 text-center">
             <Button
               onClick={loadMorePosts}
-              className="px-6 py-3 text-sm text-gray-600 bg-gray-300 rounded-md hover:underline dark:bg-gray-900 dark:text-gray-400"
+              className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
+              disabled={isLoading}
             >
-              Muat lebih banyak...
+              {isLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Muat lebih banyak..."
+              )}
             </Button>
           </div>
         )}
