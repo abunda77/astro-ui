@@ -12,7 +12,7 @@ import { ToastAction } from "@/components/ui/toast";
 const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 
 const FormLoginRegister: React.FC = () => {
-  const [isLoginForm, setIsLoginForm] = useState(true);
+  const [isLoginForm, setIsLoginForm] = useState(false);
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
   const [isForgotPasswordForm, setIsForgotPasswordForm] = useState(false);
   const [username, setUsername] = useState("");
@@ -237,7 +237,7 @@ const FormLoginRegister: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-800 via-blue-300 to-white">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-violet-100 to-indigo-300 dark:from-gray-900 dark:via-purple-900 dark:to-gray-950">
       <div className="w-full max-w-4xl m-4 overflow-hidden bg-white rounded-lg shadow-lg">
         <div className="flex flex-col md:flex-row">
           <div className="hidden w-1/2 p-8 text-white bg-purple-600 md:block">
@@ -245,17 +245,17 @@ const FormLoginRegister: React.FC = () => {
               <QuotesLocale />
               <h2 className="mb-4 text-3xl font-bold mt-36">
                 {isLoginForm
-                  ? "Halo, Teman!"
+                  ? "Selamat Datang Kembali!"
                   : isForgotPasswordForm
                     ? "Lupa Kata Sandi?"
-                    : "Selamat Datang Kembali!"}
+                    : "Halo, Teman!"}
               </h2>
               <p className="mb-8">
                 {isLoginForm
-                  ? "Silakan isi informasi Anda untuk membuat akun dan mulai perjalanan bersama kami."
+                  ? "Untuk tetap terhubung dengan kami, silakan login dengan informasi pribadi Anda."
                   : isForgotPasswordForm
                     ? "Jangan khawatir, kami akan membantu Anda mengatur ulang kata sandi Anda."
-                    : "Untuk tetap terhubung dengan kami, silakan login dengan informasi pribadi Anda."}
+                    : "Silakan isi informasi Anda untuk membuat akun dan mulai perjalanan bersama kami."}
               </p>
               <Button
                 onClick={toggleForm}

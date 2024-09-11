@@ -242,7 +242,7 @@ const PostSection: React.FC = () => {
       <div className="container px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between mb-8 md:flex-row">
           <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white md:mb-0">
-            Temukan Properti Impian Anda
+            Property Listing
           </h2>
           <div className="w-full md:w-64">
             <SelectPicker

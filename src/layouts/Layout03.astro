@@ -1,6 +1,7 @@
 ---
 // import { Toaster } from "@/components/ui/toaster";
 // import RegisterForm from "@/components/custom/RegisterForm";
+
 import Header01 from "@/layouts/Header01.astro";
 import { Toaster } from "@/components/ui/toaster";
 const { title } = Astro.props;
@@ -24,7 +25,9 @@ const makeTitle = title
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body>
+  <body
+    class="min-h-screen transition-colors duration-300 bg-gradient-to-br from-blue-100 via-violet-100 to-indigo-300 dark:from-gray-900 dark:via-purple-900 dark:to-gray-950"
+  >
     <Header01 />
 
     <!-- <RegisterForm client:load />
@@ -40,4 +43,31 @@ const makeTitle = title
     </style>
   </body>
 </html>
-<!-- <style is:global> -->
+<style is:global>
+  :root {
+    --accent: 136, 58, 234;
+    --accent-light: 224, 204, 250;
+    --accent-dark: 49, 10, 101;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-light)) 30%,
+      white 60%
+    );
+  }
+  html {
+    font-family: system-ui, sans-serif;
+    /* background: #13151a; */
+  }
+  code {
+    font-family:
+      Menlo,
+      Monaco,
+      Lucida Console,
+      Liberation Mono,
+      DejaVu Sans Mono,
+      Bitstream Vera Sans Mono,
+      Courier New,
+      monospace;
+  }
+</style>

@@ -24,6 +24,7 @@ const SendEmail = () => {
   const [alertStatus, setAlertStatus] = useState<"success" | "error" | null>(
     null
   );
+  const [showForm, setShowForm] = useState(true);
 
   const generateCaptcha = () => {
     const randomString = Math.random().toString(36).substring(2, 8);
@@ -94,6 +95,7 @@ const SendEmail = () => {
           description: "Pesan berhasil terkirim",
         });
         setAlertStatus("success");
+        setShowForm(false);
         // Reset form fields after successful submission
         setName("");
         setEmail("");
@@ -123,14 +125,14 @@ const SendEmail = () => {
       setTimeout(() => {
         setResult("");
         setAlertStatus(null);
-      }, 3000);
+      }, 10000);
     }
   };
 
   return (
     <>
       {alertStatus === "success" && (
-        <Alert className="mb-4 bg-green-200">
+        <Alert className="mb-4 bg-green-200 dark:bg-green-200">
           <Terminal className="w-4 h-4" />
           <AlertTitle>Sukses!</AlertTitle>
           <AlertDescription>
@@ -147,118 +149,123 @@ const SendEmail = () => {
           </AlertDescription>
         </Alert>
       )}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">
-            Nama
-          </Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Masukan Nama Anda"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="bg-gray-200 dark:text-gray-200"
-          />
-        </div>
-        <div>
-          <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">
-            Email
-          </Label>
-          <input
-            id="email"
-            type="email"
-            value="erieputranto@gmail.com"
-            hidden
-          />
-          <Input
-            id="userEmail"
-            type="email"
-            placeholder="Masukan Email Aktif Anda"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="bg-gray-200 dark:text-gray-200"
-          />
-        </div>
-        <div>
-          <Label htmlFor="noWa" className="text-gray-700 dark:text-gray-300">
-            No. WhatsApp
-          </Label>
-          <Input
-            id="noWa"
-            type="text"
-            placeholder="Masukan No. WhatsApp Anda"
-            value={noWa}
-            onChange={(e) => setNoWa(e.target.value)}
-            className="bg-gray-200 dark:text-gray-200"
-          />
-        </div>
-        <div>
-          <Label htmlFor="message" className="text-gray-700 dark:text-gray-300">
-            Pesan
-          </Label>
-          <Textarea
-            id="message"
-            placeholder="Tulis pesan Anda di sini"
-            rows={4}
-            className="bg-gray-200 dark:text-gray-200"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <div className="flex flex-col mb-4 space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
-            <Label
-              htmlFor="captcha"
-              className="text-gray-700 dark:text-gray-300 whitespace-nowrap"
-            >
-              Captcha
+      {showForm && (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">
+              Nama
             </Label>
-            <div className="flex flex-col items-start w-full space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2 sm:w-auto">
-              <Input
-                id="captcha"
-                type="text"
-                placeholder="Masukkan captcha di atas"
-                value={userCaptcha}
-                onChange={(e) => setUserCaptcha(e.target.value)}
-                required
-                className="w-full text-gray-900 bg-white sm:w-36 dark:bg-gray-600 dark:text-gray-100"
-              />
-              <div className="flex items-center space-x-2">
-                <div className="p-2 text-green-600 bg-gray-200 rounded dark:bg-gray-600 dark:text-green-400">
-                  {captchaText}
+            <Input
+              id="name"
+              type="text"
+              placeholder="Masukan Nama Anda"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="bg-gray-200 dark:text-gray-200"
+            />
+          </div>
+          <div>
+            <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">
+              Email
+            </Label>
+            <input
+              id="email"
+              type="email"
+              value="erieputranto@gmail.com"
+              hidden
+            />
+            <Input
+              id="userEmail"
+              type="email"
+              placeholder="Masukan Email Aktif Anda"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="bg-gray-200 dark:text-gray-200"
+            />
+          </div>
+          <div>
+            <Label htmlFor="noWa" className="text-gray-700 dark:text-gray-300">
+              No. WhatsApp
+            </Label>
+            <Input
+              id="noWa"
+              type="text"
+              placeholder="Masukan No. WhatsApp Anda"
+              value={noWa}
+              onChange={(e) => setNoWa(e.target.value)}
+              className="bg-gray-200 dark:text-gray-200"
+            />
+          </div>
+          <div>
+            <Label
+              htmlFor="message"
+              className="text-gray-700 dark:text-gray-300"
+            >
+              Pesan
+            </Label>
+            <Textarea
+              id="message"
+              placeholder="Tulis pesan Anda di sini"
+              rows={4}
+              className="bg-gray-200 dark:text-gray-200"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <div className="flex flex-col mb-4 space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
+              <Label
+                htmlFor="captcha"
+                className="text-gray-700 dark:text-gray-300 whitespace-nowrap"
+              >
+                Captcha
+              </Label>
+              <div className="flex flex-col items-start w-full space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2 sm:w-auto">
+                <Input
+                  id="captcha"
+                  type="text"
+                  placeholder="Masukkan captcha di atas"
+                  value={userCaptcha}
+                  onChange={(e) => setUserCaptcha(e.target.value)}
+                  required
+                  className="w-full text-gray-900 bg-white sm:w-36 dark:bg-gray-600 dark:text-gray-100"
+                />
+                <div className="flex items-center space-x-2">
+                  <div className="p-2 text-green-600 bg-gray-200 rounded dark:bg-gray-600 dark:text-green-400">
+                    {captchaText}
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={generateCaptcha}
+                    className="bg-blue-500 hover:bg-blue-600"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <RefreshCcw className="w-4 h-4" />
+                    )}
+                  </Button>
                 </div>
-                <Button
-                  type="button"
-                  onClick={generateCaptcha}
-                  className="bg-blue-500 hover:bg-blue-600"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <RefreshCcw className="w-4 h-4" />
-                  )}
-                </Button>
               </div>
             </div>
+            <Button
+              type="submit"
+              className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : null}
+              KIRIM PESAN
+            </Button>
           </div>
-          <Button
-            type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : null}
-            KIRIM PESAN
-          </Button>
-        </div>
-        {result && <div id="result">{result}</div>}
-      </form>
+          {result && <div id="result">{result}</div>}
+        </form>
+      )}
     </>
   );
 };
