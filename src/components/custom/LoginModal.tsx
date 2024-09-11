@@ -463,11 +463,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="secondary"
-          className="bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-800"
+          variant="outline"
+          className="bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100"
         >
-          <LogIn className="w-4 h-4 mr-2" />{" "}
-          <span className="text-white">Login</span>
+          <LogIn className="w-4 h-4 mr-2" /> <span className="">Login</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-4xl p-0 m-4 overflow-hidden bg-white rounded-lg shadow-lg">

@@ -89,7 +89,7 @@ const LoginButtons = () => {
         </>
       ) : (
         <>
-          {/* <LoginButton /> */}
+          {/* <Register  /> */}
           <Button
             variant="link"
             className="dark:text-gray-100"
@@ -98,7 +98,7 @@ const LoginButtons = () => {
             Register
           </Button>
 
-          {/* <RegisterButton /> */}
+          {/* <Login Modal/> */}
 
           <LoginModal onLoginSuccess={handleLoginSuccess} />
         </>

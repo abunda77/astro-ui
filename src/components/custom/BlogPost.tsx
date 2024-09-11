@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { Loader, Placeholder } from "rsuite";
-import { Loader2 } from "lucide-react";
-import { Button, ButtonGroup, ButtonToolbar } from "rsuite";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Button } from "@material-tailwind/react";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createUniqueSlug } from "@/lib/utils";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 interface BlogPost {
   id: number;
@@ -22,6 +23,7 @@ const BlogPost: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showNoDataAlert, setShowNoDataAlert] = useState(false);
   const postsPerPage = 8;
 
   useEffect(() => {
@@ -57,6 +59,7 @@ const BlogPost: React.FC = () => {
 
     fetchPosts();
   }, []);
+
   if (isLoading) {
     return (
       <div className="h-[600px] bg-[#94918d]">
@@ -68,14 +71,29 @@ const BlogPost: React.FC = () => {
   if (error) {
     return <div className="text-center text-red-500">{error}</div>;
   }
+
   const loadMorePosts = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (currentPage * postsPerPage >= posts.length) {
+      setShowNoDataAlert(true);
+    } else {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
+
+  if (isLoading && currentPage === 1) {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="skeleton">
+          <Loader size="md" />
+        </div>
+      </div>
+    );
+  }
 
   const initialPosts = posts.slice(0, currentPage * postsPerPage);
 
   return (
-    <section className="py-8 bg-gradient-to-t from-blue-500 via-blue-100 to-white dark:from-white dark:via-gray-50 dark:to-gray-300">
+    <section className="py-8 ">
       <div className="container px-4 mx-auto">
         <h2 className="mb-8 text-2xl font-semibold text-center text-gray-800 dark:text-gray-700">
           Blog Terbaru
@@ -148,21 +166,31 @@ const BlogPost: React.FC = () => {
           ))}
         </div>
 
-        {posts.length > currentPage * postsPerPage && (
-          <div className="mt-8 text-center">
-            <Button
-              onClick={loadMorePosts}
-              className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
-              disabled={isLoading}
+        <div className="mt-8 text-center">
+          <Button
+            onClick={loadMorePosts}
+            className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
+            disabled={isLoading || showNoDataAlert}
+          >
+            {isLoading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Muat lebih banyak..."
+            )}
+          </Button>
+          {showNoDataAlert && (
+            <Alert
+              variant="destructive"
+              className="max-w-sm p-4 mx-auto mt-6 bg-red-100 border-none shadow-lg sm:max-w-2xl sm:p-6"
             >
-              {isLoading ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                "Muat lebih banyak..."
-              )}
-            </Button>
-          </div>
-        )}
+              <AlertCircle className="w-4 h-4" />
+              <AlertTitle>Oops...!</AlertTitle>
+              <AlertDescription>
+                Maaf, sudah tidak ada data lagi yang tersedia.
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
       </div>
     </section>
   );
