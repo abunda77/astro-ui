@@ -14,6 +14,7 @@ import { CloseIcon } from "@/components/custom/CloseIcon";
 import { Loader, Placeholder } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import { MapPin, Banknote, House, CalendarDays } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Typography,
   IconButton,
@@ -34,6 +35,7 @@ import {
   Internet,
   FireFlame,
   HomeAltSlim,
+  DropletCheck,
 } from "iconoir-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { createUniqueSlug } from "@/lib/utils";
@@ -235,60 +237,47 @@ const PostSection: React.FC = () => {
     }
   }
   return (
-    <section className="text-gray-800 bg-gradient-to-b from-white via-blue-50 to-blue-100 dark:from-white dark:via-gray-50 dark:to-gray-300">
-      <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold">Property Listings</h2>
-          <div className="w-48">
-            <label
-              htmlFor="category"
-              className="block mb-1 text-sm font-medium text-gray-700"
-            >
-              Filter by Category
-            </label>
-            <Stack
-              spacing={10}
-              direction="column"
-              alignItems="flex-start"
-              className="bg-gray-100"
-            >
-              <SelectPicker
-                data={categories.map((category) => ({
-                  label: category.value,
-                  value: category.key.toString(),
-                }))}
-                value={selectedCategory?.toString() ?? ""}
-                onChange={handleCategoryChange}
-                style={{ width: 224 }}
-                searchable={false}
-                placeholder="Select a category"
-                className="bg-gray-300"
-                appearance="subtle"
-              />
-            </Stack>
+    <section className="min-h-screen py-12 transition-colors duration-300 ">
+      {/* class="min-h-screen transition-colors duration-300 bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-400 dark:from-gray-900 dark:via-gray-700 dark:to-purple-900" */}
+      <div className="container px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-between mb-8 md:flex-row">
+          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white md:mb-0">
+            Temukan Properti Impian Anda
+          </h2>
+          <div className="w-full md:w-64">
+            <SelectPicker
+              data={categories.map((category) => ({
+                label: category.value,
+                value: category.key.toString(),
+              }))}
+              value={selectedCategory?.toString() ?? ""}
+              onChange={handleCategoryChange}
+              style={{ width: "100%" }}
+              searchable={false}
+              placeholder="Pilih Kategori"
+              className="bg-white dark:bg-gray-700"
+              cleanable={false}
+            />
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {properties.map((property) => (
             <Card
               key={property.id}
-              className="transition-transform transform bg-white shadow-lg hover:scale-105 dark:bg-gray-900"
+              className="overflow-hidden transition-all duration-300 bg-white rounded-lg shadow-lg hover:shadow-2xl dark:bg-gray-800 dark:shadow-gray-700 dark:hover:shadow-gray-600 hover:border-blue-500 dark:hover:border-blue-300"
             >
               <div className="relative">
-                {loading ? (
-                  <Skeleton className="w-full h-48" />
-                ) : (
-                  <img
-                    src={getImageUrl(property)}
-                    alt={property.title}
-                    className="object-cover w-full h-48"
-                    width="350"
-                    height="200"
-                    style={{ aspectRatio: "350/200", objectFit: "cover" }}
-                  />
-                )}
+                <img
+                  src={getImageUrl(property)}
+                  alt={property.title}
+                  className="object-cover w-full h-56"
+                />
                 <Badge
-                  className={`absolute top-2 left-2 ${categories.find((cat) => cat.key === property.category_id)?.badgeColor || "bg-yellow-500"} text-white`}
+                  className={`absolute top-2 left-2 ${
+                    categories.find((cat) => cat.key === property.category_id)
+                      ?.badgeColor || "bg-yellow-500"
+                  } text-white text-xs font-semibold px-2 py-1 rounded-full`}
                 >
                   {
                     categories.find((cat) => cat.key === property.category_id)
@@ -296,65 +285,152 @@ const PostSection: React.FC = () => {
                   }
                 </Badge>
               </div>
-              <CardContent>
-                <h2 className="text-lg font-semibold text-left text-gray-800 dark:text-gray-200">
-                  {property.title}
-                </h2>
-                <p className="text-sm text-left text-gray-500 dark:text-gray-400">
-                  <MapPin className="inline-block w-4 h-4 mr-1" />{" "}
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-400">
+                    <a
+                      href={`/post/${createUniqueSlug(property.id, property.title)}`}
+                      className="transition-colors duration-200 hover:text-blue-500"
+                    >
+                      Rp {formatPrice(property.price)}
+                    </a>
+                  </p>
+                  <Badge
+                    className={`${
+                      property.ads === "sell"
+                        ? "bg-yellow-200 dark:bg-yellow-800"
+                        : "bg-green-200 dark:bg-green-800"
+                    } text-yellow-800 dark:text-yellow-500 text-xs font-semibold px-2 py-1 rounded-full hover:text-yellow-200 dark:hover:text-yellow-800`}
+                  >
+                    {property.ads === "sell" ? "Dijual" : "Disewakan"}
+                  </Badge>
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-gray-600 truncate dark:text-white">
+                  <a
+                    href={`/post/${createUniqueSlug(property.id, property.title)}`}
+                    className="transition-colors duration-200 hover:text-blue-500"
+                  >
+                    {property.title}
+                  </a>
+                </h3>
+                <p className="flex items-center mb-4 text-sm font-bold text-gray-400 dark:text-gray-300">
+                  <MapPin className="w-4 h-4 mr-1" />
                   {property.city.name}, {property.province.name}
                 </p>
-                <div className="flex items-center justify-between mt-4">
-                  <div className="flex space-x-2 text-gray-500 dark:text-gray-400">
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Internet className="w-4 h-4" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {property.facility?.internet}
-                      </TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Wifi className="w-4 h-4" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {property.facility?.line_phone}
-                      </TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <ElectronicsChip className="w-4 h-4" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {property.facility?.electricity} kWh
-                      </TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <SecurityPass className="w-4 h-4" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {property.facility?.security}
-                      </TooltipContent>
-                    </Tooltip>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex space-x-2">
+                    {property.facility?.internet && (
+                      <Tooltip>
+                        <Tooltip.Trigger as={IconButton} variant="ghost">
+                          <Internet className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground bg-gray-600">
+                          <Typography className="text-xs font-semibold">
+                            Internet
+                          </Typography>
+                          <Typography type="small" className="opacity-90">
+                            {property.facility.internet}
+                          </Typography>
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                    )}
+                    {property.facility?.line_phone && (
+                      <Tooltip>
+                        <Tooltip.Trigger as={IconButton} variant="ghost">
+                          <Wifi className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
+                          <Typography className="text-xs font-semibold">
+                            Telepon
+                          </Typography>
+                          <Typography type="small" className="opacity-90">
+                            {property.facility.line_phone}
+                          </Typography>
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                    )}
+                    {property.facility?.electricity && (
+                      <Tooltip>
+                        <Tooltip.Trigger as={IconButton} variant="ghost">
+                          <ElectronicsChip className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
+                          <Typography className="text-xs font-semibold">
+                            Listrik
+                          </Typography>
+                          <Typography type="small" className="opacity-90">
+                            {property.facility.electricity} kWh
+                          </Typography>
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                    )}
+                    {property.facility?.security && (
+                      <Tooltip>
+                        <Tooltip.Trigger as={IconButton} variant="ghost">
+                          <SecurityPass className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
+                          <Typography className="text-xs font-semibold">
+                            Keamanan
+                          </Typography>
+                          <Typography type="small" className="opacity-90">
+                            {property.facility.security}
+                          </Typography>
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                    )}
+
+                    {property.facility?.security && (
+                      <Tooltip>
+                        <Tooltip.Trigger as={IconButton} variant="ghost">
+                          <DropletCheck className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
+                          <Typography className="text-xs font-semibold">
+                            Sumber Air
+                          </Typography>
+                          <Typography type="small" className="opacity-90">
+                            {property.facility.water_source}
+                          </Typography>
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Tooltip>
+                    )}
                   </div>
-                  <p className="text-base font-semibold text-right text-green-600 dark:text-green-400">
-                    Rp. {formatPrice(property.price)}
-                  </p>
                 </div>
-                <Button
-                  className="w-full mt-4 text-white bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-500 dark:hover:bg-yellow-600"
-                  onClick={() =>
-                    (window.location.href = `/post/${createUniqueSlug(property.id, property.title)}`)
-                  }
-                >
-                  Detail
-                </Button>
+
+                {/* tambahkan user.profile.company_name */}
+                <div className="flex items-center mt-4">
+                  <Avatar className="w-10 h-10 mr-3">
+                    <AvatarImage
+                      src={
+                        property.user?.profile?.avatar
+                          ? `${homedomain}/storage/${property.user.profile.avatar}`
+                          : "images/avatar-fallback.gif"
+                      }
+                      alt={property.user?.profile?.first_name}
+                    />
+                    <AvatarFallback className="bg-indigo-300 rounded-full">
+                      {property.user?.profile?.first_name?.[0]}
+                      {property.user?.profile?.last_name?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  {property.user?.profile?.company_name && (
+                    <Typography className="text-sm font-semibold">
+                      {property.user?.profile?.company_name ||
+                        `${property.user?.profile?.first_name} ${property.user?.profile?.last_name}`}
+                    </Typography>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
+
         {showNoDataAlert && (
           <Alert
             variant="destructive"

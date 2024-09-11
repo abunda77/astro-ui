@@ -8,7 +8,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
+
+import { Button } from "@material-tailwind/react";
 import { Loader } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 
@@ -81,40 +82,40 @@ const BlogSection: React.FC = () => {
   }
 
   return (
-    <section className="py-8 bg-gradient-to-b from-blue-100 via-blue-50 to-blue-200 dark:from-gray-300 dark:via-gray-50 dark:to-gray-500">
+    <section className="py-8 ">
       <div className="container mx-auto">
-        <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-700">
+        <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-300">
           Blog Terbaru
         </h2>
         {posts.length > 0 ? (
-          <Carousel className="w-full max-w-6xl mx-auto mt-6">
-            <CarouselContent className="-ml-1">
+          <Carousel className="w-full max-w-6xl mx-auto mt-6 ">
+            <CarouselContent className="-ml-3 ">
               {posts.map((post) => (
                 <CarouselItem
                   key={post.id}
                   className="pl-1 md:basis-1/2 lg:basis-1/4"
                 >
                   <div className="p-5">
-                    <Card className="transition-transform transform hover:scale-105 hover:border-blue-500 dark:bg-gray-300 dark:hover:bg-gray-100 dark:border-gray-100 dark:hover:border-blue-500">
+                    <Card className="overflow-hidden transition-all duration-300 bg-white rounded-lg dark:bg-gray-700 hover:border-blue-500 dark:hover:border-blue-300">
                       <CardContent className="flex flex-col items-center justify-center p-6">
                         <img
                           src={post.feature_image}
                           alt={post.title}
                           className="object-cover w-full h-40 rounded-lg"
                         />
-                        <h3 className="mt-4 text-lg font-semibold text-center text-gray-800 dark:text-gray-700 hover:text-blue-500">
+                        <h3 className="mt-4 text-lg font-semibold text-center text-gray-800 dark:text-gray-300 hover:text-blue-500">
                           <a
                             href={`/blog/${createUniqueSlug(post.id, post.title)}`}
                             className="hover:underline"
                           >
                             {post.title.length > 40
-                              ? `${post.title.substring(0, 40)}...`
+                              ? `${post.title.substring(10, 40)}...`
                               : post.title}
                           </a>
                         </h3>
                         <p className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400">
                           {post.body.length > 100
-                            ? `${post.body.substring(0, 100)}...`
+                            ? `${post.body.substring(10, 50)}...`
                             : post.body}
                         </p>
                       </CardContent>
@@ -131,9 +132,7 @@ const BlogSection: React.FC = () => {
         )}
         <div className="flex justify-center mt-6">
           <Button
-            variant="outline"
-            size="default"
-            className="px-6 py-3 text-sm text-gray-600 bg-gray-300 rounded-md hover:underline dark:bg-gray-900 dark:text-gray-400"
+            className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
             onClick={() => (window.location.href = "/blog")}
           >
             Lihat Semua

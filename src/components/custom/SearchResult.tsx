@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Button } from "@/components/ui/button";
+
+import { Button, Spinner } from "@material-tailwind/react";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import debounce from "lodash/debounce";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { Loader2 } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import {
   SearchIcon,
   ALargeSmall,
@@ -188,9 +190,17 @@ const SearchResult: React.FC = () => {
     setShowSuggestions(false);
   };
 
+  const handleClear = () => {
+    setSearchTerm("");
+    setSearchLocation("");
+    setProperties([]);
+    setCurrentPage(1);
+    setNoResults(false);
+  };
+
   return (
     <div className="container relative z-20 px-4 mx-auto sm:px-6 sm:-mt-[100px]">
-      <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-800 sm:max-w-2xl sm:p-6">
+      <div className="max-w-sm p-4 mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-700 sm:max-w-2xl sm:p-6">
         <h3 className="mb-3 text-lg font-semibold text-center text-gray-800 dark:text-gray-200 sm:text-3xl">
           <Highlight
             query={["Idaman Kamu"]}
@@ -208,7 +218,7 @@ const SearchResult: React.FC = () => {
         </h3>
         <div className="relative flex flex-col sm:flex-row">
           <Tabs defaultValue="keyword" className="w-full">
-            <TabsList className="grid justify-center w-full grid-cols-2 border-gray-800 border-1 dark:border-gray-100 dark:bg-gray-800">
+            <TabsList className="grid justify-center w-full grid-cols-2 border-gray-800 border-1 dark:border-gray-100 dark:bg-gray-600">
               <TabsTrigger
                 value="keyword"
                 className="data-[state=active]:bg-yellow-500 dark:data-[state=active]:bg-yellow-500"
@@ -227,31 +237,55 @@ const SearchResult: React.FC = () => {
             <TabsContent value="keyword">
               <div className="relative">
                 <Input
-                  type="search"
+                  type="text"
                   placeholder="Cari kata kunci (min. 3 karakter)"
                   className="w-full h-10 py-1 pl-10 pr-3 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-10 sm:py-3"
                   onChange={(e) => setSearchTerm(e.target.value)}
                   value={searchTerm}
                 />
                 <SearchIcon className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+                <Badge
+                  onClick={handleClear}
+                  variant={"secondary"}
+                  className="absolute p-1 transform -translate-y-1/2 rounded-md cursor-pointer right-3 top-1/2 "
+                >
+                  Reset
+                </Badge>
+                <Badge
+                  onClick={handleClear}
+                  variant={"secondary"}
+                  className="absolute p-1 transform -translate-y-1/2 rounded-md cursor-pointer right-3 top-1/2 "
+                >
+                  Reset
+                </Badge>
               </div>
             </TabsContent>
             <TabsContent value="location">
               <div className="relative">
                 <Input
-                  type="search"
+                  type="text"
                   placeholder="Lokasi (min. 3 karakter)"
-                  className="w-full h-10 py-1 pl-10 pr-3 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-10 sm:py-3"
+                  className="w-full h-10 py-1 pl-10 pr-10 mb-2 text-sm text-gray-700 bg-gray-300 border-gray-100 rounded-md dark:bg-gray-300 sm:mb-0 sm:rounded-r-none sm:text-base sm:px-10 sm:py-3"
                   onChange={(e) => setSearchLocation(e.target.value)}
                   value={searchLocation}
                 />
                 <SearchIcon className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+                <Badge
+                  onClick={handleClear}
+                  variant={"secondary"}
+                  className="absolute p-1 transform -translate-y-1/2 rounded-md cursor-pointer right-3 top-1/2 "
+                >
+                  Reset
+                </Badge>
               </div>
             </TabsContent>
           </Tabs>
           <div className="flex flex-col sm:mt-10 sm:flex-row sm:items-center">
             <Button
-              className="w-full px-4 py-2 text-sm font-medium text-gray-200 transition duration-300 bg-green-600 rounded-md dark:text-gray-100 dark:bg-green-500 sm:w-auto sm:rounded-l-none hover:bg-green-700 dark:hover:bg-green-600 sm:text-base sm:px-8 sm:py-3 sm:mt-2 sm:ml-2"
+              variant="gradient"
+              color="success"
+              size="sm"
+              className="w-full text-sm font-medium text-gray-200 transition duration-300 rounded-md hover:bg-green-800 sm:w-auto sm:rounded-l-none sm:text-base sm:px-8 sm:py-2 sm:mt-2 sm:ml-2"
               onClick={handleSearch}
               disabled={loading}
             >
@@ -352,12 +386,14 @@ const SearchResult: React.FC = () => {
       {/* Customer logos */}
       {properties.length === 0 && !loading && !noResults && (
         <div className="flex flex-col items-center mt-8 mb-12">
-          <p className="mb-1 text-2xl text-gray-500">As Seen on </p>
+          <p className="mb-12 text-2xl text-gray-500 dark:text-gray-400">
+            As Seen on{" "}
+          </p>
           <div className="flex flex-wrap items-center justify-center gap-8">
             {customerLogos2.map((customer) => (
               <div
                 key={customer.name}
-                className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-2xl"
+                className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md dark:bg-gray-300 hover:shadow-2xl dark:shadow-gray-700 dark:hover:shadow-gray-500"
               >
                 {loading ? (
                   <Skeleton className="w-auto h-10 animate-pulse" />
@@ -375,7 +411,7 @@ const SearchResult: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-8 mt-8 md:grid-cols-3">
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-center">
+              <h3 className="mb-4 text-lg font-semibold text-center dark:text-gray-200">
                 Mengapa Memilih bosqproperti.com?
               </h3>
               <ul className="space-y-2">
@@ -388,14 +424,14 @@ const SearchResult: React.FC = () => {
                 ].map((item) => (
                   <li key={item} className="flex items-center">
                     <Check className="mr-2 text-green-500" size={20} />
-                    <span>{item}</span>
+                    <span className="dark:text-gray-300">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-center">
+              <h3 className="mb-4 text-lg font-semibold text-center dark:text-gray-200">
                 Setiap Listing Properti di bosqproperti.com Meliputi:
               </h3>
               <ul className="space-y-2">
@@ -408,14 +444,14 @@ const SearchResult: React.FC = () => {
                 ].map((item) => (
                   <li key={item} className="flex items-center">
                     <Check className="mr-2 text-green-500" size={20} />
-                    <span>{item}</span>
+                    <span className="dark:text-gray-300">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-center">
+              <h3 className="mb-4 text-lg font-semibold text-center dark:text-gray-200">
                 Keuntungan Pemasaran di bosqproperti.com:
               </h3>
               <ul className="space-y-2">
@@ -428,7 +464,7 @@ const SearchResult: React.FC = () => {
                 ].map((item) => (
                   <li key={item} className="flex items-center">
                     <Check className="mr-2 text-green-500" size={20} />
-                    <span>{item}</span>
+                    <span className="dark:text-gray-300">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -436,18 +472,23 @@ const SearchResult: React.FC = () => {
           </div>
 
           <div className="mt-12 text-center">
-            <h2 className="mb-4 text-2xl font-semibold">
+            <h2 className="mb-4 text-2xl font-semibold dark:text-gray-200">
               Testimoni & Pencapaian Kami
             </h2>
-            <div className="text-4xl font-bold text-blue-500">1,234,567</div>
-            <div className="text-3xl">
+            <div className="text-4xl font-bold text-blue-500 dark:text-blue-400">
+              1,234,567
+            </div>
+            <div className="text-3xl dark:text-gray-300">
               Properti Terjual Melalui Platform Kami
             </div>
-            <div className="mt-2 text-4xl">
-              dengan <span className="font-bold text-green-500">98.7%</span>{" "}
+            <div className="mt-2 text-4xl dark:text-gray-300">
+              dengan{" "}
+              <span className="font-bold text-green-500 dark:text-green-400">
+                98.7%
+              </span>{" "}
               Tingkat Kepuasan Pelanggan!
             </div>
-            <p className="mt-4 text-gray-600">
+            <p className="mt-4 text-gray-600 dark:text-gray-400">
               Bergabunglah dengan ribuan pemilik properti yang telah sukses.
               Lihat contoh properti yang telah terjual dan testimoni pelanggan
               kami.
@@ -456,14 +497,14 @@ const SearchResult: React.FC = () => {
           <div className="container px-4 py-16 mx-auto">
             {/* Mitra Pengembang Section */}
             <section className="mb-20">
-              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800">
+              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800 dark:text-gray-200">
                 Mitra Pengembang
               </h2>
               <div className="flex flex-wrap items-center justify-center gap-8">
                 {customerLogos.map((customer) => (
                   <div
                     key={customer.name}
-                    className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-2xl"
+                    className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md dark:bg-gray-300 hover:shadow-2xl dark:shadow-gray-700 dark:hover:shadow-gray-500"
                   >
                     <img
                       src={customer.logo}
@@ -478,14 +519,14 @@ const SearchResult: React.FC = () => {
 
             {/* Mitra Perbankan Section */}
             <section>
-              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800">
+              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800 dark:text-gray-200">
                 Mitra Perbankan
               </h2>
               <div className="flex flex-wrap items-center justify-center gap-6">
                 {customerLogos3.map((customer) => (
                   <div
                     key={customer.name}
-                    className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-2xl"
+                    className="flex items-center justify-center p-4 transition-shadow duration-300 bg-white rounded-lg shadow-md dark:bg-gray-300 hover:shadow-2xl dark:shadow-gray-700 dark:hover:shadow-gray-500"
                   >
                     <img
                       src={customer.logo}
