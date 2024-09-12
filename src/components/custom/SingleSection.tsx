@@ -368,8 +368,8 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   };
 
   return (
-    <section className="py-12 bg-gradient-to-t from-blue-200 via-blue-100 to-white dark:from-gray-800 dark:via-gray-700 dark:to-gray-600">
-      <div className="container max-w-4xl px-4 py-12 mx-auto">
+    <section className="py-12 ">
+      <div className="container max-w-5xl px-4 py-8 mx-auto sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-4 lg:py-12">
         <div className="container px-4 mx-auto">
           <div className="flex flex-col items-center justify-between mb-8 md:flex-row">
             <Button
@@ -392,11 +392,11 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
           </div>
 
           <div className="overflow-hidden bg-gray-200 rounded-lg shadow-xl dark:bg-gray-800">
-            <div className="relative">
-              <div className="relative">
+            <div className="relative ">
+              <div className="relative ">
                 <Carousel autoplay className="custom-slider" shape={shape}>
                   {getAllImage(property).map((imageUrl, index) => (
-                    <div key={index} className="relative">
+                    <div key={index} className="relative aspect-[16/9]">
                       <img
                         src={imageUrl}
                         alt={renderValue(property.title) || "Property Image"}
@@ -420,8 +420,8 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                   "relative inset-0 opacity-100 [mask-image:linear-gradient(to_bottom,white,transparent)]"
                 )}
               />
-              <div className="flex flex-col items-center justify-between mb-8">
-                <Avatar className="w-24 h-24 mb-4 -mt-28">
+              <div className="relative">
+                <Avatar className="absolute w-24 h-24 transform -translate-x-1/2 border-4 border-white shadow-lg left-1/2 -top-28 dark:border-gray-800">
                   <AvatarImage
                     src={
                       property.user?.profile?.avatar
@@ -434,65 +434,64 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     {property.user.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="mb-6 text-center">
-                  <p className="font-semibold text-gray-800 dark:text-gray-200">
+                <div className="mt-4 mb-8 text-center">
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                     {renderValue(property.user?.profile?.first_name)}{" "}
                     {renderValue(property.user?.profile?.last_name)}
-                  </p>
+                  </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {renderValue(property.user?.profile?.jobdesk)}
                   </p>
                 </div>
-                <div className="flex flex-col space-y-4 text-center">
-                  <h1 className="text-4xl font-extrabold leading-tight text-blue-600 dark:text-blue-400">
+                <div className="space-y-6">
+                  <h1 className="text-4xl font-extrabold text-center text-blue-600 dark:text-blue-400">
                     <Home className="inline-block w-8 h-8 mr-2 text-blue-600 dark:text-blue-400" />
                     {renderValue(property.title)}
                   </h1>
-                  <div className="flex flex-col space-y-2">
-                    <p className="flex items-center justify-between text-base text-gray-700 dark:text-gray-300">
-                      <span className="mr-2 font-semibold">
-                        <User className="inline-block w-4 h-4 mr-1 text-green-600 dark:text-green-400" />
+                  <div className="flex flex-col p-6 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-700">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-gray-700 dark:text-gray-300">
+                        <User className="inline-block w-4 h-4 mr-2 text-green-600 dark:text-green-400" />
                         Pemilik Iklan:
                       </span>
-                      <span className="font-medium transition-colors duration-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400">
+                      <span className="font-medium text-blue-600 cursor-pointer dark:text-blue-400 hover:underline">
                         {renderValue(property.user?.profile?.first_name) +
                           " " +
                           renderValue(property.user?.profile?.last_name) ||
                           "Unknown User"}
                       </span>
-                    </p>
-                    <p className="flex items-center justify-between text-base text-gray-700 dark:text-gray-300">
-                      <span className="mr-2 font-semibold">
-                        <Building className="inline-block w-4 h-4 mr-1 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-gray-700 dark:text-gray-300">
+                        <Building className="inline-block w-4 h-4 mr-2 text-purple-600 dark:text-purple-400" />
                         Developer:
                       </span>
-                      <span className="font-medium transition-colors duration-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400">
+                      <span className="font-medium text-blue-600 cursor-pointer dark:text-blue-400 hover:underline">
                         {renderValue(property.user?.profile?.company_name) ||
                           "Unknown User"}
                       </span>
-                    </p>
-                    <Accordion
-                      type="single"
-                      collapsible
-                      className="mt-2 bg-white rounded-lg shadow-md dark:bg-gray-800"
-                    >
-                      <AccordionItem value="biodata_company">
-                        <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                          Lihat Biodata Perusahaan
-                        </AccordionTrigger>
-                        <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
-                          <p className="text-gray-700 dark:text-gray-300">
-                            {renderValue(
-                              property.user?.profile?.biodata_company
-                            ) || "Tidak ada biodata perusahaan tersedia"}
-                          </p>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
+                    </div>
                   </div>
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="bg-white rounded-lg shadow-md dark:bg-gray-800"
+                  >
+                    <AccordionItem value="biodata_company">
+                      <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        Lihat Biodata Perusahaan
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                        <p className="text-gray-700 dark:text-gray-300">
+                          {renderValue(
+                            property.user?.profile?.biodata_company
+                          ) || "Tidak ada biodata perusahaan tersedia"}
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
               </div>
-
               <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
                 <div>
                   <h2 className="mb-4 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
@@ -521,62 +520,61 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     <List className="inline-block w-6 h-6 mr-2 text-orange-600 dark:text-orange-400" />
                     Informasi Utama
                   </h2>
-                  <p className="mb-10 text-xl font-bold text-left text-green-600 dark:text-green-400">
-                    <Banknote className="inline-block w-6 h-6 mr-1 text-green-600 dark:text-green-400" />
-                    Harga: Rp{" "}
-                    {renderValue(property.price)?.toLocaleString() || "N/A"}
-                    <Whisper
-                      trigger="click"
-                      placement={window.innerWidth > 768 ? "bottom" : "right"}
-                      speaker={
-                        <Popover className="p-4 bg-white rounded-md shadow-md dark:bg-gray-800">
-                          <KPRCalculator
-                            propertyPrice={renderValue(property.price)}
-                          />
-                        </Popover>
-                      }
+                  <div className="p-4 bg-white rounded-md shadow-md dark:bg-gray-800">
+                    <p className="mb-4 text-xl font-bold text-left text-green-600 dark:text-green-400">
+                      <Banknote className="inline-block w-6 h-6 mr-1 text-green-600 dark:text-green-400" />
+                      Harga: Rp{" "}
+                      {renderValue(property.price)?.toLocaleString() || "N/A"}
+                      <Whisper
+                        trigger="click"
+                        placement={window.innerWidth > 768 ? "bottom" : "right"}
+                        speaker={
+                          <Popover className="p-4 bg-white rounded-md shadow-md dark:bg-gray-800">
+                            <KPRCalculator
+                              propertyPrice={renderValue(property.price)}
+                            />
+                          </Popover>
+                        }
+                      >
+                        <span className="inline-block px-3 py-1 ml-2 text-sm font-semibold text-white bg-blue-600 rounded-full cursor-pointer">
+                          Simulasi KPR
+                        </span>
+                      </Whisper>
+                    </p>
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="transition-all duration-300"
                     >
-                      <span className="inline-block px-3 py-1 ml-2 text-sm font-semibold text-white bg-blue-600 rounded-full cursor-pointer">
-                        Simulasi KPR
-                      </span>
-                    </Whisper>
-                  </p>
-
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="transition-all duration-300 bg-white rounded-md shadow-md dark:bg-gray-800"
-                  >
-                    <AccordionItem value="alamat">
-                      <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        Alamat dan Wilayah
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
-                        <ul className="space-y-2 text-sm text-right text-gray-700 dark:text-gray-300">
-                          <li className="flex justify-between mb-4 ">
-                            <MapPin className="inline-block mr-1 text-red-600 w-7 h-7 dark:text-red-400" />
-                            <span>Alamat:</span>
-                            <br />
-                            <span className="font-semibold">
-                              {renderValue(property.address) || "N/A"}
-                            </span>
-                          </li>
-                          <li className="flex justify-between ">
-                            <MapPin className="inline-block w-5 h-5 mr-1 text-red-600 dark:text-red-400" />
-                            <span>Wilayah:</span>
-                            <br />
-                            <span className="font-semibold">
-                              {property.province.name &&
-                              property.district.name &&
-                              property.city.name
-                                ? `${property.province.name},\n${property.district.name},\n${property.city.name}`
-                                : "N/A"}
-                            </span>
-                          </li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                      <AccordionItem value="alamat">
+                        <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                          Alamat dan Wilayah
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                          <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                            <li className="flex items-center justify-between mb-2">
+                              <MapPin className="w-5 h-5 mr-2 text-red-600 dark:text-red-400" />
+                              <span className="font-semibold">Alamat:</span>
+                              <span>
+                                {renderValue(property.address) || "N/A"}
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <MapPin className="w-5 h-5 mr-2 text-red-600 dark:text-red-400" />
+                              <span className="font-semibold">Wilayah:</span>
+                              <span>
+                                {property.province.name &&
+                                property.district.name &&
+                                property.city.name
+                                  ? `${property.province.name}, ${property.district.name}, ${property.city.name}`
+                                  : "N/A"}
+                              </span>
+                            </li>
+                          </ul>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
                 </div>
               </div>
 
@@ -586,7 +584,6 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     <List className="inline-block w-6 h-6 mr-2 text-teal-600 dark:text-teal-400" />
                     Spesifikasi
                   </h2>
-
                   <Accordion
                     type="single"
                     collapsible
@@ -597,7 +594,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                         Spesifikasi Detail
                       </AccordionTrigger>
                       <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
-                        <div className="space-y-2 text-gray-700 dark:text-gray-300">
+                        <div className="grid grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
                           {property.specification ? (
                             <>
                               <div className="flex items-center justify-between">
@@ -694,7 +691,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                               </div>
                             </>
                           ) : (
-                            <div className="italic text-center">
+                            <div className="col-span-2 italic text-center">
                               Tidak ada spesifikasi tersedia
                             </div>
                           )}
@@ -709,7 +706,6 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     <MapPin className="inline-block w-6 h-6 mr-2 text-blue-600 dark:text-blue-400" />
                     Lokasi Terdekat
                   </h2>
-
                   <Accordion
                     type="single"
                     collapsible
@@ -721,7 +717,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       </AccordionTrigger>
                       <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
                         {property.nearby ? (
-                          <div className="space-y-2">
+                          <div className="grid grid-cols-2 gap-2">
                             {property.nearby.split(",").map((item, index) => (
                               <div key={index} className="flex items-center">
                                 <CircleCheckBig className="w-5 h-5 mr-2 text-green-500" />
@@ -740,7 +736,9 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     </AccordionItem>
                   </Accordion>
                 </div>
+              </div>
 
+              <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
                 <div>
                   <h2 className="mb-4 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
                     <Shield className="inline-block w-6 h-6 mr-2 text-pink-600 dark:text-pink-400" />
@@ -756,7 +754,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                         Fasilitas Detail
                       </AccordionTrigger>
                       <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
-                        <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                        <div className="grid grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
                           {property.facility ? (
                             <>
                               <li className="flex items-center justify-between">
@@ -863,11 +861,35 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                               </li>
                             </>
                           ) : (
-                            <li className="italic text-center">
+                            <div className="col-span-2 italic text-center">
                               Tidak ada fasilitas tersedia
-                            </li>
+                            </div>
                           )}
-                        </ul>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+
+                <div>
+                  <h2 className="mb-4 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
+                    <FileText className="inline-block w-6 h-6 mr-2 text-yellow-600 dark:text-yellow-400" />
+                    Deskripsi Lengkap
+                  </h2>
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="bg-white rounded-lg shadow-md dark:bg-gray-800"
+                  >
+                    <AccordionItem value="description">
+                      <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        Lihat Deskripsi
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
+                        <p className="text-gray-700 dark:text-gray-300">
+                          {renderValue(property.description) ||
+                            "Tidak ada deskripsi tersedia"}
+                        </p>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -875,30 +897,6 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
               </div>
 
               <div className="mb-8">
-                <h2 className="mb-4 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
-                  <FileText className="inline-block w-6 h-6 mr-2 text-yellow-600 dark:text-yellow-400" />
-                  Deskripsi Lengkap
-                </h2>
-                <Accordion
-                  type="single"
-                  collapsible
-                  className="bg-white rounded-lg shadow-md dark:bg-gray-800"
-                >
-                  <AccordionItem value="description">
-                    <AccordionTrigger className="px-4 py-3 text-gray-800 transition-colors duration-200 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      Lihat Deskripsi
-                    </AccordionTrigger>
-                    <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
-                      <p className="text-gray-700 dark:text-gray-300">
-                        {renderValue(property.description) ||
-                          "Tidak ada deskripsi tersedia"}
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-
-              <div>
                 <h2 className="mb-4 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
                   <Map className="inline-block w-6 h-6 mr-2 text-gray-800 dark:text-gray-200" />
                   Peta Lokasi
@@ -939,7 +937,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                   <Phone className="inline-block w-6 h-6 mr-2 text-gray-800 dark:text-gray-200" />
                   Kontak
                 </h2>
-                <div className="flex justify-center space-x-4">
+                <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                   <Whisper
                     placement="top"
                     trigger="hover"
@@ -1014,6 +1012,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       enterable
                     >
                       <Button
+                        block
                         appearance="ghost"
                         color="green"
                         className="flex items-center"
