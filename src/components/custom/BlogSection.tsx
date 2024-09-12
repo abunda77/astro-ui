@@ -83,12 +83,12 @@ const BlogSection: React.FC = () => {
 
   return (
     <section className="py-8 ">
-      <div className="container mx-auto">
-        <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-300">
+      <div className="container mx-auto ">
+        <h2 className="ml-10 text-2xl font-semibold text-gray-800 dark:text-gray-300 text-start">
           Blog Terbaru
         </h2>
         {posts.length > 0 ? (
-          <Carousel className="w-full max-w-6xl mx-auto mt-6 ">
+          <Carousel className="w-full mx-auto mt-6 max-w-7xl ">
             <CarouselContent className="-ml-3 ">
               {posts.map((post) => (
                 <CarouselItem

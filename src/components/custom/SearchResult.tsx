@@ -411,8 +411,8 @@ const SearchResult: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-8 mt-8 md:grid-cols-3">
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-center dark:text-gray-200">
-                Mengapa Memilih bosqproperti.com?
+              <h3 className="mb-4 text-lg font-semibold text-start dark:text-gray-200">
+                Mengapa Memilih bosqproperti.Com?
               </h3>
               <ul className="space-y-2">
                 {[
@@ -431,8 +431,8 @@ const SearchResult: React.FC = () => {
             </div>
 
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-center dark:text-gray-200">
-                Setiap Listing Properti di bosqproperti.com Meliputi:
+              <h3 className="mb-4 text-lg font-semibold text-start dark:text-gray-200">
+                Setiap Listing di BosqueProperti.Com Meliputi:
               </h3>
               <ul className="space-y-2">
                 {[
@@ -452,7 +452,7 @@ const SearchResult: React.FC = () => {
 
             <div>
               <h3 className="mb-4 text-lg font-semibold text-center dark:text-gray-200">
-                Keuntungan Pemasaran di bosqproperti.com:
+                Keuntungan Pemasaran di BosqueProperti.Com:
               </h3>
               <ul className="space-y-2">
                 {[
@@ -497,7 +497,7 @@ const SearchResult: React.FC = () => {
           <div className="container px-4 py-16 mx-auto">
             {/* Mitra Pengembang Section */}
             <section className="mb-20">
-              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800 dark:text-gray-200">
+              <h2 className="mb-10 text-4xl font-bold text-center text-gray-600 md:text-5xl dark:text-gray-300">
                 Mitra Pengembang
               </h2>
               <div className="flex flex-wrap items-center justify-center gap-8">
@@ -519,7 +519,7 @@ const SearchResult: React.FC = () => {
 
             {/* Mitra Perbankan Section */}
             <section>
-              <h2 className="mb-12 text-3xl font-bold text-center text-gray-800 dark:text-gray-200">
+              <h2 className="mb-10 text-4xl font-bold text-center text-gray-600 md:text-5xl dark:text-gray-300">
                 Mitra Perbankan
               </h2>
               <div className="flex flex-wrap items-center justify-center gap-6">

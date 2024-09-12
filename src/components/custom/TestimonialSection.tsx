@@ -4,40 +4,40 @@ import Marquee from "@/components/magicui/marquee";
 
 const testimonials = [
   {
-    name: "Kenzie Edgar",
-    username: "@kenzie",
-    body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos sunt ratione dolor exercitationem minima quas itaque saepe quasi architecto vel! Accusantium, vero sint recusandae cum tempora nemo commodi soluta deleniti.",
-    img: "https://i.pravatar.cc/100?img=1",
+    name: "Budi Santoso",
+    username: "@budi",
+    body: "Bosque Properti sangat membantu saya dalam menemukan rumah impian saya. Pelayanannya cepat dan profesional. Saya sangat merekomendasikan platform ini!",
+    img: "https://i.pravatar.cc/100?img=7",
   },
   {
-    name: "Stevie Tifft",
-    username: "@stevie",
-    body: "Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Dolore quod necessitatibus, labore sapiente, est, dignissimos ullam error ipsam sint quam tempora vel.",
-    img: "https://i.pravatar.cc/100?img=2",
+    name: "Siti Aminah",
+    username: "@siti",
+    body: "Sebagai developer, saya sangat terbantu dengan layanan Bosque Properti. Proses jual beli properti menjadi lebih mudah dan efisien. Terima kasih Bosque Properti!",
+    img: "https://i.pravatar.cc/100?img=8",
   },
   {
-    name: "Tommie Ewart",
-    username: "@tommie",
-    body: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae, obcaecati ullam excepturi dicta error deleniti sequi.",
-    img: "https://i.pravatar.cc/100?img=3",
+    name: "Andi Wijaya",
+    username: "@andi",
+    body: "Saya berhasil menjual apartemen saya dengan cepat melalui Bosque Properti. Platform ini sangat user-friendly dan memiliki banyak fitur yang membantu.",
+    img: "https://i.pravatar.cc/100?img=9",
   },
   {
-    name: "Charlie Howse",
-    username: "@charlie",
-    body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto inventore voluptatum nostrum atque, corrupti, vitae esse id accusamus dignissimos neque reprehenderit natus, hic sequi itaque dicta nisi voluptatem! Culpa, iusto.",
-    img: "https://i.pravatar.cc/100?img=4",
+    name: "Dewi Lestari",
+    username: "@dewi",
+    body: "Bosque Properti memberikan layanan yang sangat memuaskan. Saya berhasil menemukan kantor baru untuk bisnis saya dengan mudah. Sangat direkomendasikan!",
+    img: "https://i.pravatar.cc/100?img=10",
   },
   {
-    name: "Nevada Herbertson",
-    username: "@nevada",
-    body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis, voluptatem porro obcaecati dicta, quibusdam sunt ipsum, laboriosam nostrum facere exercitationem pariatur deserunt tempora molestiae assumenda nesciunt alias eius? Illo, autem!",
-    img: "https://i.pravatar.cc/100?img=5",
+    name: "Rudi Hartono",
+    username: "@rudi",
+    body: "Platform ini sangat membantu dalam mencari properti real estate. Saya sangat puas dengan layanan yang diberikan oleh Bosque Properti.",
+    img: "https://i.pravatar.cc/100?img=11",
   },
   {
-    name: "Kris Stanton",
-    username: "@kris",
-    body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem iusto, explicabo, cupiditate quas totam!",
-    img: "https://i.pravatar.cc/100?img=6",
+    name: "Lina Marlina",
+    username: "@lina",
+    body: "Bosque Properti memudahkan saya dalam mencari rumah baru. Pelayanannya sangat ramah dan profesional. Terima kasih Bosque Properti!",
+    img: "https://i.pravatar.cc/100?img=12",
   },
 ];
 
@@ -58,9 +58,9 @@ const TestimonialCard = ({
   return (
     <figure
       className={cn(
-        "relative w-64 cursor-pointer overflow-hidden rounded-xl border p-4 mx-2",
-        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
+        "relative w-64 cursor-pointer overflow-hidden rounded-xl p-4 mx-2",
+        "bg-gray-950/[.01] hover:bg-gray-950/[.05]",
+        "dark:bg-gradient-to-br dark:from-gray-700 dark:via-gray-900 dark:to-black dark:hover:bg-gradient-to-tl dark:hover:from-gray-600 dark:hover:via-gray-800 dark:hover:to-black"
       )}
     >
       <div className="flex flex-row items-center gap-2">
@@ -72,23 +72,28 @@ const TestimonialCard = ({
           <p className="text-xs font-medium dark:text-white/40">{username}</p>
         </div>
       </div>
-      <blockquote className="mt-2 text-sm">{body}</blockquote>
+      <blockquote className="mt-2 text-sm dark:text-gray-300">
+        {body}
+      </blockquote>
     </figure>
   );
 };
 
 const TestimonialSection: React.FC = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen py-5 min-w-screen bg-gray-50">
-      <div className="w-full px-5 py-16 text-gray-800 bg-white border-t border-b border-gray-200 md:py-24">
+    // <div className="flex items-center justify-center min-h-screen py-5 min-w-screen bg-gray-50 dark:bg-black">
+    //   <div className="w-full px-5 py-12 text-gray-800 bg-white md:py-24 dark:bg-black ">
+
+    <div className="flex items-center justify-center min-h-screen py-5 min-w-screen ">
+      <div className="w-full px-5 py-12 text-gray-800 md:py-24">
         <div className="w-full max-w-6xl mx-auto">
           <div className="max-w-xl mx-auto mb-10 text-center">
-            <h1 className="mb-5 text-6xl font-bold text-gray-600 md:text-7xl">
+            <h1 className="mb-5 text-6xl font-bold text-gray-600 md:text-7xl dark:text-gray-300">
               Apa yang orang <br />
               katakan.
             </h1>
-            <h3 className="mb-5 text-xl font-light">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <h3 className="mb-5 text-xl font-light dark:text-gray-300">
+              Berikut adalah beberapa testimoni dari pelanggan kami.
             </h3>
             <div className="text-center">
               <span className="inline-block w-1 h-1 ml-1 bg-indigo-500 rounded-full"></span>
@@ -98,7 +103,7 @@ const TestimonialSection: React.FC = () => {
               <span className="inline-block w-1 h-1 ml-1 bg-indigo-500 rounded-full"></span>
             </div>
           </div>
-          <div className="relative w-full overflow-hidden border rounded-lg bg-background md:shadow-xl">
+          <div className="relative w-full overflow-hidden ">
             <Marquee className="py-4 [--duration:40s]" pauseOnHover repeat={2}>
               {testimonials.map((testimonial) => (
                 <TestimonialCard key={testimonial.username} {...testimonial} />
@@ -114,8 +119,11 @@ const TestimonialSection: React.FC = () => {
                 <TestimonialCard key={testimonial.username} {...testimonial} />
               ))}
             </Marquee>
-            <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none bg-gradient-to-r from-white dark:from-background"></div>
-            <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none bg-gradient-to-l from-white dark:from-background"></div>
+            {/* <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none bg-gradient-to-r from-white dark:from-black"></div>
+            <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none bg-gradient-to-l from-white dark:from-black"></div> */}
+
+            <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none "></div>
+            <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none "></div>
           </div>
         </div>
       </div>
