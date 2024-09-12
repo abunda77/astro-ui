@@ -8,6 +8,7 @@ import Footer01 from "@/layouts/Footer01.astro";
 import { Toaster } from "@/components/ui/toaster";
 import { AstroSeo } from "@astrolib/seo";
 import { createUniqueSlug } from "@/lib/utils";
+import { ViewTransitions } from 'astro:transitions';
 
 export async function getStaticPaths() {
   const urlEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
@@ -140,6 +141,7 @@ const uniqueSlug = createUniqueSlug(property.id, property.title);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
     <title>{property.title}</title>
 
     <AstroSeo

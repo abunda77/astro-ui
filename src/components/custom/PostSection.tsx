@@ -265,7 +265,7 @@ const PostSection: React.FC = () => {
           {properties.map((property) => (
             <Card
               key={property.id}
-              className="overflow-hidden transition-all duration-300 bg-white rounded-lg shadow-lg hover:shadow-2xl dark:bg-gray-800 dark:shadow-gray-700 dark:hover:shadow-gray-600 hover:border-blue-500 dark:hover:border-blue-300"
+              className="overflow-hidden transition-all duration-300 rounded-lg shadow-lg hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-300 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-600"
             >
               <div className="relative">
                 <img
@@ -287,7 +287,7 @@ const PostSection: React.FC = () => {
               </div>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-400">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                     <a
                       href={`/post/${createUniqueSlug(property.id, property.title)}`}
                       className="transition-colors duration-200 hover:text-blue-500"
@@ -305,7 +305,7 @@ const PostSection: React.FC = () => {
                     {property.ads === "sell" ? "Dijual" : "Disewakan"}
                   </Badge>
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-600 truncate dark:text-white">
+                <h3 className="mb-2 text-lg font-semibold text-gray-700 truncate dark:text-gray-200">
                   <a
                     href={`/post/${createUniqueSlug(property.id, property.title)}`}
                     className="transition-colors duration-200 hover:text-blue-500"
@@ -313,7 +313,7 @@ const PostSection: React.FC = () => {
                     {property.title}
                   </a>
                 </h3>
-                <p className="flex items-center mb-4 text-sm font-bold text-gray-400 dark:text-gray-300">
+                <p className="flex items-center mb-4 text-sm font-bold text-gray-500 dark:text-gray-400">
                   <MapPin className="w-4 h-4 mr-1" />
                   {property.city.name}, {property.province.name}
                 </p>

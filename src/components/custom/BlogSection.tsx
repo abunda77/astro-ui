@@ -96,7 +96,7 @@ const BlogSection: React.FC = () => {
                   className="pl-1 md:basis-1/2 lg:basis-1/4"
                 >
                   <div className="p-5">
-                    <Card className="overflow-hidden transition-all duration-300 bg-white rounded-lg dark:bg-gray-700 hover:border-blue-500 dark:hover:border-blue-300">
+                    <Card className="overflow-hidden transition-all duration-300 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-600 dark:to-gray-700 hover:border-blue-500 dark:hover:border-blue-300">
                       <CardContent className="flex flex-col items-center justify-center p-6">
                         <img
                           src={post.feature_image}

@@ -7,6 +7,7 @@ import SingleBlogSection from "@/components/custom/SingleBlogSection";
 import Footer01 from "@/layouts/Footer01.astro";
 import { AstroSeo } from "@astrolib/seo";
 import { createUniqueSlug } from "@/lib/utils";
+import { ViewTransitions } from "astro:transitions";
 
 export async function getStaticPaths() {
   // Ambil semua ID artikel yang tersedia
@@ -42,6 +43,7 @@ const { postId, title, featureImage } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
 
     <title>{title}</title>
     <AstroSeo

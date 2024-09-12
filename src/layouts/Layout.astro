@@ -7,6 +7,8 @@ import Section01 from "@/layouts/Section01.astro";
 import PostSection from "@/components/custom/PostSection";
 import BlogSection from "@/components/custom/BlogSection.tsx";
 import BubleChatComponent from "@/components/custom/BubleChatComponent.tsx";
+import TestimonialSection from "@/components/custom/TestimonialSection";
+import { ViewTransitions } from "astro:transitions";
 
 const { title } = Astro.props;
 
@@ -27,6 +29,7 @@ const makeTitle = title
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="images/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
     <title>{title}</title>
   </head>
   <body
@@ -36,6 +39,7 @@ const makeTitle = title
     <Hero />
     <!-- <Section01 /> -->
     <PostSection client:load />
+    <TestimonialSection />
     <BlogSection client:load />
     <slot />
     <style is:global>

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import Marquee from "@/components/magicui/marquee";
 
 interface NewsItem {
   title: string;
@@ -17,7 +19,6 @@ const RunningText: React.FC = () => {
       const params = {
         apikey: apitoken,
         q: "suku bunga",
-        // language: "id",
       };
 
       const esc = encodeURIComponent;
@@ -48,16 +49,13 @@ const RunningText: React.FC = () => {
           Array.isArray(result.results)
         ) {
           setNews(
-            result.results.slice(0, 3).map((item: any) => {
-              let title = item.title;
-              if (title.length > 50) {
-                title = title.substring(0, 50) + "...";
-              }
-              return {
-                title: title,
-                link: item.link,
-              };
-            })
+            result.results.slice(0, 5).map((item: any) => ({
+              title:
+                item.title.length > 50
+                  ? item.title.substring(0, 50) + "..."
+                  : item.title,
+              link: item.link,
+            }))
           );
         } else {
           console.error("Unexpected data structure:", result);
@@ -68,59 +66,51 @@ const RunningText: React.FC = () => {
     };
 
     fetchData();
+  }, []);
 
+  useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % 5);
-
-      // Setelah mengubah currentIndex, pastikan item baru berada di tengah (opsional)
-      setTimeout(() => {
-        const marqueeElement = document.querySelector(".animate-marquee");
-        if (marqueeElement) {
-          marqueeElement.scrollTop =
-            (marqueeElement.scrollHeight - marqueeElement.clientHeight) / 2;
-        }
-      }, 0);
-    }, 10000);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % news.length);
+    }, 5000); // Ganti berita setiap 5 detik
 
     return () => clearInterval(interval);
-  }, []);
+  }, [news]);
+
   if (news.length === 0) {
     return (
-      <div className="skeleton">
+      <div
+        className="skeleton"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Skeleton className="w-[100px] h-[20px] rounded-md bg-gray-300 dark:bg-gray-200" />
       </div>
     );
   }
 
+  const NewsCard = ({ title, link }: NewsItem) => {
+    return (
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn("relative h-10 w-full cursor-pointer overflow-hidden")}
+      >
+        <p className="text-sm font-medium dark:text-white">{title}</p>
+      </a>
+    );
+  };
+
   return (
-    <div className="flex items-center w-auto h-8 overflow-hidden bg-gray-300 dark:bg-gray-800">
-      {" "}
-      {/* Tambahkan flex dan items-center */}
-      <div className="container h-full mx-auto">
-        {" "}
-        {/* Tambahkan h-full */}
-        <div className="relative h-full py-2 text-sm font-medium text-gray-800 dark:text-gray-300 whitespace-nowrap">
-          {" "}
-          {/* Tambahkan relative dan h-full */}
-          <div className="absolute top-0 left-0 flex flex-col justify-center w-full h-full animate-marquee">
-            {" "}
-            {/* Tambahkan absolute, flex-col, dan justify-center */}
-            {news.map((item, index) => (
-              <a
-                key={index}
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`inline-block mr-8 ${
-                  index === currentIndex ? "opacity-100" : "opacity-0"
-                } transition-opacity duration-2000`}
-              >
-                {item.title}
-              </a>
-            ))}
-          </div>
+    <div className="relative flex h-[50px] w-full flex-row items-center justify-center overflow-hidden md:shadow-xl bg-slate-300 dark:bg-slate-600">
+      <Marquee pauseOnHover className="[--duration:5s]" vertical>
+        <div className="flex items-center justify-center w-full h-full">
+          <NewsCard {...news[currentIndex]} />
         </div>
-      </div>
+      </Marquee>
     </div>
   );
 };

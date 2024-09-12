@@ -1,6 +1,7 @@
 ---
 // import { Toaster } from "@/components/ui/toaster";
 // import RegisterForm from "@/components/custom/RegisterForm";
+import { ViewTransitions } from "astro:transitions";
 const { title } = Astro.props;
 
 export interface Props {
@@ -20,6 +21,7 @@ const makeTitle = title
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="images/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
     <title>{title}</title>
   </head>
   <body
