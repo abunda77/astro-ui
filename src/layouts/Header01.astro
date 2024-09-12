@@ -1,51 +1,57 @@
 ---
-import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/custom/ModeToggle";
-import AvatarComponent from "@/components/custom/AvatarComponent";
-import { MenuItems, Astronav } from "astro-navbar";
-import Dropdown from "@/components/dropdown.astro";
+
 import LoginButtons from "@/components/custom/LoginButtons";
 import HeaderClientScript from "@/components/custom/HeaderClientScript";
 import HeaderMenu from "@/components/custom/HeaderMenu";
 import MainNavigation from "@/components/custom/MainNavigation";
+import {
+  Menu,
+  X,
+  House,
+  Building2,
+  Landmark,
+  Warehouse,
+  Calculator,
+  GlobeLock,
+  ShieldCheck,
+  PersonStanding,
+} from "lucide-react";
 
 type MenuItem = {
   title: string;
   path?: string;
-  items?: { title: string; path: string }[];
-};
 
+  icon?: any;
+  badge?: boolean;
+  items?: { title: string; path: string; icon?: any }[];
+};
 const menuitems: MenuItem[] = [
-  { title: "Beranda", path: "/" },
+  { title: "Beranda", path: "/", icon: House },
   {
     title: "Properti",
+    icon: Building2,
     items: [
-      { title: "Rumah", path: "/properti/rumah" },
-      { title: "Apartemen", path: "/properti/apartemen" },
-      { title: "Tanah", path: "/properti/tanah" },
-      { title: "Calclutaor KPR", path: "/calculator" },
+      { title: "Rumah", path: "/properti/rumah", icon: House },
+      { title: "Apartemen", path: "/properti/apartemen", icon: Building2 },
+      { title: "Kavling", path: "/properti/kavling", icon: Landmark },
+      { title: "Office", path: "/properti/kavling", icon: Landmark },
+      { title: "Warehouse", path: "/properti/warehouse", icon: Landmark },
     ],
   },
+  { title: "Calculator KPR", path: "/calculator", icon: Calculator },
+  { title: "Blog", path: "/blog", icon: Calculator },
   {
     title: "About Us",
+    icon: PersonStanding,
     items: [
-      { title: "Our Profile", path: "/about" },
-      { title: "Layanan", path: "/layanan" },
-      { title: "Privacy", path: "/privacy" },
+      { title: "Our Profile", path: "/about", icon: PersonStanding },
+      { title: "Layanan", path: "/layanan", icon: ShieldCheck },
+      { title: "Privacy", path: "/privacy", icon: GlobeLock },
     ],
   },
-  { title: "Kontak", path: "/contact" },
+  { title: "Kontak", path: "/contact", icon: Warehouse },
 ];
-
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 
 import "rsuite/dist/rsuite-no-reset.min.css";
 ---

@@ -93,25 +93,31 @@ const BlogPost: React.FC = () => {
   const initialPosts = posts.slice(0, currentPage * postsPerPage);
 
   return (
-    <section className="py-8 ">
+    <section className="py-8">
+      {/* Bagian utama blog dengan padding vertikal untuk memberikan ruang bernafas */}
       <div className="container px-4 mx-auto">
-        <h2 className="mb-8 text-2xl font-semibold text-center text-gray-800 dark:text-gray-700">
+        {/* Container dengan padding horizontal untuk konten yang rapi */}
+        <h2 className="mb-8 text-2xl font-semibold text-center text-gray-800 dark:text-gray-200">
           Blog Terbaru
+          {/* Judul utama dengan ukuran dan warna yang kontras untuk menarik perhatian */}
         </h2>
         {initialPosts.length === 0 ? (
           <div className="text-center text-gray-600 dark:text-gray-400">
             Tidak ada data blog yang tersedia.
+            {/* Pesan ramah pengguna saat tidak ada postingan */}
           </div>
         ) : null}
         <div
           id="posts-container"
           className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
         >
+          {/* Grid responsif yang menyesuaikan jumlah kolom berdasarkan ukuran layar */}
           {initialPosts.map((post) => (
             <Card
               key={post.id}
-              className="h-full transition-transform transform hover:scale-105 hover:border-blue-500 dark:bg-gray-300 dark:hover:bg-gray-100 dark:border-gray-100 dark:hover:border-blue-500"
+              className="h-full transition-all bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-600 dark:to-gray-500 hover:border-2 hover:border-blue-500 focus:border-2 focus:border-blue-500 dark:hover:border-yellow-200 dark:focus:border-yellow-200"
             >
+              {/* Kartu blog dengan efek hover untuk interaktivitas */}
               <CardContent className="flex flex-col h-full p-6">
                 {isLoading ? (
                   <Skeleton className="w-full h-40 mb-4 rounded-lg" />
@@ -121,17 +127,19 @@ const BlogPost: React.FC = () => {
                     alt={post.title}
                     className="object-cover w-full h-40 mb-4 rounded-lg"
                   />
+                  // Gambar fitur dengan rasio aspek konsisten
                 )}
                 {isLoading ? (
                   <Skeleton className="w-3/4 h-6 mb-2" />
                 ) : (
-                  <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-700 hover:text-blue-500">
+                  <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400">
                     <a
                       href={`/blog/${createUniqueSlug(post.id, post.title)}`}
                       className="hover:underline"
                     >
                       {post.title}
                     </a>
+                    {/* Judul postingan dengan efek hover untuk menunjukkan keterkaitan */}
                   </h3>
                 )}
                 {isLoading ? (
@@ -142,12 +150,14 @@ const BlogPost: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <p className="flex-grow mb-2 text-sm text-gray-600 dark:text-gray-700">
+                    <p className="flex-grow mb-2 text-sm text-gray-600 dark:text-gray-300">
                       {post.body.substring(0, 100)}...
+                      {/* Pratinjau konten dengan panjang yang konsisten */}
                     </p>
-                    <p className="mb-4 text-xs text-gray-600 dark:text-gray-700">
+                    <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
                       Dibuat pada:{" "}
                       {new Date(post.created_at).toLocaleDateString("id-ID")}
+                      {/* Informasi tanggal yang diformat dengan baik */}
                     </p>
                   </>
                 )}
@@ -156,9 +166,10 @@ const BlogPost: React.FC = () => {
                 ) : (
                   <a
                     href={`/blog/${createUniqueSlug(post.id, post.title)}`}
-                    className="mt-auto text-blue-500 hover:underline"
+                    className="mt-auto text-blue-500 dark:text-blue-400 hover:underline"
                   >
                     Baca selengkapnya
+                    {/* CTA yang jelas untuk mendorong interaksi */}
                   </a>
                 )}
               </CardContent>
@@ -167,6 +178,7 @@ const BlogPost: React.FC = () => {
         </div>
 
         <div className="mt-8 text-center">
+          {/* Bagian load more yang terpusat */}
           <Button
             onClick={loadMorePosts}
             className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
@@ -177,6 +189,7 @@ const BlogPost: React.FC = () => {
             ) : (
               "Muat lebih banyak..."
             )}
+            {/* Tombol load more dengan indikator loading */}
           </Button>
           {showNoDataAlert && (
             <Alert
@@ -188,6 +201,7 @@ const BlogPost: React.FC = () => {
               <AlertDescription>
                 Maaf, sudah tidak ada data lagi yang tersedia.
               </AlertDescription>
+              {/* Pesan alert yang informatif ketika tidak ada lagi data */}
             </Alert>
           )}
         </div>
