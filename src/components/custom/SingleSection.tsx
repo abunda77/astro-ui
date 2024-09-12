@@ -371,17 +371,17 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
     <section className="py-12 bg-gradient-to-t from-blue-200 via-blue-100 to-white dark:from-gray-800 dark:via-gray-700 dark:to-gray-600">
       <div className="container max-w-4xl px-4 py-12 mx-auto">
         <div className="container px-4 mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col items-center justify-between mb-8 md:flex-row">
             <Button
               appearance="primary"
               color="green"
               href="/"
-              className="transition-colors"
+              className="w-full mb-4 transition-colors md:w-auto md:mb-0"
             >
               <Home className="w-4 h-4 mr-2 text-white dark:text-gray-300" />
               Kembali
             </Button>
-            <div className="p-2 bg-white rounded-lg shadow-md dark:bg-gray-800">
+            <div className="flex justify-end w-full p-2 rounded-lg lg:justify-end">
               <SocialShare
                 url={`${window.location.origin}/post/${uniqueSlug}`}
                 title={property.title || ""}
@@ -435,7 +435,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="mb-6 text-center">
-                  <p className="font-semibold">
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">
                     {renderValue(property.user?.profile?.first_name)}{" "}
                     {renderValue(property.user?.profile?.last_name)}
                   </p>
