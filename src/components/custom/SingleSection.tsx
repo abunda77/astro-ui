@@ -435,7 +435,9 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                     src={
                       property.user?.profile?.avatar
                         ? `${homedomain}/storage/${property.user.profile.avatar}`
-                        : "images/avatar-fallback.gif"
+                        : property.user?.profile?.remote_url
+                          ? property.user.profile.remote_url
+                          : "images/avatar-fallback.gif"
                     }
                     alt={renderValue(property.user.name)}
                   />

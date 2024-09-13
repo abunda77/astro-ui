@@ -8,7 +8,7 @@ import Footer01 from "@/layouts/Footer01.astro";
 import { Toaster } from "@/components/ui/toaster";
 import { AstroSeo } from "@astrolib/seo";
 import { createUniqueSlug } from "@/lib/utils";
-import { ViewTransitions } from 'astro:transitions';
+import { ViewTransitions } from "astro:transitions";
 
 export async function getStaticPaths() {
   const urlEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
@@ -85,6 +85,7 @@ interface Property {
   };
   images: {
     image_url: string;
+    remote_image_url: string;
     is_primary: boolean;
     id: number;
   }[];
@@ -125,6 +126,7 @@ interface Property {
       whatsapp: string;
       company_name: string;
       avatar: string;
+      remote_url: string;
       biodata_company: string;
       jobdesk: string;
     };
