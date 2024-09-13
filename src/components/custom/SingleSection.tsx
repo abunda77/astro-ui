@@ -107,6 +107,7 @@ interface Property {
   };
   images: {
     image_url: string;
+    remote_image_url: string | null;
     is_primary: boolean;
     id: number;
   }[];
@@ -147,6 +148,7 @@ interface Property {
       whatsapp: string | null;
       company_name: string | null;
       avatar: string | null;
+      remote_url: string | null;
       biodata_company: string | null;
       jobdesk: string | null;
     };
@@ -170,6 +172,9 @@ const getAllImage = (property: Property) => {
   property.images.forEach((image, index) => {});
   return property.images.length > 0
     ? property.images.map((img) => {
+        if (img.image_url === null) {
+          return img.remote_image_url || "images/home_fallback.png";
+        }
         let imageUrl = img.image_url.startsWith("/")
           ? img.image_url.substring(1)
           : img.image_url;
@@ -386,7 +391,11 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                 url={`${window.location.origin}/post/${uniqueSlug}`}
                 title={property.title || ""}
                 short_desc={property.short_desc || ""}
-                image_url={property.images?.[0]?.image_url || ""}
+                image_url={
+                  property.images?.[0]?.image_url ||
+                  property.images?.[0]?.remote_image_url ||
+                  ""
+                }
               />
             </div>
           </div>

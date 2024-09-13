@@ -49,7 +49,11 @@ interface Property {
   district: { name: string };
   category_id: number;
   city: { name: string };
-  images: { image_url: string; is_primary: boolean }[];
+  images: {
+    image_url: string;
+    remote_image_url: string | null;
+    is_primary: boolean;
+  }[];
   created_at: string;
   ads: string;
   status: string;
@@ -61,7 +65,8 @@ interface Property {
       email: string;
       whatsapp: string | null;
       company_name: string;
-      avatar: string;
+      avatar: string | null;
+      remote_url: string | null;
       biodata_company: string | null;
       jobdesk: string | null;
     };
@@ -197,11 +202,15 @@ const PostSection: React.FC = () => {
   const getImageUrl = (property: Property) => {
     const primaryImage = property.images.find((img) => img.is_primary);
     if (primaryImage) {
-      let imageUrl = primaryImage.image_url.startsWith("/")
-        ? primaryImage.image_url.substring(1)
-        : primaryImage.image_url;
-      imageUrl = imageUrl.replace(/[",/\\]/g, ""); // Menghapus karakter yang tidak diperlukan
-      return `${homedomain}/storage/${imageUrl}`;
+      if (primaryImage.image_url) {
+        let imageUrl = primaryImage.image_url.startsWith("/")
+          ? primaryImage.image_url.substring(1)
+          : primaryImage.image_url;
+        imageUrl = imageUrl.replace(/[",/\\]/g, ""); // Menghapus karakter yang tidak diperlukan
+        return `${homedomain}/storage/${imageUrl}`;
+      } else if (primaryImage.remote_image_url) {
+        return primaryImage.remote_image_url;
+      }
     }
     return "images/home_fallback.png";
   };
