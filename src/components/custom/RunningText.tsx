@@ -105,7 +105,7 @@ const RunningText: React.FC = () => {
   };
 
   return (
-    <div className="relative flex h-[50px] w-full flex-row items-center justify-center overflow-hidden md:shadow-xl bg-slate-300 dark:bg-slate-600">
+    <div className="relative flex h-[50px] w-full flex-row items-center justify-center overflow-hidden md:shadow-xl bg-slate-300 dark:bg-slate-600 text-center">
       <Marquee pauseOnHover className="[--duration:5s]" vertical>
         <div className="flex items-center justify-center w-full h-full">
           <NewsCard {...news[currentIndex]} />

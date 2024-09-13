@@ -256,7 +256,7 @@ const SearchResult: React.FC = () => {
                   variant={"secondary"}
                   className="absolute p-1 transform -translate-y-1/2 rounded-md cursor-pointer right-3 top-1/2 "
                 >
-                  Reset
+                  Clear
                 </Badge>
               </div>
             </TabsContent>
