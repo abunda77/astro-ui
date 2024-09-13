@@ -564,16 +564,20 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                         <AccordionContent className="px-4 py-3 bg-gray-50 dark:bg-gray-900">
                           <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                             <li className="flex items-center justify-between mb-2">
-                              <MapPin className="w-5 h-5 mr-2 text-red-600 dark:text-red-400" />
-                              <span className="font-semibold">Alamat:</span>
-                              <span>
+                              <div className="flex items-center">
+                                <MapPin className="w-5 h-5 mr-2 text-red-600 dark:text-red-400" />
+                                <span className="font-semibold">Alamat:</span>
+                              </div>
+                              <span className="text-right">
                                 {renderValue(property.address) || "N/A"}
                               </span>
                             </li>
                             <li className="flex items-center justify-between">
-                              <MapPin className="w-5 h-5 mr-2 text-red-600 dark:text-red-400" />
-                              <span className="font-semibold">Wilayah:</span>
-                              <span>
+                              <div className="flex items-center">
+                                <MapPin className="w-5 h-5 mr-2 text-red-600 dark:text-red-400" />
+                                <span className="font-semibold">Wilayah:</span>
+                              </div>
+                              <span className="text-right">
                                 {property.province.name &&
                                 property.district.name &&
                                 property.city.name
