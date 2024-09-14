@@ -39,7 +39,7 @@ const LoginButtons = () => {
       setIsLoggedIn(true);
       setUsername(loggedInUsername);
       updateWelcomeMessage(loggedInUsername);
-      setLoading(false); // Hentikan loading setelah beberapa saat (simulasi)
+      setLoading(true); // Hentikan loading setelah beberapa saat (simulasi)
       window.location.href = "/dashboard";
     }, 2000); // Ganti 2000 dengan waktu loading yang Anda inginkan
   };
