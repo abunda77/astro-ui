@@ -109,7 +109,7 @@ const LoginForm: React.FC<{
 
         // Redirect to home page
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = "/dashboard";
         }, 1000);
       } else {
         toast({

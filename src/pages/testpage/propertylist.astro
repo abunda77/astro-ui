@@ -1,0 +1,12 @@
+---
+import * as React from "react";
+import "@/styles/globals.css";
+
+import Layout from "@/layouts/Layout02.astro";
+// import Header01 from "@/layouts/Header01.astro";
+import PropertyList from "@/components/custom/PropertyList02";
+---
+
+<!-- <Header01 /> -->
+<Layout title="Selamat Datang di Bosque Properti" />
+<PropertyList client:load />

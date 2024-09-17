@@ -49,3 +49,50 @@ export const isAuthenticated = () => {
       document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
   };
+
+  // Fungsi untuk mendapatkan nilai cookie
+  export const getCookie = (name) => {
+    if (typeof document !== 'undefined') {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift();
+    }
+    // Server-side
+    // Implementasi server-side untuk mendapatkan cookie bisa ditambahkan di sini
+    // Untuk saat ini, kita kembalikan undefined pada sisi server
+    return undefined;
+  };
+
+  let globalAccessToken = null;
+
+  // ... kode lainnya tetap sama ...
+
+export const setAccessToken = (token) => {
+  globalAccessToken = token;
+  setCookie('access_token', token, 7); // Simpan token ke cookie selama 7 hari
+};
+
+export const getAccessToken = () => {
+  if (typeof window !== 'undefined') {
+    if (!globalAccessToken) {
+      globalAccessToken = getCookie('access_token');
+    }
+    return globalAccessToken;
+  }
+  return null;
+};
+
+export const setUserId = (userId) => {
+  globalUserId = userId;
+  setCookie('user_id', userId, 7); // Simpan user ID ke cookie selama 7 hari
+};
+
+export const getUserId = () => {
+  if (typeof window !== 'undefined') {
+    if (!globalUserId) {
+      globalUserId = getCookie('user_id');
+    }
+    return globalUserId;
+  }
+  return null;
+};

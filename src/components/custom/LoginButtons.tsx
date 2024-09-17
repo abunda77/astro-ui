@@ -4,6 +4,7 @@ import LoginModal from "@/components/custom/LoginModal";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getAccessToken, getUserId } from "@/utils/auth";
 
 const LoginButtons = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,27 +21,36 @@ const LoginButtons = () => {
       setIsLoggedIn(true);
       setUsername(loggedInUsername);
     }
+
+    // Tambahkan console log untuk access_token dan user_id
+    const accessToken = getAccessToken();
+    const userId = getUserId();
+
+    console.log("Access Tokenxxx:", accessToken || "Tidak ada");
+    console.log("User IDxxx:", userId || "Tidak ada");
   };
 
   useEffect(() => {
     checkLoginStatus().finally(() => setLoading(false));
   }, []);
 
-  const updateWelcomeMessage = (name: string) => {
-    const welcomeMessage = document.getElementById("welcomeMessage");
-    if (welcomeMessage) {
-      welcomeMessage.textContent = name ? `Welcome ${name}` : "Welcome User";
-    }
-  };
+  // const updateWelcomeMessage = (name: string) => {
+  //   const welcomeMessage = document.getElementById("welcomeMessage");
+  //   if (welcomeMessage) {
+  //     welcomeMessage.textContent = name ? `Welcomessa ${name}` : "Halo Guys!";
+  //   }
+  // };
 
   const handleLoginSuccess = (loggedInUsername: string) => {
     setLoading(true); // Mulai loading setelah login sukses
     setTimeout(() => {
       setIsLoggedIn(true);
       setUsername(loggedInUsername);
-      updateWelcomeMessage(loggedInUsername);
-      setLoading(true); // Hentikan loading setelah beberapa saat (simulasi)
-      window.location.href = "/dashboard";
+      // updateWelcomeMessage(loggedInUsername);
+      setLoading(false); // Hentikan loading setelah beberapa saat (simulasi)
+      const accessToken = getAccessToken();
+      const userId = getUserId();
+      window.location.href = `/dashboard`;
     }, 2000); // Ganti 2000 dengan waktu loading yang Anda inginkan
   };
 
@@ -53,7 +63,7 @@ const LoginButtons = () => {
       "username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     setIsLoggedIn(false);
     setUsername("");
-    updateWelcomeMessage("");
+    // updateWelcomeMessage("");
 
     toast({
       title: "Logout Successful",

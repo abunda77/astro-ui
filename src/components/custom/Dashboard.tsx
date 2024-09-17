@@ -1,326 +1,283 @@
 import React, { useEffect, useState } from "react";
-
-import UserProfile from "@/components/custom/UserProfile";
-import PropertyList from "@/components/custom/PropertyList";
-
+import "@/styles/globals.css";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { isAuthenticated, getUsername, removeCookie } from "@/utils/auth";
-// import {
-//   Bell,
-//   CircleUser,
-//   Home,
-//   LineChart,
-//   Menu,
-//   Package,
-//   Package2,
-//   Search,
-//   ShoppingCart,
-//   Users,
-// } from "lucide-react";
-// import { Badge } from "@/components/ui/badge";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-// import { Input } from "@/components/ui/input";
-// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  isAuthenticated,
+  getUsername,
+  removeCookie,
+  getAccessToken,
+  getUserId,
+  setAccessToken,
+  setUserId,
+  getCookie,
+} from "@/utils/auth";
+import { Loader2 } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
-const Dashboard = () => {
+import UserProfile from "./UserProfile";
+import PropertyList02 from "./PropertyList";
+
+const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
+const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
+
+interface UserProfile {
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  email: string | null;
+  whatsapp: string | null;
+  company_name: string | null;
+  avatar: string | null;
+  remote_url: string | null;
+  biodata_company: string | null;
+  jobdesk: string | null;
+}
+
+interface User {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  is_active: boolean;
+  id: number;
+  created_at: string;
+  updated_at: string;
+  profile: UserProfile;
+}
+
+interface PropertyList {
+  user_id: number | null;
+  category_id: number | null;
+  title: string | null;
+  short_desc: string | null;
+  description: string | null;
+  price: number | null;
+  period: string | null;
+  address: string | null;
+  province_id: string | null;
+  district_id: string | null;
+  city_id: string | null;
+  village_id: string | null;
+  coordinates: string | null;
+  nearby: string | null;
+  ads: string | null;
+  status: string | null;
+  views_count: number | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  keywords: string | null;
+  id: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+  facility: {
+    certificate: string | null;
+    electricity: number | null;
+    line_phone: string | null;
+    internet: string | null;
+    road_width: string | null;
+    water_source: string | null;
+    hook: string | null;
+    condition: string | null;
+    security: string | null;
+    wastafel: string | null;
+    id: number;
+  };
+  specification: {
+    land_size: number | null;
+    building_size: number | null;
+    bedroom: number | null;
+    carport: string | null;
+    bathroom: number | null;
+    dining_room: string | null;
+    living_room: string | null;
+    floors: number | null;
+    id: number;
+  };
+  images: {
+    image_url: string;
+    remote_image_url: string | null;
+    is_primary: boolean;
+    id: number;
+  }[];
+  province: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  district: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  city: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  village: {
+    code: string;
+    name: string;
+    level: string;
+  };
+}
+
+interface DashboardProps {
+  accessToken?: string;
+  userId?: string;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
   const { toast } = useToast();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [tokenFromCookie, setTokenFromCookie] = useState<string | null>(null);
+  const [userIdFromCookie, setUserIdFromCookie] = useState<string | null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
+  const [properties, setProperties] = useState<{
+    items: PropertyList[];
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  console.log("Dash Username:", username);
+  console.log("Dash Token dari Cookie:", tokenFromCookie);
+  console.log("Dash User ID dari Cookie:", userIdFromCookie);
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      setUsername(getUsername() || "User");
-    } else {
-      // Redirect to login page if not authenticated
-      window.location.href = "/auth/login";
+    const initializeAuth = () => {
+      const accessTokenFromCookie = getCookie("access_token");
+      const userIdFromCookie = getCookie("user_id");
+
+      if (accessTokenFromCookie && userIdFromCookie) {
+        setTokenFromCookie(accessTokenFromCookie);
+        setUserIdFromCookie(userIdFromCookie);
+        setUsername(getUsername() || "User");
+        fetchUserData(userIdFromCookie, accessTokenFromCookie);
+        fetchProperties(accessTokenFromCookie, userIdFromCookie);
+      } else {
+        toast({
+          title: "Peringatan",
+          description: "Anda belum login!",
+          duration: 3000,
+        });
+        setTimeout(() => {
+          window.location.href = "/loginpage";
+        }, 3000);
+      }
+    };
+
+    initializeAuth();
+  }, [toast]);
+
+  const fetchUserData = async (userId: string, token: string) => {
+    try {
+      const response = await fetch(`${FASTAPI_LOGIN}/users/${userId}`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const data = await response.json();
+      console.log("Data pengguna yang diambil:", data);
+      setUserData(data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast({
+        title: "Error",
+        description: "Gagal mengambil data pengguna",
+        variant: "destructive",
+      });
     }
-  }, []);
-
-  const handleLogout = () => {
-    // Clear cookies
-    removeCookie("access_token");
-    removeCookie("user_id");
-    removeCookie("username");
-
-    toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out.",
-    });
-
-    // Redirect to home page
-    window.location.href = "/";
   };
 
-  //   return (
-  //     <div className="container p-6 mx-auto mt-10 bg-white rounded-lg shadow-md dark:bg-gray-800">
-  //       <h1 className="mb-4 text-2xl font-bold dark:text-white">Dashboard</h1>
-  //       <p className="mb-4 dark:text-gray-300">
-  //         Welcome, {username}! Here you can manage your account and view your
-  //         data.
-  //       </p>
-  //       <Button onClick={handleLogout} variant="destructive">
-  //         Logout
-  //       </Button>
+  const fetchProperties = async (token: string, userId: string) => {
+    try {
+      const url = `${FASTAPI_LOGIN}/properties/user/${userId}`;
+      console.log("Fetching properties from URL:", url); // Log tambahan
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  //       <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-  //         <div className="hidden border-r bg-muted/40 md:block">
-  //           <div className="flex flex-col h-full max-h-screen gap-2">
-  //             <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-  //               <a
-  //                 href="/"
-  //                 className="flex items-center gap-2 font-semibold dark:text-slate-200"
-  //               >
-  //                 <Package2 className="w-6 h-6" />
-  //                 <span className="dark:text-slate-200">Acme Inc</span>
-  //               </a>
-  //               <Button
-  //                 variant="outline"
-  //                 size="icon"
-  //                 className="w-8 h-8 ml-auto dark:text-slate-200"
-  //               >
-  //                 <Bell className="w-4 h-4" />
-  //                 <span className="sr-only">Toggle notifications</span>
-  //               </Button>
-  //             </div>
-  //             <div className="flex-1">
-  //               <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-  //                 <a
-  //                   href="#"
-  //                   className="flex items-center gap-3 px-3 py-2 transition-all rounded-lg text-muted-foreground hover:text-primary dark:text-slate-200"
-  //                 >
-  //                   <Home className="w-4 h-4 " />
-  //                   Dashboard
-  //                 </a>
-  //                 <a
-  //                   href="#"
-  //                   className="flex items-center gap-3 px-3 py-2 transition-all rounded-lg text-muted-foreground hover:text-primary dark:text-slate-200"
-  //                 >
-  //                   <ShoppingCart className="w-4 h-4" />
-  //                   Orders
-  //                   <Badge className="flex items-center justify-center w-6 h-6 ml-auto rounded-full shrink-0">
-  //                     6
-  //                   </Badge>
-  //                 </a>
-  //                 <a
-  //                   href="#"
-  //                   className="flex items-center gap-3 px-3 py-2 transition-all rounded-lg bg-muted text-primary hover:text-primary dark:text-slate-200"
-  //                 >
-  //                   <Package className="w-4 h-4" />
-  //                   Products{" "}
-  //                 </a>
-  //                 <a
-  //                   href="#"
-  //                   className="flex items-center gap-3 px-3 py-2 transition-all rounded-lg text-muted-foreground hover:text-primary dark:text-slate-200"
-  //                 >
-  //                   <Users className="w-4 h-4" />
-  //                   Customers
-  //                 </a>
-  //                 <a
-  //                   href="#"
-  //                   className="flex items-center gap-3 px-3 py-2 transition-all rounded-lg text-muted-foreground hover:text-primary dark:text-slate-200"
-  //                 >
-  //                   <LineChart className="w-4 h-4" />
-  //                   Analytics
-  //                 </a>
-  //               </nav>
-  //             </div>
-  //             <div className="p-4 mt-auto">
-  //               <Card x-chunk="dashboard-02-chunk-0">
-  //                 <CardHeader className="p-2 pt-0 md:p-4">
-  //                   <CardTitle>Upgrade to Pro</CardTitle>
-  //                   <CardDescription>
-  //                     Unlock all features and get unlimited access to our support
-  //                     team.
-  //                   </CardDescription>
-  //                 </CardHeader>
-  //                 <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-  //                   <Button size="sm" className="w-full">
-  //                     Upgrade
-  //                   </Button>
-  //                 </CardContent>
-  //               </Card>
-  //             </div>
-  //           </div>
-  //         </div>
-  //         <div className="flex flex-col">
-  //           <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-  //             <Sheet>
-  //               <SheetTrigger asChild>
-  //                 <Button
-  //                   variant="outline"
-  //                   size="icon"
-  //                   className="shrink-0 md:hidden"
-  //                 >
-  //                   <Menu className="w-5 h-5" />
-  //                   <span className="sr-only">Toggle navigation menu</span>
-  //                 </Button>
-  //               </SheetTrigger>
-  //               <SheetContent side="left" className="flex flex-col">
-  //                 <nav className="grid gap-2 text-lg font-medium">
-  //                   <a
-  //                     href="#"
-  //                     className="flex items-center gap-2 text-lg font-semibold"
-  //                   >
-  //                     <Package2 className="w-6 h-6" />
-  //                     <span className="sr-only">Acme Inc</span>
-  //                   </a>
-  //                   <a
-  //                     href="#"
-  //                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-  //                   >
-  //                     <Home className="w-5 h-5" />
-  //                     Dashboard
-  //                   </a>
-  //                   <a
-  //                     href="#"
-  //                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
-  //                   >
-  //                     <ShoppingCart className="w-5 h-5" />
-  //                     Orders
-  //                     <Badge className="flex items-center justify-center w-6 h-6 ml-auto rounded-full shrink-0">
-  //                       6
-  //                     </Badge>
-  //                   </a>
-  //                   <a
-  //                     href="#"
-  //                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-  //                   >
-  //                     <Package className="w-5 h-5" />
-  //                     Products
-  //                   </a>
-  //                   <a
-  //                     href="#"
-  //                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-  //                   >
-  //                     <Users className="w-5 h-5" />
-  //                     Customers
-  //                   </a>
-  //                   <a
-  //                     href="#"
-  //                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-  //                   >
-  //                     <LineChart className="w-5 h-5" />
-  //                     Analytics
-  //                   </a>
-  //                 </nav>
-  //                 <div className="mt-auto">
-  //                   <Card>
-  //                     <CardHeader>
-  //                       <CardTitle>Upgrade to Pro</CardTitle>
-  //                       <CardDescription>
-  //                         Unlock all features and get unlimited access to our
-  //                         support team.
-  //                       </CardDescription>
-  //                     </CardHeader>
-  //                     <CardContent>
-  //                       <Button size="sm" className="w-full">
-  //                         Upgrade
-  //                       </Button>
-  //                     </CardContent>
-  //                   </Card>
-  //                 </div>
-  //               </SheetContent>
-  //             </Sheet>
-  //             <div className="flex-1 w-full">
-  //               <form>
-  //                 <div className="relative">
-  //                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-  //                   <Input
-  //                     type="search"
-  //                     placeholder="Search products..."
-  //                     className="w-full pl-8 shadow-none appearance-none bg-background md:w-2/3 lg:w-1/3"
-  //                   />
-  //                 </div>
-  //               </form>
-  //             </div>
-  //             <DropdownMenu>
-  //               <DropdownMenuTrigger asChild>
-  //                 <Button
-  //                   variant="secondary"
-  //                   size="icon"
-  //                   className="rounded-full"
-  //                 >
-  //                   <CircleUser className="w-5 h-5" />
-  //                   <span className="sr-only">Toggle user menu</span>
-  //                 </Button>
-  //               </DropdownMenuTrigger>
-  //               <DropdownMenuContent align="end">
-  //                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
-  //                 <DropdownMenuSeparator />
-  //                 <DropdownMenuItem>Settings</DropdownMenuItem>
-  //                 <DropdownMenuItem>Support</DropdownMenuItem>
-  //                 <DropdownMenuSeparator />
-  //                 <DropdownMenuItem>Logout</DropdownMenuItem>
-  //               </DropdownMenuContent>
-  //             </DropdownMenu>
-  //           </header>
-  //           <main className="flex flex-col flex-1 gap-4 p-4 lg:gap-6 lg:p-6">
-  //             <div className="flex items-center">
-  //               <h1 className="text-lg font-semibold md:text-2xl dark:text-slate-200">
-  //                 Inventory
-  //               </h1>
-  //             </div>
-  //             <div
-  //               className="flex items-center justify-center flex-1 border border-dashed rounded-lg shadow-sm"
-  //               x-chunk="dashboard-02-chunk-1"
-  //             >
-  //               <div className="flex flex-col items-center gap-1 text-center">
-  //                 <h3 className="text-2xl font-bold tracking-tight dark:text-slate-100">
-  //                   You have no products
-  //                 </h3>
-  //                 <p className="text-sm text-muted-foreground dark:text-slate-200">
-  //                   You can start selling as soon as you add a product.
-  //                 </p>
-  //                 <Button className="mt-4 bg-green-500 dark:bg-green-500">
-  //                   Add Product
-  //                 </Button>
-  //               </div>
-  //             </div>
-  //           </main>
-  //         </div>
-  //       </div>
-  //     </div>
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-  //     // Add your dashboard components here
-  //   );
-  // };
+      const data = await response.json();
+      console.log("Data properti yang diambil:", data);
+      setProperties(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+    }
+  };
+
+  const handleLogout = () => {
+    // Hapus cookies
+    document.cookie =
+      "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie =
+      "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie =
+      "username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+
+    // Reset state
+    setUsername("");
+    setTokenFromCookie(null);
+    setUserIdFromCookie(null);
+
+    // Tampilkan toast berhasil logout
+    toast({
+      title: "Logout Successful",
+      variant: "warning",
+      description: `Good bye, ${username}!`,
+    });
+
+    // Redirect setelah logout
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 2000);
+  };
 
   return (
     <div className="container p-4 mx-auto">
-      <h1 className="mb-4 text-2xl font-bold">Dashboard</h1>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <UserProfile
-          user={{
-            name: username,
-            email: "",
-            role: "",
-            profile: {
-              first_name: null,
-              last_name: null,
-              phone: null,
-              whatsapp: null,
-              company_name: null,
-              avatar: null,
-              biodata_company: null,
-              jobdesk: null,
-            },
-          }}
+      <div className="flex justify-end mt-6 mb-10 space-x-4">
+        <Button
+          onClick={handleLogout}
+          variant="destructive"
+          className="text-white bg-red-600 hover:bg-red-700"
+        >
+          Logout
+        </Button>
+        <Button variant="outline" onClick={() => (window.location.href = "/")}>
+          Kembali ke Beranda
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        {userData && (
+          <UserProfile userData={userData} homedomain={homedomain} />
+        )}
+
+        {/* Data Properti dari fetchProperties */}
+        <PropertyList02
+          properties={properties?.items || null}
+          isLoading={isLoading}
+          homedomain={homedomain}
         />
-        <PropertyList properties={[]} />
       </div>
     </div>
   );

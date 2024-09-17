@@ -1,0 +1,11 @@
+---
+import "@/styles/globals.css";
+import LoginForm from "@/components/custom/LoginForm";
+import Layout02 from "@/layouts/Layout02.astro";
+import { Toaster } from "@/components/ui/toaster";
+---
+
+<Layout02 title="Halaman Register Login." />
+<LoginForm client:load />
+<Toaster client:load />
+<!-- <QuotesLocal3 client:load /> -->

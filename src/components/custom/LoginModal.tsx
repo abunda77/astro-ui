@@ -33,6 +33,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const [errors, setErrors] = useState({
     username: "",
     email: "",
@@ -125,23 +126,28 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
               client_secret: "",
             }),
           });
+
           data = await response.json();
+
+          console.log("Response data:", data);
 
           if (response.ok) {
             document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; secure; samesite=strict`;
             document.cookie = `user_id=${data.user_id}; path=/; max-age=3600; secure; samesite=strict`;
             document.cookie = `username=${username}; path=/; max-age=3600; secure; samesite=strict`;
+            console.log(`access_tokenZ: ${data.access_token}`);
+            console.log(`user_idZ: ${data.user_id}`);
 
             setIsOpen(false);
             toast({
               title: "Login Berhasil",
-              description: `Selamat datang kembali, ${username}!`,
+              description: `Selamat datang kembali, ${username}! `,
             });
             if (onLoginSuccess) {
               onLoginSuccess(username);
             }
             setTimeout(() => {
-              window.location.href = "/";
+              window.location.href = "/dashboard";
             }, 1000);
           } else {
             throw new Error(data.detail || "Terjadi kesalahan saat login");

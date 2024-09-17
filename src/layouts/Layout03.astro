@@ -6,6 +6,7 @@ import Header01 from "@/layouts/Header01.astro";
 import { Toaster } from "@/components/ui/toaster";
 import { ViewTransitions } from "astro:transitions";
 const { title } = Astro.props;
+import { getAccessToken, getUserId, isAuthenticated } from "@/utils/auth";
 
 export interface Props {
   title: string;
@@ -14,6 +15,9 @@ export interface Props {
 const makeTitle = title
   ? title + " | " + "Bosqu Properti"
   : "Bosqu Properti - Properti Ideaal Buat Siapa Saja";
+
+const access_token = getAccessToken() || "";
+const user_id = getUserId() || "";
 ---
 
 <!doctype html>

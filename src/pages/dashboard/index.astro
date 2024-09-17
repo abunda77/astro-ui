@@ -1,16 +1,27 @@
 ---
-import Layout03 from "@/layouts/Layout03.astro";
+import Layout02 from "@/layouts/Layout03.astro";
 import Dashboard from "@/components/custom/Dashboard";
 import "@/styles/globals.css";
+import { getAccessToken, getUserId } from "@/utils/auth";
+
+const accessToken = getAccessToken();
+const userId = getUserId();
+
+// Jika pengguna tidak terautentikasi, arahkan mereka ke halaman login
+// if (!isAuthenticated()) {
+//   return Astro.redirect("/loginpage");
+// }
 ---
 
-<Layout03 title="Dashboard" />
-<Dashboard client:load />
+<Layout02 title="Dashboard">
+  <Dashboard client:load accessToken={accessToken} userId={userId} />
 
+  <!-- <Dashboard client:load /> -->
+</Layout02>
 <script>
   import { isAuthenticated } from "@/utils/auth";
 
   if (!isAuthenticated()) {
-    window.location.href = "/auth/login";
+    window.location.href = "/loginpage";
   }
 </script>

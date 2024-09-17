@@ -8,6 +8,7 @@ import Captcha from "@/components/custom/Captcha";
 import QuotesLocale from "@/components/custom/QuotesLocal";
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { setCookie, setUserId, setAccessToken } from "@/utils/auth";
 
 const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 
@@ -27,6 +28,8 @@ const FormLoginRegister: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     setTimeout(() => setIsPageLoading(false), 2000);
@@ -111,18 +114,24 @@ const FormLoginRegister: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; secure; samesite=strict`;
-        document.cookie = `user_id=${data.user_id}; path=/; max-age=3600; secure; samesite=strict`;
-        document.cookie = `username=${username}; path=/; max-age=3600; secure; samesite=strict`;
+        setAccessToken(data.access_token);
+        setUserId(data.user_id);
+        setCookie("username", username, 7);
+        setCookie("access_token", data.access_token, 7);
+        setCookie("user_id", data.user_id.toString(), 7);
+
+        console.log("Access Token A:", data.access_token);
+        console.log("User ID A:", data.user_id);
 
         toast({
           title: "Login Berhasil",
           description: `Selamat datang kembali, ${username}!`,
         });
 
+        // Menggunakan window.location.href untuk mengarahkan ke dashboard
         setTimeout(() => {
-          window.location.href = "/";
-        }, 1000);
+          window.location.href = "/dashboard";
+        }, 8000);
       } else {
         toast({
           title: "Login Gagal",
