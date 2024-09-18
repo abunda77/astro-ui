@@ -47,6 +47,15 @@ import {
   RefreshCcw,
   Loader2,
 } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -377,15 +386,19 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
       <div className="container max-w-5xl px-4 py-8 mx-auto sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-4 lg:py-12">
         <div className="container px-4 mx-auto">
           <div className="flex flex-col items-center justify-between mb-8 md:flex-row">
-            <Button
-              appearance="primary"
-              color="green"
-              href="/"
-              className="w-full mb-4 transition-colors md:w-auto md:mb-0"
-            >
-              <Home className="w-4 h-4 mr-2 text-white dark:text-gray-300" />
-              Kembali
-            </Button>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>
+                    {property.title || "Detail Properti"}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
             <div className="flex justify-end w-full p-2 rounded-lg lg:justify-end">
               <SocialShare
                 url={`${window.location.origin}/post/${uniqueSlug}`}

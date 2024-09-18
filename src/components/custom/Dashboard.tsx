@@ -22,6 +22,15 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
 import UserProfile from "./UserProfile";
 import PropertyList02 from "./PropertyList";
 
@@ -254,17 +263,25 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
 
   return (
     <div className="container p-4 mx-auto">
-      <div className="flex justify-end mt-6 mb-10 space-x-4">
-        <Button
+      <div className="flex justify-start mt-6 mb-10 space-x-4">
+        {/* <Button
           onClick={handleLogout}
           variant="destructive"
           className="text-white bg-red-600 hover:bg-red-700"
         >
           Logout
-        </Button>
-        <Button variant="outline" onClick={() => (window.location.href = "/")}>
-          Kembali ke Beranda
-        </Button>
+        </Button> */}
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Dashboard</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2">

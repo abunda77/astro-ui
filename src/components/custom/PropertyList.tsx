@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { badgeVariants } from "@/components/ui/badge";
 
 interface PropertyList {
   user_id: number | null;
@@ -161,7 +162,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
               <img
                 src={getImageUrl(property)}
                 alt={property.title || "Gambar Properti"}
-                className="object-cover w-20 h-20 mr-4 rounded-full"
+                className="object-cover w-10 h-10 mr-4 rounded-xl"
               />
               <div className="flex-grow">
                 <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
@@ -171,9 +172,9 @@ const PropertyList: React.FC<PropertyListProps> = ({
                   {property.short_desc || "Tidak ada deskripsi singkat"}
                 </p>
               </div>
-              <Button className="text-white bg-red-600 hover:bg-red-700">
+              <a href="#" className={badgeVariants({ variant: "destructive" })}>
                 Edit
-              </Button>
+              </a>
             </Card>
           ))
         ) : (
