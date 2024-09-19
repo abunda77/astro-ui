@@ -8,6 +8,14 @@ import "rsuite/dist/rsuite-no-reset.min.css";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createUniqueSlug } from "@/lib/utils";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface BlogPost {
   id: number;
@@ -116,6 +124,19 @@ const BlogPost: React.FC = () => {
   return (
     <section className="py-8">
       <div className="container px-4 mx-auto">
+        <div className="flex justify-start mb-8">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Blog</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         <h2 className="mb-8 text-2xl font-semibold text-center text-gray-800 dark:text-gray-200">
           Blog Terbaru
         </h2>
