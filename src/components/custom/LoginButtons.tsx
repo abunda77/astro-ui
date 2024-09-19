@@ -6,6 +6,8 @@ import { ToastAction } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getAccessToken, getUserId } from "@/utils/auth";
 
+const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
+
 const LoginButtons = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
@@ -54,26 +56,47 @@ const LoginButtons = () => {
     }, 2000); // Ganti 2000 dengan waktu loading yang Anda inginkan
   };
 
-  const handleLogout = () => {
-    document.cookie =
-      "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    document.cookie =
-      "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    document.cookie =
-      "username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    setIsLoggedIn(false);
-    setUsername("");
-    // updateWelcomeMessage("");
+  const handleLogout = async () => {
+    try {
+      const accessToken = getAccessToken();
+      const response = await fetch(`${FASTAPI_ENDPOINT}/auth/logout`, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-    toast({
-      title: "Logout Successful",
-      variant: "warning",
-      description: `Good bye, ${username}!`,
-    });
+      if (response.ok) {
+        document.cookie =
+          "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        document.cookie =
+          "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        document.cookie =
+          "username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        setIsLoggedIn(false);
+        setUsername("");
 
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 1000);
+        toast({
+          title: "Logout Berhasil",
+          variant: "warning",
+          description: `Selamat tinggal, ${username}!`,
+        });
+
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
+      } else {
+        throw new Error("Logout gagal");
+      }
+    } catch (error) {
+      console.error("Error saat logout:", error);
+      toast({
+        title: "Logout Gagal",
+        variant: "destructive",
+        description: "Terjadi kesalahan saat logout. Silakan coba lagi.",
+      });
+    }
   };
 
   return (
