@@ -53,7 +53,7 @@ const BlogSection: React.FC = () => {
               new Date(b.updated_at).getTime() -
               new Date(a.updated_at).getTime()
           );
-          setPosts(sortedPosts.slice(0, 5));
+          setPosts(sortedPosts.slice(0, 10));
         } else {
           throw new Error("Invalid data format");
         }

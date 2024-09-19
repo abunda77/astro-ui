@@ -24,7 +24,7 @@ const BlogPost: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showNoDataAlert, setShowNoDataAlert] = useState(false);
-  const postsPerPage = 8;
+  const postsPerPage = 50;
 
   useEffect(() => {
     const fetchPosts = async () => {
