@@ -12,7 +12,13 @@ import { ViewTransitions } from "astro:transitions";
 export async function getStaticPaths() {
   // Ambil semua ID artikel yang tersedia
   const response = await fetch(
-    `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/posts`
+    `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/posts`,
+    {
+      method: "GET",
+      headers: {
+        "Cache-Control": "no-cache",
+      },
+    }
   );
   const data = await response.json();
 

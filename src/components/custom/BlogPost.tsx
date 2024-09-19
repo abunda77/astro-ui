@@ -24,14 +24,33 @@ const BlogPost: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showNoDataAlert, setShowNoDataAlert] = useState(false);
-  const postsPerPage = 50;
+  const postsPerPage = 15;
+
+  const getCleanImageUrl = (imageUrl: string) => {
+    if (imageUrl === null) {
+      return "images/home_fallback.png";
+    }
+    let cleanUrl = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+    // Jangan hapus karakter "/" jika masuk dalam string "http://" atau "https://"
+    const publicHomeDomain = import.meta.env.PUBLIC_HOME_DOMAIN;
+    if (cleanUrl.startsWith(publicHomeDomain)) {
+      return cleanUrl; // Kembalikan URL lengkap jika sudah dimulai dengan PUBLIC_HOME_DOMAIN
+    }
+    if (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://")) {
+      return cleanUrl; // Kembalikan URL lengkap jika sudah merupakan URL absolut
+    }
+    // Jika bukan URL absolut, bersihkan dan gabungkan dengan PUBLIC_HOME_DOMAIN
+    cleanUrl = cleanUrl.replace(/[",/\\]/g, ""); // Menghapus karakter yang tidak diperlukan
+    return `${publicHomeDomain}/storage/${cleanUrl}`;
+    return `${import.meta.env.PUBLIC_HOME_DOMAIN}/storage/${cleanUrl}`;
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/posts`
+          `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/posts?page=${currentPage}&per_page=${postsPerPage}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -45,7 +64,10 @@ const BlogPost: React.FC = () => {
               new Date(b.updated_at).getTime() -
               new Date(a.updated_at).getTime()
           );
-          setPosts(sortedPosts);
+          setPosts((prevPosts) => [...prevPosts, ...sortedPosts]);
+          if (data.data.length < postsPerPage) {
+            setShowNoDataAlert(true);
+          }
         } else {
           throw new Error("Invalid data format");
         }
@@ -58,9 +80,9 @@ const BlogPost: React.FC = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [currentPage, postsPerPage]);
 
-  if (isLoading) {
+  if (isLoading && posts.length === 0) {
     return (
       <div className="h-[600px] bg-[#94918d]">
         <Loader size="lg" inverse center content="loading..." />
@@ -73,14 +95,12 @@ const BlogPost: React.FC = () => {
   }
 
   const loadMorePosts = () => {
-    if (currentPage * postsPerPage >= posts.length) {
-      setShowNoDataAlert(true);
-    } else {
+    if (!showNoDataAlert) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
-  if (isLoading && currentPage === 1) {
+  if (isLoading && posts.length === 0) {
     return (
       <div className="flex items-center justify-center">
         <div className="skeleton">
@@ -123,7 +143,7 @@ const BlogPost: React.FC = () => {
                   <Skeleton className="w-full h-40 mb-4 rounded-lg" />
                 ) : (
                   <img
-                    src={post.feature_image}
+                    src={getCleanImageUrl(post.feature_image)}
                     alt={post.title}
                     className="object-cover w-full h-40 mb-4 rounded-lg"
                   />
