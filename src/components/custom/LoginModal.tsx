@@ -148,7 +148,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
             }
             setTimeout(() => {
               window.location.href = "/dashboard";
-            }, 1000);
+            }, 1000); // Tunggu 1 detik sebelum redirect
           } else {
             throw new Error(data.detail || "Terjadi kesalahan saat login");
           }

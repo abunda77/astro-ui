@@ -12,7 +12,7 @@ import {
   setUserId,
   getCookie,
 } from "@/utils/auth";
-import { Loader2 } from "lucide-react";
+import { Loader2, CircleUser, Package } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -30,6 +30,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import UserProfile from "./UserProfile";
 import PropertyList02 from "./PropertyList";
@@ -153,6 +154,9 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
     items: PropertyList[];
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"profile" | "properties">(
+    "profile"
+  );
 
   console.log("Dash Username:", username);
   console.log("Dash Token dari Cookie:", tokenFromCookie);
@@ -271,6 +275,8 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
         >
           Logout
         </Button> */}
+
+        {/* Breadcrumb */}
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -283,18 +289,64 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2">
-        {userData && (
-          <UserProfile userData={userData} homedomain={homedomain} />
-        )}
-
-        {/* Data Properti dari fetchProperties */}
-        <PropertyList02
-          properties={properties?.items || null}
-          isLoading={isLoading}
-          homedomain={homedomain}
-        />
+      {/* Side Menu */}
+      <div className="flex flex-col md:flex-row">
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="flex flex-row w-full p-2 mt-2 space-x-2 overflow-x-auto bg-transparent rounded-lg md:p-4 md:mt-6 md:space-x-2 dark:bg-transparent md:overflow-x-visible">
+            <TabsTrigger
+              value="profile"
+              className="flex items-center justify-start px-2 py-1 text-xs text-left text-gray-800 transition-colors duration-200 bg-white md:px-4 md:py-2 md:text-sm lg:text-base hover:bg-yellow-300 dark:hover:bg-yellow-700 dark:text-gray-200 dark:bg-gray-800 whitespace-nowrap"
+            >
+              <CircleUser className="w-4 h-4 mr-1 md:w-5 md:h-5 md:mr-3" />
+              Profil Pengguna
+            </TabsTrigger>
+            <TabsTrigger
+              value="properties"
+              className="flex items-center justify-start px-2 py-1 text-xs text-left text-gray-800 transition-colors duration-200 bg-white md:px-4 md:py-2 md:text-sm lg:text-base hover:bg-yellow-300 dark:hover:bg-yellow-700 dark:text-gray-200 dark:bg-gray-800 whitespace-nowrap"
+            >
+              <Package className="w-4 h-4 mr-1 md:w-5 md:h-5 md:mr-3" />
+              Daftar Properti
+            </TabsTrigger>
+          </TabsList>
+          <div className="w-full mt-4">
+            <TabsContent value="profile">
+              {userData && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg md:text-xl lg:text-2xl">
+                      Profil Pengguna
+                    </CardTitle>
+                    <CardDescription className="text-sm md:text-base">
+                      Informasi profil Anda
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <UserProfile userData={userData} homedomain={homedomain} />
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+            <TabsContent value="properties">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl lg:text-2xl">
+                    Daftar Properti
+                  </CardTitle>
+                  <CardDescription className="text-sm md:text-base">
+                    Properti yang Anda miliki
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <PropertyList02
+                    properties={properties?.items || null}
+                    isLoading={isLoading}
+                    homedomain={homedomain}
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </div>
+        </Tabs>
       </div>
     </div>
   );

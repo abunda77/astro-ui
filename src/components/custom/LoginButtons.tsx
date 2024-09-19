@@ -73,7 +73,7 @@ const LoginButtons = () => {
 
     setTimeout(() => {
       window.location.href = "/";
-    }, 5000);
+    }, 1000);
   };
 
   return (

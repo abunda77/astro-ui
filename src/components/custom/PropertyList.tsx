@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -98,6 +98,23 @@ const PropertyList: React.FC<PropertyListProps> = ({
   isLoading,
   homedomain,
 }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Simulasikan pemuatan data
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error memuat data properti:", error);
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
   const getImageUrl = (property: PropertyList) => {
     if (property.images && property.images.length > 0) {
       const primaryImage = property.images.find((img) => img.is_primary);
@@ -117,24 +134,29 @@ const PropertyList: React.FC<PropertyListProps> = ({
     return `${homedomain}/images/home_fallback.png`;
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
-      <Card className="max-w-4xl p-6 mx-auto rounded-lg shadow-lg bg-gradient-to-br from-blue-400 via-violet-400 to-purple-600 dark:from-gray-600 dark:to-gray-400">
-        <CardHeader className="mb-6">
-          <Skeleton className="w-48 h-8 mb-2 animate-pulse" />
-          <Skeleton className="w-64 h-6 animate-pulse" />
+      <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
+        <CardHeader className="mb-4 md:mb-6">
+          <Skeleton className="h-6 mb-2 w-36 md:w-48 md:h-8 animate-pulse" />
+          <Skeleton className="w-48 h-4 md:w-64 md:h-6 animate-pulse" />
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 md:space-y-6">
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-6 w-36 md:w-48 md:h-8 animate-pulse" />
+            <Skeleton className="w-24 h-8 md:w-32 md:h-10 animate-pulse" />
+          </div>
           {[1, 2, 3].map((index) => (
             <div
               key={index}
-              className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
+              className="flex items-center p-4 rounded-lg shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
             >
-              <Skeleton className="w-full h-8 mb-4 animate-pulse" />
-              <Skeleton className="w-full h-6 mb-2 animate-pulse" />
-              <Skeleton className="w-3/4 h-6 mb-2 animate-pulse" />
-              <Skeleton className="w-1/2 h-6 mb-4 animate-pulse" />
-              <Skeleton className="w-full h-40 rounded animate-pulse" />
+              <Skeleton className="w-16 h-16 mr-4 rounded-lg animate-pulse" />
+              <div className="flex-grow">
+                <Skeleton className="w-3/4 h-4 mb-2 animate-pulse" />
+                <Skeleton className="w-1/2 h-3 animate-pulse" />
+              </div>
+              <Skeleton className="w-16 h-8 animate-pulse" />
             </div>
           ))}
         </CardContent>
@@ -142,48 +164,70 @@ const PropertyList: React.FC<PropertyListProps> = ({
     );
   }
 
+  if (!properties || properties.length === 0) {
+    return (
+      <Card className="flex items-center justify-center h-64 max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
+        <Button
+          variant="outline"
+          size="lg"
+          className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+        >
+          Buat Iklan Properti
+        </Button>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="max-w-4xl p-6 mx-auto rounded-lg shadow-lg bg-gradient-to-br from-blue-400 via-violet-400 to-purple-600 dark:from-gray-600 dark:to-gray-400">
-      <CardHeader className="mb-6">
-        <CardTitle className="text-2xl font-bold text-white">
-          Data Properti
+    <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
+      <CardHeader className="mb-4 md:mb-6">
+        <CardTitle className="text-xl font-bold text-blue-800 md:text-2xl dark:text-blue-300">
+          Daftar Properti
         </CardTitle>
-        <CardDescription className="text-xl font-semibold text-gray-200">
-          Daftar properti yang tersedia
+        <CardDescription className="text-lg font-semibold text-blue-700 md:text-xl dark:text-blue-300">
+          Properti yang Anda miliki
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {properties && properties.length > 0 ? (
-          properties.map((property) => (
-            <Card
-              key={property.id}
-              className="flex items-center p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
+      <CardContent className="space-y-4 md:space-y-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+            Properti Anda
+          </h3>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+          >
+            Tambah Properti
+          </Button>
+        </div>
+        {properties.map((property) => (
+          <div
+            key={property.id}
+            className="flex items-center p-4 rounded-lg shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
+          >
+            <img
+              src={getImageUrl(property)}
+              alt={property.title || "Gambar Properti"}
+              className="object-cover w-16 h-16 mr-4 rounded-lg ring-2 ring-blue-300 dark:ring-blue-600"
+            />
+            <div className="flex-grow">
+              <h4 className="mb-1 text-lg font-semibold text-blue-800 dark:text-blue-300">
+                {property.title || "Tidak ada judul"}
+              </h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                {property.short_desc || "Tidak ada deskripsi singkat"}
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
             >
-              <img
-                src={getImageUrl(property)}
-                alt={property.title || "Gambar Properti"}
-                className="object-cover w-10 h-10 mr-4 rounded-xl"
-              />
-              <div className="flex-grow">
-                <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  {property.title || "Tidak ada judul"}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {property.short_desc || "Tidak ada deskripsi singkat"}
-                </p>
-              </div>
-              <a href="#" className={badgeVariants({ variant: "destructive" })}>
-                Edit
-              </a>
-            </Card>
-          ))
-        ) : (
-          <Card className="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-            <p className="text-gray-600 dark:text-gray-400">
-              Tidak ada data properti yang tersedia.
-            </p>
-          </Card>
-        )}
+              Edit
+            </Button>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );
