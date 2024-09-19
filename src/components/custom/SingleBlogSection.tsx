@@ -26,6 +26,26 @@ interface SingleBlogSectionProps {
   postId: number;
 }
 
+const getCleanImageUrl = (imageUrl: string) => {
+  if (imageUrl === null) {
+    return "images/home_fallback.png";
+  }
+  let cleanUrl = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+  const publicHomeDomain = import.meta.env.PUBLIC_HOME_DOMAIN;
+  if (cleanUrl.startsWith(publicHomeDomain)) {
+    return cleanUrl;
+  }
+  if (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://")) {
+    return cleanUrl;
+  }
+  cleanUrl = cleanUrl.replace(/[",/\\]/g, "");
+  return `${publicHomeDomain}/storage/${cleanUrl}`;
+};
+
+const renderHtmlContent = (content: string) => {
+  return { __html: content };
+};
+
 const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +63,6 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
         }
         const data = await response.json();
         setPost(data.data);
-        // Update URL after fetching post data
         if (data.data && data.data.title) {
           const uniqueSlug = createUniqueSlug(data.data.id, data.data.title);
           window.history.replaceState(null, "", `/blog/${uniqueSlug}`);
@@ -98,7 +117,7 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
         <div className="flex justify-center">
           <AspectRatio ratio={16 / 9} className="w-full max-w-7xl">
             <img
-              src={post.feature_image}
+              src={getCleanImageUrl(post.feature_image)}
               alt={post.title}
               className="object-cover rounded-lg shadow-md"
             />
@@ -115,13 +134,10 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
           })}
         </p>
 
-        <div className="prose prose-lg dark:prose-invert">
-          {post.body.split("\n\n").map((paragraph, index) => (
-            <p key={index} className="mb-6 text-gray-800 dark:text-gray-300">
-              {paragraph}
-            </p>
-          ))}
-        </div>
+        <div
+          className="prose prose-lg dark:prose-invert"
+          dangerouslySetInnerHTML={renderHtmlContent(post.body)}
+        />
       </div>
     </section>
   );

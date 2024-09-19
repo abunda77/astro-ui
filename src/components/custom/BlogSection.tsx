@@ -30,6 +30,26 @@ function createUniqueSlug(id: number | string, title: string) {
   return `${id}-${baseSlug}`;
 }
 
+const getCleanImageUrl = (imageUrl: string) => {
+  if (imageUrl === null) {
+    return "images/home_fallback.png";
+  }
+  let cleanUrl = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+  const publicHomeDomain = import.meta.env.PUBLIC_HOME_DOMAIN;
+  if (cleanUrl.startsWith(publicHomeDomain)) {
+    return cleanUrl;
+  }
+  if (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://")) {
+    return cleanUrl;
+  }
+  cleanUrl = cleanUrl.replace(/[",/\\]/g, "");
+  return `${publicHomeDomain}/storage/${cleanUrl}`;
+};
+
+const renderHtmlContent = (content: string) => {
+  return { __html: content };
+};
+
 const BlogSection: React.FC = () => {
   const [posts, setPosts] = useState<BlogSection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -99,7 +119,7 @@ const BlogSection: React.FC = () => {
                     <Card className="overflow-hidden transition-all duration-300 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-600 dark:to-gray-700 hover:border-blue-500 dark:hover:border-blue-300">
                       <CardContent className="flex flex-col items-center justify-center p-6">
                         <img
-                          src={post.feature_image}
+                          src={getCleanImageUrl(post.feature_image)}
                           alt={post.title}
                           className="object-cover w-full h-40 rounded-lg"
                         />
@@ -113,11 +133,14 @@ const BlogSection: React.FC = () => {
                               : post.title}
                           </a>
                         </h3>
-                        <p className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400">
-                          {post.body.length > 100
-                            ? `${post.body.substring(10, 50)}...`
-                            : post.body}
-                        </p>
+                        <div
+                          className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400"
+                          dangerouslySetInnerHTML={renderHtmlContent(
+                            post.body.length > 100
+                              ? `${post.body.substring(10, 50)}...`
+                              : post.body
+                          )}
+                        />
                       </CardContent>
                     </Card>
                   </div>
