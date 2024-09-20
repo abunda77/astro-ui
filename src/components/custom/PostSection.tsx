@@ -95,7 +95,7 @@ const PostSection: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
+  const pageSize = 20;
   const urlendpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
   const [active, setActive] = useState<Property | boolean | null>(null);
   const id = useId();
@@ -246,11 +246,10 @@ const PostSection: React.FC = () => {
     }
   }
   return (
-    <section className="min-h-screen py-12 transition-colors duration-300 ">
-      {/* class="min-h-screen transition-colors duration-300 bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-400 dark:from-gray-900 dark:via-gray-700 dark:to-purple-900" */}
+    <section className="min-h-screen py-12 transition-colors duration-300">
       <div className="container px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between mb-8 md:flex-row">
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white md:mb-0">
+          <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-white md:mb-0 sm:text-xl lg:text-2xl">
             Property Listing
           </h2>
           <div className="w-full md:w-64">
@@ -270,23 +269,24 @@ const PostSection: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-5 xl:gap-6">
           {properties.map((property) => (
             <Card
               key={property.id}
               className="overflow-hidden transition-all duration-300 rounded-lg shadow-lg hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-300 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-600"
+              style={{ aspectRatio: "1/1.8" }}
             >
-              <div className="relative">
+              <div className="relative h-1/2">
                 <img
                   src={getImageUrl(property)}
                   alt={property.title}
-                  className="object-cover w-full h-56"
+                  className="object-cover w-full h-full"
                 />
                 <Badge
-                  className={`absolute top-2 left-2 ${
+                  className={`absolute top-1 left-1 sm:top-2 sm:left-2 ${
                     categories.find((cat) => cat.key === property.category_id)
                       ?.badgeColor || "bg-yellow-500"
-                  } text-white text-xs font-semibold px-2 py-1 rounded-full`}
+                  } text-white text-[0.6rem] sm:text-[0.7rem] font-semibold px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-full`}
                 >
                   {
                     categories.find((cat) => cat.key === property.category_id)
@@ -294,9 +294,9 @@ const PostSection: React.FC = () => {
                   }
                 </Badge>
               </div>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+              <CardContent className="p-2 sm:p-3 lg:p-4 h-1/2">
+                <div className="flex items-center justify-between mb-1 sm:mb-2">
+                  <p className="text-xs font-bold text-gray-800 dark:text-gray-200 sm:text-sm lg:text-base">
                     <a
                       href={`/post/${createUniqueSlug(property.id, property.title)}`}
                       className="transition-colors duration-200 hover:text-blue-500"
@@ -309,12 +309,12 @@ const PostSection: React.FC = () => {
                       property.ads === "sell"
                         ? "bg-yellow-200 dark:bg-yellow-800"
                         : "bg-green-200 dark:bg-green-800"
-                    } text-yellow-800 dark:text-yellow-500 text-xs font-semibold px-2 py-1 rounded-full hover:text-yellow-200 dark:hover:text-yellow-800`}
+                    } text-yellow-800 dark:text-yellow-500 text-[0.6rem] sm:text-[0.7rem] font-semibold px-1 py-0.5 sm:px-1.5 sm:py-0.5 rounded-full hover:text-yellow-200 dark:hover:text-yellow-800`}
                   >
                     {property.ads === "sell" ? "Dijual" : "Disewakan"}
                   </Badge>
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-700 truncate dark:text-gray-200">
+                <h3 className="mb-1 text-[0.7rem] font-semibold text-gray-700 truncate dark:text-gray-200 sm:text-xs lg:text-sm">
                   <a
                     href={`/post/${createUniqueSlug(property.id, property.title)}`}
                     className="transition-colors duration-200 hover:text-blue-500"
@@ -322,22 +322,25 @@ const PostSection: React.FC = () => {
                     {property.title}
                   </a>
                 </h3>
-                <p className="flex items-center mb-4 text-sm font-bold text-gray-500 dark:text-gray-400">
-                  <MapPin className="w-4 h-4 mr-1" />
+                <p className="flex items-center mb-1 font-bold text-gray-500 text-[0.6rem] dark:text-gray-400 sm:text-[0.7rem] lg:text-xs">
+                  <MapPin className="w-2 h-2 mr-1 sm:w-3 sm:h-3" />
                   {property.city.name}, {property.province.name}
                 </p>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex space-x-2">
+                <div className="flex items-center justify-between mb-1 sm:mb-2">
+                  <div className="flex space-x-1 sm:space-x-2">
                     {property.facility?.internet && (
                       <Tooltip>
                         <Tooltip.Trigger as={IconButton} variant="ghost">
-                          <Internet className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                          <Internet className="w-2 h-2 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200 sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
                         </Tooltip.Trigger>
-                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground bg-gray-600">
-                          <Typography className="text-xs font-semibold">
+                        <Tooltip.Content className="px-2 py-1 bg-gray-600 w-28 text-primary-foreground sm:w-32 sm:px-2 sm:py-1">
+                          <Typography className="font-semibold text-[0.6rem] sm:text-[0.7rem]">
                             Internet
                           </Typography>
-                          <Typography type="small" className="opacity-90">
+                          <Typography
+                            type="small"
+                            className="text-[0.6rem] opacity-90 sm:text-[0.7rem]"
+                          >
                             {property.facility.internet}
                           </Typography>
                           <Tooltip.Arrow />
@@ -347,13 +350,16 @@ const PostSection: React.FC = () => {
                     {property.facility?.line_phone && (
                       <Tooltip>
                         <Tooltip.Trigger as={IconButton} variant="ghost">
-                          <Wifi className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                          <Wifi className="w-2 h-2 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200 sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
                         </Tooltip.Trigger>
-                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
-                          <Typography className="text-xs font-semibold">
+                        <Tooltip.Content className="px-2 py-1 w-28 text-primary-foreground sm:w-32 sm:px-2 sm:py-1">
+                          <Typography className="font-semibold text-[0.6rem] sm:text-[0.7rem]">
                             Telepon
                           </Typography>
-                          <Typography type="small" className="opacity-90">
+                          <Typography
+                            type="small"
+                            className="text-[0.6rem] opacity-90 sm:text-[0.7rem]"
+                          >
                             {property.facility.line_phone}
                           </Typography>
                           <Tooltip.Arrow />
@@ -363,13 +369,16 @@ const PostSection: React.FC = () => {
                     {property.facility?.electricity && (
                       <Tooltip>
                         <Tooltip.Trigger as={IconButton} variant="ghost">
-                          <ElectronicsChip className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                          <ElectronicsChip className="w-2 h-2 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200 sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
                         </Tooltip.Trigger>
-                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
-                          <Typography className="text-xs font-semibold">
+                        <Tooltip.Content className="px-2 py-1 w-28 text-primary-foreground sm:w-32 sm:px-2 sm:py-1">
+                          <Typography className="font-semibold text-[0.6rem] sm:text-[0.7rem]">
                             Listrik
                           </Typography>
-                          <Typography type="small" className="opacity-90">
+                          <Typography
+                            type="small"
+                            className="text-[0.6rem] opacity-90 sm:text-[0.7rem]"
+                          >
                             {property.facility.electricity} kWh
                           </Typography>
                           <Tooltip.Arrow />
@@ -379,30 +388,35 @@ const PostSection: React.FC = () => {
                     {property.facility?.security && (
                       <Tooltip>
                         <Tooltip.Trigger as={IconButton} variant="ghost">
-                          <SecurityPass className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                          <SecurityPass className="w-2 h-2 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200 sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
                         </Tooltip.Trigger>
-                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
-                          <Typography className="text-xs font-semibold">
+                        <Tooltip.Content className="px-2 py-1 w-28 text-primary-foreground sm:w-32 sm:px-2 sm:py-1">
+                          <Typography className="font-semibold text-[0.6rem] sm:text-[0.7rem]">
                             Keamanan
                           </Typography>
-                          <Typography type="small" className="opacity-90">
+                          <Typography
+                            type="small"
+                            className="text-[0.6rem] opacity-90 sm:text-[0.7rem]"
+                          >
                             {property.facility.security}
                           </Typography>
                           <Tooltip.Arrow />
                         </Tooltip.Content>
                       </Tooltip>
                     )}
-
-                    {property.facility?.security && (
+                    {property.facility?.water_source && (
                       <Tooltip>
                         <Tooltip.Trigger as={IconButton} variant="ghost">
-                          <DropletCheck className="w-5 h-5 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200" />
+                          <DropletCheck className="w-2 h-2 text-gray-500 transition-colors duration-200 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-200 sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
                         </Tooltip.Trigger>
-                        <Tooltip.Content className="w-40 px-2.5 py-1.5 text-primary-foreground">
-                          <Typography className="text-xs font-semibold">
+                        <Tooltip.Content className="px-2 py-1 w-28 text-primary-foreground sm:w-32 sm:px-2 sm:py-1">
+                          <Typography className="font-semibold text-[0.6rem] sm:text-[0.7rem]">
                             Sumber Air
                           </Typography>
-                          <Typography type="small" className="opacity-90">
+                          <Typography
+                            type="small"
+                            className="text-[0.6rem] opacity-90 sm:text-[0.7rem]"
+                          >
                             {property.facility.water_source}
                           </Typography>
                           <Tooltip.Arrow />
@@ -412,9 +426,8 @@ const PostSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* tambahkan user.profile.company_name */}
-                <div className="flex items-center mt-4">
-                  <Avatar className="w-10 h-10 mr-3">
+                <div className="flex items-center mt-1 sm:mt-2">
+                  <Avatar className="w-3 h-3 mr-1 sm:w-4 sm:h-4 sm:mr-1 lg:w-6 lg:h-6 lg:mr-2">
                     <AvatarImage
                       src={
                         property.user?.profile?.avatar
@@ -423,13 +436,13 @@ const PostSection: React.FC = () => {
                       }
                       alt={property.user?.profile?.first_name}
                     />
-                    <AvatarFallback className="bg-indigo-300 rounded-full">
+                    <AvatarFallback className="bg-indigo-300 rounded-full text-[0.5rem] sm:text-[0.6rem]">
                       {property.user?.profile?.first_name?.[0]}
                       {property.user?.profile?.last_name?.[0]}
                     </AvatarFallback>
                   </Avatar>
                   {property.user?.profile?.company_name && (
-                    <Typography className="text-sm font-semibold">
+                    <Typography className="font-semibold text-[0.6rem] sm:text-[0.7rem] lg:text-xs">
                       {property.user?.profile?.company_name ||
                         `${property.user?.profile?.first_name} ${property.user?.profile?.last_name}`}
                     </Typography>
@@ -443,22 +456,26 @@ const PostSection: React.FC = () => {
         {showNoDataAlert && (
           <Alert
             variant="destructive"
-            className="max-w-sm p-4 mx-auto mt-6 bg-red-100 border-none shadow-lg sm:max-w-2xl sm:p-6"
+            className="max-w-sm p-3 mx-auto mt-4 bg-red-100 border-none shadow-lg sm:max-w-2xl sm:p-4 md:p-6 md:mt-6"
           >
-            <AlertCircle className="w-4 h-4" />
-            <AlertTitle>Oops...!</AlertTitle>
-            <AlertDescription>
+            <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+            <AlertTitle className="text-sm sm:text-base">Oops...!</AlertTitle>
+            <AlertDescription className="text-xs sm:text-sm">
               Maaf, sudah tidak ada data lagi yang tersedia.
             </AlertDescription>
           </Alert>
         )}
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-4 md:mt-6">
           <Button
-            className="bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background"
+            className="text-xs bg-gray-300 hover:bg-gray-100 text-foreground dark:text-background sm:text-sm"
             onClick={handleLoadMore}
             disabled={loading || showNoDataAlert}
           >
-            {loading ? <Loader2 className="animate-spin" /> : "Load More"}
+            {loading ? (
+              <Loader2 className="w-3 h-3 animate-spin sm:w-4 sm:h-4" />
+            ) : (
+              "Load More"
+            )}
           </Button>
         </div>
       </div>

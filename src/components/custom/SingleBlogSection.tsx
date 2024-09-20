@@ -13,6 +13,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import SocialShare from "./SocialShare";
 
 interface BlogPost {
   id: number;
@@ -20,6 +21,13 @@ interface BlogPost {
   body: string;
   feature_image: string;
   created_at: string;
+}
+
+interface SocialShareProps {
+  url: string;
+  title: string;
+  short_desc?: string;
+  image_url?: string;
 }
 
 interface SingleBlogSectionProps {
@@ -123,7 +131,7 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
             />
           </AspectRatio>
         </div>
-        <h1 className="mt-24 mb-8 text-4xl font-extrabold text-center text-gray-900 dark:text-gray-100">
+        <h1 className="mb-8 text-4xl font-extrabold text-center text-gray-900 mt-36 dark:text-gray-100">
           {post.title}
         </h1>
         <p className="mt-2 mb-16 text-center text-gray-600 dark:text-gray-400">
@@ -138,6 +146,16 @@ const SingleBlogSection: React.FC<SingleBlogSectionProps> = ({ postId }) => {
           className="prose prose-lg dark:prose-invert"
           dangerouslySetInnerHTML={renderHtmlContent(post.body)}
         />
+
+        <div className="mt-8">
+          <h3 className="mb-4 text-xl font-semibold">Bagikan Artikel Ini:</h3>
+          <SocialShare
+            url={window.location.href}
+            title={post.title}
+            short_desc={post.body.substring(0, 100)}
+            image_url={getCleanImageUrl(post.feature_image)}
+          />
+        </div>
       </div>
     </section>
   );
