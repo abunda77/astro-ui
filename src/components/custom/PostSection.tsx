@@ -274,7 +274,7 @@ const PostSection: React.FC = () => {
             <Card
               key={property.id}
               className="overflow-hidden transition-all duration-300 rounded-lg shadow-lg hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-300 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-600"
-              style={{ aspectRatio: "1/1.8" }}
+              style={{ aspectRatio: "1/2" }}
             >
               <div className="relative h-1/2">
                 <img
