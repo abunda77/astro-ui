@@ -7,11 +7,13 @@ import "rsuite/dist/rsuite-no-reset.min.css";
 export function ModeToggle() {
   const [theme, setThemeState] = React.useState<
     "theme-light" | "dark" | "system"
-  >("theme-light");
+  >("system");
 
   React.useEffect(() => {
-    const isDarkMode = document.documentElement.classList.contains("dark");
-    setThemeState(isDarkMode ? "dark" : "theme-light");
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setThemeState(savedTheme as "theme-light" | "dark" | "system");
+    }
   }, []);
 
   React.useEffect(() => {
@@ -20,12 +22,13 @@ export function ModeToggle() {
       (theme === "system" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   return (
     <div className="flex items-center">
       <Toggle
-        size="lg"
+        size="xl"
         checkedChildren={
           <Moon className="h-[1.2rem] w-[1.2rem] dark:text-gray-400" />
         }
@@ -33,9 +36,10 @@ export function ModeToggle() {
           <Sun className="h-[1.2rem] w-[1.2rem] dark:text-gray-400" />
         }
         checked={theme === "dark"}
-        onChange={() =>
-          setThemeState(theme === "dark" ? "theme-light" : "dark")
-        }
+        onChange={() => {
+          const newTheme = theme === "dark" ? "theme-light" : "dark";
+          setThemeState(newTheme);
+        }}
       />
     </div>
   );

@@ -1,28 +1,32 @@
-// Fungsi-fungsi untuk:
-// - Memperbarui logo berdasarkan mode gelap/terang
-// - Mengelola preferensi mode gelap
-// - Menampilkan pesan selamat datang
-
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const HeaderClientScript = () => {
+  const [theme, setTheme] = useState<"theme-light" | "dark" | "system">(
+    "system"
+  );
+
   useEffect(() => {
     const getThemePreference = () => {
-      if (
-        typeof localStorage !== "undefined" &&
-        localStorage.getItem("theme")
-      ) {
-        return localStorage.getItem("theme");
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        return savedTheme as "theme-light" | "dark" | "system";
       }
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+      return "system";
     };
 
-    const isDark = getThemePreference() === "dark";
-    document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-    const updateLogo = () => {
-      const isDark = document.documentElement.classList.contains("dark");
+    setTheme(getThemePreference());
+
+    const updateTheme = () => {
+      const isDark =
+        theme === "dark" ||
+        (theme === "system" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+      localStorage.setItem("theme", theme);
+      updateLogo(isDark);
+    };
+
+    const updateLogo = (isDark: boolean) => {
       const logoElement = document.getElementById(
         "themeLogo"
       ) as HTMLImageElement;
@@ -33,19 +37,15 @@ const HeaderClientScript = () => {
       }
     };
 
-    updateLogo();
+    updateTheme();
 
-    if (typeof localStorage !== "undefined") {
-      const observer = new MutationObserver(() => {
-        const isDark = document.documentElement.classList.contains("dark");
-        localStorage.setItem("theme", isDark ? "dark" : "light");
-        updateLogo();
-      });
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-    }
+    // Tambahkan event listener untuk perubahan tema sistem
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addListener(() => {
+      if (theme === "system") {
+        updateTheme();
+      }
+    });
 
     // Login state management
     const checkLoginStatus = () => {
@@ -70,6 +70,16 @@ const HeaderClientScript = () => {
     };
 
     checkLoginStatus();
+
+    // Cleanup
+    return () => {
+      mediaQuery.removeListener(updateTheme);
+    };
+  }, [theme]);
+
+  // Expose setTheme function to window object
+  useEffect(() => {
+    (window as any).setTheme = setTheme;
   }, []);
 
   return null;
