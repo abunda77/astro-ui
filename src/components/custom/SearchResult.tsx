@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Highlight } from "rsuite";
+import { createUniqueSlug } from "@/lib/utils";
 
 interface Property {
   id: number;
@@ -324,7 +325,7 @@ const SearchResult: React.FC = () => {
       {/* Hasil Searching */}
       {properties.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-lg font-semibold text-center text-gray-800 sm:text-xl">
+          <h3 className="text-lg font-semibold text-center text-gray-800 dark:text-gray-200 sm:text-xl">
             Hasil Pencarian
           </h3>
           <div className="flex flex-wrap justify-center p-4 ">
@@ -333,7 +334,9 @@ const SearchResult: React.FC = () => {
                 className="w-full p-4 m-2 border border-gray-300 rounded-lg shadow-md sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1rem)] xl:w-[calc(20%-1rem)] transition duration-300 ease-in-out hover:shadow-lg hover:border-blue-500 dark:border-gray-700 dark:hover:border-blue-400 dark:bg-gray-800"
                 key={property.id}
               >
-                <a href={`/post/${property.id}`}>
+                <a
+                  href={`/post/${createUniqueSlug(property.id, property.title)}`}
+                >
                   <div className="block">
                     <div className="overflow-hidden rounded-lg">
                       <img

@@ -84,8 +84,8 @@ const TestimonialSection: React.FC = () => {
     // <div className="flex items-center justify-center min-h-screen py-5 min-w-screen bg-gray-50 dark:bg-black">
     //   <div className="w-full px-5 py-12 text-gray-800 bg-white md:py-24 dark:bg-black ">
 
-    <div className="flex items-center justify-center min-h-screen py-5 min-w-screen ">
-      <div className="w-full px-5 py-12 text-gray-800 md:py-24">
+    <div className="flex items-center justify-center py-5 min-w-screen ">
+      <div className="w-full px-5 py-12 text-gray-800">
         <div className="w-full max-w-6xl mx-auto">
           <div className="max-w-xl mx-auto mb-10 text-center">
             <h1 className="mb-5 text-6xl font-bold text-gray-600 md:text-7xl dark:text-gray-300">
