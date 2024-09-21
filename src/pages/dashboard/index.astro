@@ -1,5 +1,5 @@
 ---
-import Layout02 from "@/layouts/Layout03.astro";
+import Layout03 from "@/layouts/Layout03.astro";
 import Dashboard from "@/components/custom/Dashboard";
 import "@/styles/globals.css";
 import { getAccessToken, getUserId } from "@/utils/auth";
@@ -14,11 +14,9 @@ const userId = getUserId();
 // }
 ---
 
-<Layout02 title="Dashboard">
-  <Dashboard client:load accessToken={accessToken} userId={userId} />
+<Layout03 title="Dashboard" />
+<Dashboard client:load accessToken={accessToken} userId={userId} />
 
-  <!-- <Dashboard client:load /> -->
-</Layout02>
 <Toaster client:load />
 <script>
   import { isAuthenticated } from "@/utils/auth";

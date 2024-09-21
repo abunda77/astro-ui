@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from "react";
 
 const HeaderClientScript = () => {
-  const [theme, setTheme] = useState<"theme-light" | "dark" | "system">(
-    "system"
-  );
+  const [theme, setTheme] = useState<"dark" | "light">("light");
 
   useEffect(() => {
     const getThemePreference = () => {
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme) {
-        return savedTheme as "theme-light" | "dark" | "system";
+      if (
+        typeof localStorage !== "undefined" &&
+        localStorage.getItem("theme")
+      ) {
+        return localStorage.getItem("theme") as "dark" | "light";
       }
-      return "system";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     };
 
-    setTheme(getThemePreference());
-
-    const updateTheme = () => {
-      const isDark =
-        theme === "dark" ||
-        (theme === "system" &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const updateTheme = (newTheme: "dark" | "light") => {
+      const isDark = newTheme === "dark";
       document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-      localStorage.setItem("theme", theme);
+      localStorage.setItem("theme", newTheme);
       updateLogo(isDark);
     };
 
@@ -37,15 +34,16 @@ const HeaderClientScript = () => {
       }
     };
 
-    updateTheme();
+    setTheme(getThemePreference());
 
     // Tambahkan event listener untuk perubahan tema sistem
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    mediaQuery.addListener(() => {
-      if (theme === "system") {
-        updateTheme();
-      }
-    });
+    const handleChange = (e: MediaQueryListEvent) => {
+      const newTheme = e.matches ? "dark" : "light";
+      setTheme(newTheme);
+      updateTheme(newTheme);
+    };
+    mediaQuery.addEventListener("change", handleChange);
 
     // Login state management
     const checkLoginStatus = () => {
@@ -73,8 +71,30 @@ const HeaderClientScript = () => {
 
     // Cleanup
     return () => {
-      mediaQuery.removeListener(updateTheme);
+      mediaQuery.removeEventListener("change", handleChange);
     };
+  }, []);
+
+  useEffect(() => {
+    const updateTheme = (newTheme: "dark" | "light") => {
+      const isDark = newTheme === "dark";
+      document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+      localStorage.setItem("theme", newTheme);
+      updateLogo(isDark);
+    };
+
+    const updateLogo = (isDark: boolean) => {
+      const logoElement = document.getElementById(
+        "themeLogo"
+      ) as HTMLImageElement;
+      if (logoElement) {
+        logoElement.src = isDark
+          ? "../images/dark-logo.png"
+          : "../images/logo.png";
+      }
+    };
+
+    updateTheme(theme);
   }, [theme]);
 
   // Expose setTheme function to window object

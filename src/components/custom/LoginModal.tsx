@@ -288,7 +288,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
               <Captcha onValidate={setIsCaptchaValid} />
               <Button
                 type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800"
+                className="w-full dark:text-white  bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-800"
                 disabled={isLoading || !isCaptchaValid}
               >
                 {isLoading ? "Sedang Masuk..." : "Masuk"}
