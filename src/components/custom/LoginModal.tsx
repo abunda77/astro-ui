@@ -244,7 +244,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Username"
-                  className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-600 dark:text-white dark:border-gray-600"
                 />
                 {errors.username && (
                   <p className="text-xs text-red-500 dark:text-red-400">
@@ -262,7 +262,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Kata Sandi"
-                  className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-600 dark:text-white dark:border-gray-600"
                 />
                 {errors.password && (
                   <p className="text-xs text-red-500 dark:text-red-400">

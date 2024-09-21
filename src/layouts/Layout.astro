@@ -22,27 +22,32 @@ const makeTitle = title
 ---
 
 <script is:inline>
-  const getThemePreference = () => {
+  function getThemePreference() {
     if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
       return localStorage.getItem("theme");
     }
     return window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
-      : "theme-light";
-  };
-  const theme = getThemePreference();
-  document.documentElement.classList.toggle("dark", theme === "dark");
-
-  if (typeof localStorage !== "undefined") {
-    const observer = new MutationObserver(() => {
-      const isDark = document.documentElement.classList.contains("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "theme-light");
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
+      : "light";
   }
+
+  function updateTheme(theme) {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }
+
+  const theme = getThemePreference();
+  updateTheme(theme);
+
+  window.addEventListener("load", () => {
+    if (typeof window.setTheme === "function") {
+      window.setTheme(theme);
+    }
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    updateTheme(getThemePreference());
+  });
 </script>
 
 <html lang="en">

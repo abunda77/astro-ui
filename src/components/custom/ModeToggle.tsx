@@ -1,8 +1,8 @@
 // Toggle option Light or Dark Mode
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
-import { Toggle } from "rsuite";
-import "rsuite/dist/rsuite-no-reset.min.css";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export function ModeToggle() {
   const [theme, setThemeState] = React.useState<
@@ -40,25 +40,29 @@ export function ModeToggle() {
   }, [theme]);
 
   return (
-    <div className="flex items-center">
-      <Toggle
-        checkedChildren={
-          <Moon className="h-[1.2rem] w-[1.2rem] dark:text-gray-400" />
-        }
-        unCheckedChildren={
-          <Sun className="h-[1.2rem] w-[1.2rem] dark:text-gray-400" />
-        }
+    <div className="flex items-center space-x-2">
+      <Switch
+        id="dark-mode"
         checked={
           theme === "dark" ||
           (theme === "system" &&
             typeof window !== "undefined" &&
             window.matchMedia("(prefers-color-scheme: dark)").matches)
         }
-        onChange={() => {
+        onCheckedChange={() => {
           const newTheme = theme === "dark" ? "theme-light" : "dark";
           setThemeState(newTheme);
         }}
+        className="bg-gray-700 dark:bg-gray-200"
       />
+      <Label htmlFor="dark-mode" className="sr-only">
+        Mode Gelap
+      </Label>
+      {theme === "dark" ? (
+        <Moon className="h-[1.2rem] w-[1.2rem] text-gray-600 dark:text-gray-400" />
+      ) : (
+        <Sun className="h-[1.2rem] w-[1.2rem] text-yellow-500 dark:text-gray-400" />
+      )}
     </div>
   );
 }

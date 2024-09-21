@@ -28,7 +28,7 @@ const Captcha: React.FC<CaptchaProps> = ({ onValidate }) => {
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex items-center space-x-2">
-        <div className="p-2 text-black bg-gray-200 rounded dark:bg-gray-700 dark:text-white">
+        <div className="p-2  bg-gray-200 rounded dark:bg-gray-700 dark:text-white text-base sm:text-lg md:text-xl lg:text-2xl">
           {captchaText}
         </div>
         <Button
@@ -45,7 +45,7 @@ const Captcha: React.FC<CaptchaProps> = ({ onValidate }) => {
         placeholder="Masukkan captcha"
         value={userInput}
         onChange={handleInputChange}
-        className="w-36 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+        className="w-36 bg-gray-200 dark:bg-gray-600 dark:text-white dark:border-gray-600"
         maxLength={10}
       />
     </div>

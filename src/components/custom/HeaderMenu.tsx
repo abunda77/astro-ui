@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { ModeToggle } from "@/components/custom/ModeToggle";
-import AvatarComponent from "@/components/custom/AvatarComponent";
+
 import LoginButtons from "@/components/custom/LoginButtons";
 
 //  import globals.css
@@ -82,7 +82,6 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuitems }) => {
           </nav>
           <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
             <div className="flex flex-col items-center px-5 py-2 space-y-3">
-              <AvatarComponent />
               <LoginButtons />
               <div className="flex justify-end w-full">
                 <ModeToggle />
