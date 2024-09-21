@@ -26,69 +26,63 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getAccessToken } from "@/utils/auth";
-import ProfileDetail from "./ProfileDetail";
 
 interface UserProfileProps {
   userData: {
-    name: string;
-    email: string;
-    password: string;
+    user_id: number;
+    title: string;
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+    phone: string | null;
+    whatsapp: string | null;
+    address: string | null;
+    province_id: string | null;
+    district_id: string | null;
+    city_id: string | null;
+    village_id: string | null;
+    gender: "man" | "woman" | null;
+    birthday: string | null;
+    avatar: string | null;
+    remote_url: string | null;
+    company_name: string | null;
+    biodata_company: string | null;
+    jobdesk: string | null;
+    social_media: {
+      facebook: string | null;
+      twitter: string | null;
+      instagram: string | null;
+      linkedin: string | null;
+      youtube: string | null;
+      tiktok: string | null;
+      snapchat: string | null;
+      pinterest: string | null;
+      reddit: string | null;
+      zoom: string | null;
+    };
+    id: number;
+    province: {
+      code: string;
+      name: string;
+      level: string;
+    } | null;
+    district: {
+      code: string;
+      name: string;
+      level: string;
+    } | null;
+    city: {
+      code: string;
+      name: string;
+      level: string;
+    } | null;
+    village: {
+      code: string;
+      name: string;
+      level: string;
+    } | null;
     role: string;
     is_active: boolean;
-    profile: {
-      user_id: number;
-      title: string;
-      first_name: string | null;
-      last_name: string | null;
-      email: string | null;
-      phone: string | null;
-      whatsapp: string | null;
-      address: string | null;
-      province_id: string | null;
-      district_id: string | null;
-      city_id: string | null;
-      village_id: string | null;
-      gender: "man" | "woman" | null;
-      birthday: string | null;
-      avatar: string | null;
-      remote_url: string | null;
-      company_name: string | null;
-      biodata_company: string | null;
-      jobdesk: string | null;
-      social_media: {
-        facebook: string | null;
-        twitter: string | null;
-        instagram: string | null;
-        linkedin: string | null;
-        youtube: string | null;
-        tiktok: string | null;
-        snapchat: string | null;
-        pinterest: string | null;
-        reddit: string | null;
-        zoom: string | null;
-      };
-      id: number;
-      province: {
-        code: string;
-        name: string;
-        level: string;
-      } | null;
-      district: {
-        code: string;
-        name: string;
-        level: string;
-      } | null;
-      city: {
-        code: string;
-        name: string;
-        level: string;
-      } | null;
-      village: {
-        code: string;
-        name: string;
-        level: string;
-      } | null;
-    };
   };
   homedomain: string;
 }
@@ -219,9 +213,9 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
     );
   }
 
-  const isProfileEmpty =
-    !userData.profile ||
-    Object.values(userData.profile).every((value) => value === null);
+  const isProfileEmpty = Object.values(userData).every(
+    (value) => value === null
+  );
 
   if (isProfileEmpty) {
     return (
@@ -244,7 +238,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
           Profil Pengguna
         </CardTitle>
         <CardDescription className="text-lg font-semibold text-blue-700 md:text-xl dark:text-blue-300">
-          Selamat datang kembali, {userData.name}
+          Selamat datang kembali, {userData.first_name} {userData.last_name}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 md:space-y-6">
@@ -400,8 +394,101 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
           </div>
         </div>
 
-        {/* Ganti bagian Profil dengan komponen ProfileDetail */}
-        <ProfileDetail userData={userData} homedomain={homedomain} />
+        {/* ProfileDetail */}
+        <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <h3 className="mb-3 text-base font-semibold text-blue-700 md:mb-4 md:text-lg dark:text-blue-300">
+            Profil Detail
+          </h3>
+          <div className="grid gap-3 md:gap-4 md:grid-cols-3">
+            <div className="flex flex-col items-center">
+              <Avatar className="w-20 h-20 mb-3 md:w-24 md:h-24 md:mb-4">
+                <AvatarImage
+                  src={
+                    userData.avatar
+                      ? `${homedomain}${userData.avatar}`
+                      : undefined
+                  }
+                  alt={`${userData.first_name} ${userData.last_name}`}
+                />
+                <AvatarFallback>
+                  <CircleUser className="w-12 h-12 text-gray-400" />
+                </AvatarFallback>
+              </Avatar>
+              <h4 className="mb-1 text-sm font-semibold text-gray-800 md:text-base dark:text-gray-200">
+                {userData.first_name} {userData.last_name}
+              </h4>
+              <p className="mb-1 text-xs text-gray-600 md:text-sm dark:text-gray-400">
+                {userData.jobdesk || "Jobdesk tidak tersedia"}
+              </p>
+              <p className="mb-1 text-xs text-gray-600 md:text-sm dark:text-gray-400">
+                {userData.company_name || "Perusahaan tidak tersedia"}
+              </p>
+              <p className="text-xs text-gray-600 md:text-sm dark:text-gray-400">
+                {userData.biodata_company || "Biodata tidak tersedia"}
+              </p>
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <div className="flex items-center space-x-2 text-xs md:text-sm">
+                <Mail className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.email || "Email tidak tersedia"}
+                </span>
+              </div>
+              <div className="flex items-center space-x-2 text-xs md:text-sm">
+                <Phone className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.phone || "Nomor telepon tidak tersedia"}
+                </span>
+              </div>
+              <div className="flex items-center space-x-2 text-xs md:text-sm">
+                <MessageCircle className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.whatsapp || "WhatsApp tidak tersedia"}
+                </span>
+              </div>
+              <div className="text-xs md:text-sm">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  Alamat:
+                </span>{" "}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.address || "Alamat tidak tersedia"}
+                </span>
+              </div>
+              <div className="text-xs md:text-sm">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  Provinsi:
+                </span>{" "}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.province?.name || "Provinsi tidak tersedia"}
+                </span>
+              </div>
+              <div className="text-xs md:text-sm">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  Kota:
+                </span>{" "}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.city?.name || "Kota tidak tersedia"}
+                </span>
+              </div>
+              <div className="text-xs md:text-sm">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  Kecamatan:
+                </span>{" "}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.district?.name || "Kecamatan tidak tersedia"}
+                </span>
+              </div>
+              <div className="text-xs md:text-sm">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  Kelurahan:
+                </span>{" "}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {userData.village?.name || "Kelurahan tidak tersedia"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
