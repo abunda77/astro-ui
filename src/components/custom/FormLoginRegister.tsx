@@ -9,6 +9,7 @@ import QuotesLocale from "@/components/custom/QuotesLocal";
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { setCookie, setUserId, setAccessToken } from "@/utils/auth";
+import { Eye, EyeOff } from "lucide-react";
 
 const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 
@@ -30,6 +31,8 @@ const FormLoginRegister: React.FC = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setIsPageLoading(false), 2000);
@@ -305,14 +308,27 @@ const FormLoginRegister: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="password">Kata Sandi</Label>
-                    <Input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Kata Sandi"
-                      className="mt-1 bg-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Kata Sandi"
+                        className="mt-1 bg-gray-200 focus:border-purple-500 focus:ring-purple-500 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5 text-gray-400" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
                     {errors.password && (
                       <p className="text-xs text-red-500">{errors.password}</p>
                     )}
@@ -432,14 +448,27 @@ const FormLoginRegister: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="password">Kata Sandi</Label>
-                    <Input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Kata Sandi"
-                      className="mt-1 bg-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Kata Sandi"
+                        className="mt-1 bg-gray-200 focus:border-purple-500 focus:ring-purple-500 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5 text-gray-400" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
                     {errors.password && (
                       <p className="text-xs text-red-500">{errors.password}</p>
                     )}
@@ -448,14 +477,29 @@ const FormLoginRegister: React.FC = () => {
                     <Label htmlFor="confirmPassword">
                       Konfirmasi Kata Sandi
                     </Label>
-                    <Input
-                      type="password"
-                      id="confirmPassword"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Konfirmasi Kata Sandi"
-                      className="mt-1 bg-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Konfirmasi Kata Sandi"
+                        className="mt-1 bg-gray-200 focus:border-purple-500 focus:ring-purple-500 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute inset-y-0 right-0 flex items-center pr-3"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-5 w-5 text-gray-400" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                   <Captcha onValidate={handleCaptchaValidation} />
                   <Button

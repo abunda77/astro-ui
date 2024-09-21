@@ -39,16 +39,58 @@ const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
 
 interface UserProfile {
+  user_id: number;
+  title: string;
   first_name: string | null;
   last_name: string | null;
-  phone: string | null;
   email: string | null;
+  phone: string | null;
   whatsapp: string | null;
-  company_name: string | null;
+  address: string | null;
+  province_id: string | null;
+  district_id: string | null;
+  city_id: string | null;
+  village_id: string | null;
+  gender: "man" | "woman" | null;
+  birthday: string | null;
   avatar: string | null;
   remote_url: string | null;
+  company_name: string | null;
   biodata_company: string | null;
   jobdesk: string | null;
+  social_media: {
+    facebook: string | null;
+    twitter: string | null;
+    instagram: string | null;
+    linkedin: string | null;
+    youtube: string | null;
+    tiktok: string | null;
+    snapchat: string | null;
+    pinterest: string | null;
+    reddit: string | null;
+    zoom: string | null;
+  };
+  id: number;
+  province: {
+    code: string;
+    name: string;
+    level: string;
+  } | null;
+  district: {
+    code: string;
+    name: string;
+    level: string;
+  } | null;
+  city: {
+    code: string;
+    name: string;
+    level: string;
+  } | null;
+  village: {
+    code: string;
+    name: string;
+    level: string;
+  } | null;
 }
 
 interface User {
@@ -57,9 +99,6 @@ interface User {
   password: string;
   role: string;
   is_active: boolean;
-  id: number;
-  created_at: string;
-  updated_at: string;
   profile: UserProfile;
 }
 

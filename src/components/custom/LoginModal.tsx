@@ -15,7 +15,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import Captcha from "@/components/custom/Captcha";
 import QuotesLocale from "@/components/custom/QuotesLocal";
-import { LogIn } from "lucide-react";
+import { LogIn, Eye, EyeOff } from "lucide-react";
 
 const FASTAPI_ENDPOINT = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 
@@ -33,6 +33,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [errors, setErrors] = useState({
     username: "",
@@ -256,14 +258,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
                 <Label htmlFor="password" className="dark:text-white">
                   Kata Sandi
                 </Label>
-                <Input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Kata Sandi"
-                  className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-600 dark:text-white dark:border-gray-600"
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Kata Sandi"
+                    className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-600 dark:text-white dark:border-gray-600 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 mt-1"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
                   <p className="text-xs text-red-500 dark:text-red-400">
                     {errors.password}
@@ -358,14 +373,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
                 <Label htmlFor="password" className="dark:text-white">
                   Kata Sandi
                 </Label>
-                <Input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Kata Sandi"
-                  className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Kata Sandi"
+                    className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 mt-1"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
                   <p className="text-xs text-red-500 dark:text-red-400">
                     {errors.password}
@@ -376,14 +404,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
                 <Label htmlFor="confirmPassword" className="dark:text-white">
                   Konfirmasi Kata Sandi
                 </Label>
-                <Input
-                  type="password"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Konfirmasi Kata Sandi"
-                  className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                />
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Konfirmasi Kata Sandi"
+                    className="mt-1 bg-gray-300 focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 mt-1"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
                 {errors.confirmPassword && (
                   <p className="text-xs text-red-500 dark:text-red-400">
                     {errors.confirmPassword}

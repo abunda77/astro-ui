@@ -56,47 +56,30 @@ const LoginButtons = () => {
     }, 2000); // Ganti 2000 dengan waktu loading yang Anda inginkan
   };
 
-  const handleLogout = async () => {
-    try {
-      const accessToken = getAccessToken();
-      const response = await fetch(`${FASTAPI_ENDPOINT}/auth/logout`, {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+  const handleLogout = () => {
+    // Hapus cookies
+    document.cookie =
+      "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie =
+      "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie =
+      "username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 
-      if (response.ok) {
-        document.cookie =
-          "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-        document.cookie =
-          "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-        document.cookie =
-          "username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-        setIsLoggedIn(false);
-        setUsername("");
+    // Perbarui state
+    setIsLoggedIn(false);
+    setUsername("");
 
-        toast({
-          title: "Logout Berhasil",
-          variant: "warning",
-          description: `Selamat tinggal, ${username}!`,
-        });
+    // Tampilkan pesan toast
+    toast({
+      title: "Logout Berhasil",
+      variant: "warning",
+      description: `Selamat tinggal, ${username}!`,
+    });
 
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1000);
-      } else {
-        throw new Error("Logout gagal");
-      }
-    } catch (error) {
-      console.error("Error saat logout:", error);
-      toast({
-        title: "Logout Gagal",
-        variant: "destructive",
-        description: "Terjadi kesalahan saat logout. Silakan coba lagi.",
-      });
-    }
+    // Arahkan ke halaman utama setelah beberapa saat
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 1000);
   };
 
   return (

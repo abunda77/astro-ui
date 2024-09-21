@@ -9,10 +9,24 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Mail, MessageCircle, Phone, CircleUser } from "lucide-react";
+import {
+  Mail,
+  MessageCircle,
+  Phone,
+  CircleUser,
+  Loader2,
+  Terminal,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getAccessToken } from "@/utils/auth";
+import ProfileDetail from "./ProfileDetail";
 
 interface UserProfileProps {
   userData: {
@@ -22,16 +36,58 @@ interface UserProfileProps {
     role: string;
     is_active: boolean;
     profile: {
+      user_id: number;
+      title: string;
       first_name: string | null;
       last_name: string | null;
-      phone: string | null;
       email: string | null;
+      phone: string | null;
       whatsapp: string | null;
-      company_name: string | null;
+      address: string | null;
+      province_id: string | null;
+      district_id: string | null;
+      city_id: string | null;
+      village_id: string | null;
+      gender: "man" | "woman" | null;
+      birthday: string | null;
       avatar: string | null;
       remote_url: string | null;
+      company_name: string | null;
       biodata_company: string | null;
       jobdesk: string | null;
+      social_media: {
+        facebook: string | null;
+        twitter: string | null;
+        instagram: string | null;
+        linkedin: string | null;
+        youtube: string | null;
+        tiktok: string | null;
+        snapchat: string | null;
+        pinterest: string | null;
+        reddit: string | null;
+        zoom: string | null;
+      };
+      id: number;
+      province: {
+        code: string;
+        name: string;
+        level: string;
+      } | null;
+      district: {
+        code: string;
+        name: string;
+        level: string;
+      } | null;
+      city: {
+        code: string;
+        name: string;
+        level: string;
+      } | null;
+      village: {
+        code: string;
+        name: string;
+        level: string;
+      } | null;
     };
   };
   homedomain: string;
@@ -39,6 +95,17 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [alertInfo, setAlertInfo] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -54,6 +121,64 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
 
     loadUserData();
   }, []);
+
+  const handleSave = async () => {
+    if (newPassword.length < 6) {
+      setPasswordError(
+        "Kata sandi baru harus terdiri dari minimal 6 karakter."
+      );
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const accessToken = getAccessToken();
+      console.log("access_token:", accessToken);
+      console.log("current_password:", currentPassword);
+      console.log("new_password:", newPassword);
+
+      const response = await fetch(
+        `${import.meta.env.PUBLIC_FASTAPI_ENDPOINT}/auth/change-password`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        setAlertInfo({
+          type: "success",
+          message: "Kata sandi berhasil diubah",
+        });
+        setIsEditing(false);
+        setPasswordError(null);
+      } else {
+        throw new Error("Gagal mengubah kata sandi");
+      }
+    } catch (error) {
+      setAlertInfo({
+        type: "error",
+        message: "Gagal mengubah kata sandi. Silakan coba lagi.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setPasswordError(null);
+  };
 
   if (isLoading) {
     return (
@@ -123,6 +248,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 md:space-y-6">
+        {alertInfo && (
+          <Alert
+            variant={alertInfo.type === "success" ? "success" : "destructive"}
+          >
+            <Terminal className="w-4 h-4" />
+            <AlertTitle>
+              {alertInfo.type === "success" ? "Berhasil!" : "Kesalahan!"}
+            </AlertTitle>
+            <AlertDescription>{alertInfo.message}</AlertDescription>
+          </Alert>
+        )}
         {/* Informasi Pengguna */}
         <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-3 md:mb-4">
@@ -132,9 +268,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
             <Button
               variant="outline"
               size="sm"
-              className="text-xs text-white bg-blue-500 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+              className="text-xs text-white hover:text-gray-200 dark:text-gray-100 bg-blue-500 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+              onClick={() => setIsEditing(!isEditing)}
             >
-              Edit
+              {isEditing ? "Clear" : "Edit"}
             </Button>
           </div>
           <div className="grid gap-3 md:gap-4 md:grid-cols-2">
@@ -151,9 +288,88 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
                 <span className="font-semibold text-gray-700 dark:text-gray-300">
                   Password:
                 </span>
-                <span className="text-gray-600 dark:text-gray-400">
-                  **********
-                </span>
+                {isEditing ? (
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Password Sekarang
+                      </label>
+                      <Input
+                        type={showCurrentPassword ? "text" : "password"}
+                        className="bg-gray-300 pr-10"
+                        placeholder="Kata sandi saat ini"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6"
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
+                      >
+                        {showCurrentPassword ? (
+                          <EyeOff className="w-5 h-5 text-gray-400" />
+                        ) : (
+                          <Eye className="w-5 h-5 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Password Baru
+                      </label>
+                      <Input
+                        type={showNewPassword ? "text" : "password"}
+                        className="bg-gray-300 pr-10"
+                        placeholder="Kata sandi baru"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? (
+                          <EyeOff className="w-5 h-5 text-gray-400" />
+                        ) : (
+                          <Eye className="w-5 h-5 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
+                    {passwordError && (
+                      <p className="text-xs text-red-500">{passwordError}</p>
+                    )}
+                    <div className="flex space-x-2">
+                      <Button
+                        onClick={handleSave}
+                        className="text-xs text-white hover:text-gray-200 dark:text-gray-100 bg-blue-500 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                        disabled={isSaving}
+                      >
+                        {isSaving ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Menyimpan...
+                          </>
+                        ) : (
+                          "Simpan"
+                        )}
+                      </Button>
+                      <Button
+                        onClick={handleCancel}
+                        variant="default"
+                        className="text-xs"
+                      >
+                        Batal
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <span className="text-gray-600 dark:text-gray-400">
+                    **********
+                  </span>
+                )}
               </div>
             </div>
             <div className="space-y-3 md:space-y-4">
@@ -173,7 +389,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
                   variant={userData.is_active ? "default" : "secondary"}
                   className={`text-xs md:text-sm ${
                     userData.is_active
-                      ? "bg-blue-500 dark:bg-blue-700"
+                      ? "dark:text-white bg-green-500 dark:bg-green-700"
                       : "bg-gray-500 dark:bg-gray-700"
                   }`}
                 >
@@ -184,100 +400,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, homedomain }) => {
           </div>
         </div>
 
-        {/* Profil */}
-        <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-3 md:mb-4">
-            <h3 className="text-base font-semibold text-blue-700 md:text-lg dark:text-blue-300">
-              Profil
-            </h3>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-xs text-white bg-blue-500 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-            >
-              Edit
-            </Button>
-          </div>
-          <div className="grid gap-4 md:grid-cols-[0.5fr_1.25fr_1.25fr]">
-            <div className="flex flex-col items-start">
-              <Avatar className="w-20 h-20 mb-3 md:w-24 md:h-24 md:mb-4 ring-2 ring-blue-300 dark:ring-blue-600">
-                <AvatarImage
-                  src={
-                    userData.profile.avatar
-                      ? `${homedomain}/storage/${userData.profile.avatar}`
-                      : userData.profile.remote_url
-                        ? userData.profile.remote_url
-                        : "images/avatar-fallback.gif"
-                  }
-                  alt={userData.name}
-                />
-                <AvatarFallback className="text-blue-700 bg-blue-200 dark:bg-blue-700 dark:text-blue-200">
-                  {userData.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-2 md:space-y-3">
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Nama:
-                </span>
-                <span className="text-gray-600 break-all dark:text-gray-400">
-                  {userData.profile.first_name} {userData.profile.last_name}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Telepon:
-                </span>
-                <span className="text-gray-600 break-all dark:text-gray-400">
-                  {userData.profile.phone}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Email:
-                </span>
-                <span className="text-gray-600 break-all dark:text-gray-400">
-                  {userData.profile.email}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  WhatsApp:
-                </span>
-                <span className="text-gray-600 break-all dark:text-gray-400">
-                  {userData.profile.whatsapp}
-                </span>
-              </div>
-            </div>
-            <div className="space-y-2 md:space-y-3">
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Perusahaan:
-                </span>
-                <span className="text-gray-600 break-all dark:text-gray-400">
-                  {userData.profile.company_name}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Biodata Perusahaan:
-                </span>
-                <span className="text-gray-600 break-all dark:text-gray-400">
-                  {userData.profile.biodata_company}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  Deskripsi Pekerjaan:
-                </span>
-                <span className="text-gray-600 break-all dark:text-gray-400">
-                  {userData.profile.jobdesk}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Ganti bagian Profil dengan komponen ProfileDetail */}
+        <ProfileDetail userData={userData} homedomain={homedomain} />
       </CardContent>
     </Card>
   );
