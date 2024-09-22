@@ -4,7 +4,7 @@
 
 import Header01 from "@/layouts/Header01.astro";
 import { Toaster } from "@/components/ui/toaster";
-import { ViewTransitions } from "astro:transitions";
+
 const { title } = Astro.props;
 import { getAccessToken, getUserId, isAuthenticated } from "@/utils/auth";
 
@@ -55,7 +55,7 @@ const user_id = getUserId() || "";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="images/favicon.png" />
     <meta name="generator" content={Astro.generator} />
-    <ViewTransitions />
+
     <title>{title}</title>
   </head>
   <body

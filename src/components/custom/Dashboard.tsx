@@ -48,6 +48,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 import RefreshBrowser from "./RefreshBrowser";
+import { Loader, Placeholder } from "rsuite";
 
 const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
@@ -285,6 +286,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
       console.log("Fetching properties from URL:", url);
       const response = await fetch(url, {
         headers: {
+          accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
