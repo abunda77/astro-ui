@@ -47,6 +47,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
+import RefreshBrowser from "./RefreshBrowser";
 
 const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
@@ -452,13 +453,18 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
               {userProfile && (
                 <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
                   <CardHeader className="mb-4 md:mb-6">
-                    <CardTitle className="text-xl font-bold text-blue-800 md:text-2xl dark:text-blue-300">
-                      Profil Pengguna
-                    </CardTitle>
-                    <CardDescription className="text-lg font-semibold text-blue-700 md:text-xl dark:text-blue-300">
-                      Selamat datang kembali, {userProfile.first_name}{" "}
-                      {userProfile.last_name}
-                    </CardDescription>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <CardTitle className="text-xl font-bold text-blue-800 md:text-2xl dark:text-blue-300">
+                          Profil Pengguna
+                        </CardTitle>
+                        <CardDescription className="text-lg font-semibold text-blue-700 md:text-xl dark:text-blue-300">
+                          Selamat datang kembali, {userProfile.first_name}{" "}
+                          {userProfile.last_name}
+                        </CardDescription>
+                      </div>
+                      <RefreshBrowser className="text-xs md:text-sm" />
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-4 md:space-y-6">
                     {alertInfo && (
