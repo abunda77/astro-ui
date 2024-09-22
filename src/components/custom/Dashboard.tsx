@@ -225,8 +225,11 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editedProfile, setEditedProfile] = useState<UserProfile | null>(null);
+
   useEffect(() => {
-    const initializeAuth = () => {
+    const initializeAuth = async () => {
       const accessTokenFromCookie = getCookie("access_token");
       const userIdFromCookie = getCookie("user_id");
 
@@ -234,9 +237,21 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
         setTokenFromCookie(accessTokenFromCookie);
         setUserIdFromCookie(userIdFromCookie);
         setUsername(getUsername() || "User");
-        fetchUserData(userIdFromCookie, accessTokenFromCookie);
-        fetchUserProfile(userIdFromCookie, accessTokenFromCookie);
-        fetchProperties(accessTokenFromCookie, userIdFromCookie);
+
+        try {
+          await Promise.all([
+            fetchUserData(userIdFromCookie, accessTokenFromCookie),
+            fetchUserProfile(userIdFromCookie, accessTokenFromCookie),
+            fetchProperties(accessTokenFromCookie, userIdFromCookie),
+          ]);
+        } catch (error) {
+          console.error("Error initializing auth:", error);
+          toast({
+            title: "Error",
+            description: "Gagal memuat data. Silakan coba lagi.",
+            variant: "destructive",
+          });
+        }
       } else {
         toast({
           title: "Peringatan",
@@ -245,7 +260,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
         });
         setTimeout(() => {
           window.location.href = "/loginpage";
-        }, 3000);
+        }, 2000);
       }
     };
 
@@ -281,9 +296,10 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
   };
 
   const fetchProperties = async (token: string, userId: string) => {
+    const url = `${FASTAPI_LOGIN}/properties/user/${userId}`;
+    console.log("Mengambil properti dari URL:", url);
+
     try {
-      const url = `${FASTAPI_LOGIN}/properties/user/${userId}`;
-      console.log("Fetching properties from URL:", url);
       const response = await fetch(url, {
         headers: {
           accept: "application/json",
@@ -292,15 +308,21 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Kesalahan HTTP! status: ${response.status}`);
       }
 
       const data = await response.json();
       console.log("Data properti yang diambil:", data);
       setProperties(data);
-      setIsLoading(false);
     } catch (error) {
-      console.error("Error fetching properties:", error);
+      console.error("Kesalahan saat mengambil properti:", error);
+      toast({
+        title: "Error",
+        description: "Gagal mengambil data properti",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -417,6 +439,80 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
     return cleanedUrl;
   };
 
+  const handleEditProfile = () => {
+    setIsEditingProfile(true);
+    setEditedProfile(userProfile);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!editedProfile) return;
+
+    try {
+      const token = getAccessToken();
+      const userId = getUserId();
+      const url = `${FASTAPI_LOGIN}/profile/${userId}`;
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user_id: editedProfile.user_id,
+          title: editedProfile.title,
+          first_name: editedProfile.first_name,
+          last_name: editedProfile.last_name,
+          email: editedProfile.email,
+          phone: editedProfile.phone,
+          whatsapp: editedProfile.whatsapp,
+          address: editedProfile.address,
+          province_id: editedProfile.province_id,
+          district_id: editedProfile.district_id,
+          city_id: editedProfile.city_id,
+          village_id: editedProfile.village_id,
+          gender: editedProfile.gender,
+          birthday: editedProfile.birthday,
+          avatar: editedProfile.avatar,
+          remote_url: editedProfile.remote_url,
+          company_name: editedProfile.company_name,
+          biodata_company: editedProfile.biodata_company,
+          jobdesk: editedProfile.jobdesk,
+          social_media: editedProfile.social_media,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedProfile = await response.json();
+        setUserProfile(updatedProfile);
+        setIsEditingProfile(false);
+        toast({
+          title: "Sukses",
+          description: "Profil berhasil diperbarui",
+          duration: 3000,
+        });
+      } else {
+        throw new Error("Gagal memperbarui profil");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast({
+        title: "Error",
+        description: "Gagal memperbarui profil",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingProfile(false);
+    setEditedProfile(null);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditedProfile((prev) => (prev ? { ...prev, [name]: value } : null));
+  };
+
   return (
     <div className="container p-4 mx-auto">
       <div className="flex justify-start mt-6 mb-10 space-x-4">
@@ -454,18 +550,28 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
             <TabsContent value="profile">
               {userProfile && (
                 <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
-                  <CardHeader className="mb-4 md:mb-6">
-                    <div className="flex justify-between items-center">
+                  <CardHeader className="mb-3 md:mb-6">
+                    <div className="flex flex-col items-start justify-between space-y-2 md:flex-row md:items-center md:space-y-0">
                       <div>
-                        <CardTitle className="text-xl font-bold text-blue-800 md:text-2xl dark:text-blue-300">
+                        <CardTitle className="text-lg font-bold text-blue-800 md:text-2xl dark:text-blue-300">
                           Profil Pengguna
                         </CardTitle>
-                        <CardDescription className="text-lg font-semibold text-blue-700 md:text-xl dark:text-blue-300">
+                        <CardDescription className="text-base font-semibold text-blue-700 md:text-xl dark:text-blue-300">
                           Selamat datang kembali, {userProfile.first_name}{" "}
                           {userProfile.last_name}
                         </CardDescription>
                       </div>
-                      <RefreshBrowser className="text-xs md:text-sm" />
+                      <div className="flex items-center space-x-2">
+                        <RefreshBrowser className="text-xs md:text-sm" />
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="text-xs md:text-sm"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4 md:space-y-6">
@@ -494,7 +600,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-xs text-white hover:text-gray-200 dark:text-gray-100 bg-blue-500 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                          className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
                           onClick={() => setIsEditing(!isEditing)}
                         >
                           {isEditing ? "Clear" : "Edit"}
@@ -524,7 +630,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                                     type={
                                       showCurrentPassword ? "text" : "password"
                                     }
-                                    className="bg-gray-300 pr-10"
+                                    className="pr-10 bg-gray-300"
                                     placeholder="Kata sandi saat ini"
                                     value={currentPassword}
                                     onChange={(e) =>
@@ -553,7 +659,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                                   </label>
                                   <Input
                                     type={showNewPassword ? "text" : "password"}
-                                    className="bg-gray-300 pr-10"
+                                    className="pr-10 bg-gray-300"
                                     placeholder="Kata sandi baru"
                                     value={newPassword}
                                     onChange={(e) =>
@@ -582,7 +688,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                                 <div className="flex space-x-2">
                                   <Button
                                     onClick={handleSave}
-                                    className="text-xs text-white hover:text-gray-200 dark:text-gray-100 bg-blue-500 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                                    className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
                                     disabled={isSaving}
                                   >
                                     {isSaving ? (
@@ -645,13 +751,33 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                         <h3 className="text-base font-semibold text-blue-700 md:text-lg dark:text-blue-300">
                           Profil
                         </h3>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-xs text-white hover:text-gray-200 dark:text-gray-100 bg-blue-500 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                        >
-                          Edit
-                        </Button>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                            onClick={
+                              isEditingProfile
+                                ? handleSaveProfile
+                                : handleEditProfile
+                            }
+                          >
+                            {isEditingProfile ? "Simpan" : "Edit"}
+                          </Button>
+                          {isEditingProfile && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-xs text-white bg-red-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
+                              onClick={() => {
+                                setIsEditingProfile(false);
+                                setEditedProfile(null);
+                              }}
+                            >
+                              Clear
+                            </Button>
+                          )}
+                        </div>
                       </div>
                       <div className="grid gap-4 md:grid-cols-[0.5fr_1.25fr_1.25fr]">
                         <div className="flex flex-col items-start">
@@ -668,40 +794,84 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                           </Avatar>
                         </div>
                         <div className="space-y-2 md:space-y-3">
-                          <ProfileField
-                            label="Nama"
-                            value={`${userProfile.first_name || ""} ${userProfile.last_name || ""}`}
-                          />
-                          <ProfileField
-                            label="Telepon"
-                            value={userProfile.phone}
-                          />
-                          <ProfileField
-                            label="Email"
-                            value={userProfile.email}
-                          />
-                          <ProfileField
-                            label="WhatsApp"
-                            value={userProfile.whatsapp}
-                          />
-                          <ProfileField
-                            label="Alamat"
-                            value={userProfile.address}
-                          />
-                          <ProfileField
-                            label="Jenis Kelamin"
-                            value={
-                              userProfile.gender === "man"
-                                ? "Laki-laki"
-                                : userProfile.gender === "woman"
-                                  ? "Perempuan"
-                                  : "-"
-                            }
-                          />
-                          <ProfileField
-                            label="Tanggal Lahir"
-                            value={userProfile.birthday || "-"}
-                          />
+                          {isEditingProfile ? (
+                            <>
+                              <ProfileInput
+                                label="Nama Depan"
+                                name="first_name"
+                                value={editedProfile?.first_name || ""}
+                                onChange={handleInputChange}
+                              />
+                              <ProfileInput
+                                label="Nama Belakang"
+                                name="last_name"
+                                value={editedProfile?.last_name || ""}
+                                onChange={handleInputChange}
+                              />
+                              <ProfileInput
+                                label="Telepon"
+                                name="phone"
+                                value={editedProfile?.phone || ""}
+                                onChange={handleInputChange}
+                              />
+                              <ProfileInput
+                                label="Email"
+                                name="email"
+                                value={editedProfile?.email || ""}
+                                onChange={handleInputChange}
+                              />
+                              <ProfileInput
+                                label="WhatsApp"
+                                name="whatsapp"
+                                value={editedProfile?.whatsapp || ""}
+                                onChange={handleInputChange}
+                              />
+                              <ProfileInput
+                                label="Alamat"
+                                name="address"
+                                value={editedProfile?.address || ""}
+                                onChange={handleInputChange}
+                              />
+                              {/* Tambahkan input lainnya sesuai kebutuhan */}
+                            </>
+                          ) : (
+                            <>
+                              <ProfileField
+                                label="Nama"
+                                value={`${userProfile.first_name || ""} ${userProfile.last_name || ""}`}
+                              />
+                              <ProfileField
+                                label="Telepon"
+                                value={userProfile.phone}
+                              />
+                              <ProfileField
+                                label="Email"
+                                value={userProfile.email}
+                              />
+                              <ProfileField
+                                label="WhatsApp"
+                                value={userProfile.whatsapp}
+                              />
+                              <ProfileField
+                                label="Alamat"
+                                value={userProfile.address}
+                              />
+                              <ProfileField
+                                label="Jenis Kelamin"
+                                value={
+                                  userProfile.gender === "man"
+                                    ? "Laki-laki"
+                                    : userProfile.gender === "woman"
+                                      ? "Perempuan"
+                                      : "-"
+                                }
+                              />
+                              <ProfileField
+                                label="Tanggal Lahir"
+                                value={userProfile.birthday || "-"}
+                              />
+                            </>
+                          )}
                         </div>
                         <div className="space-y-2 md:space-y-3">
                           <ProfileField
@@ -777,6 +947,36 @@ const ProfileField: React.FC<ProfileFieldProps> = ({ label, value }) => (
     <span className="text-gray-600 break-all dark:text-gray-400">
       {value || "-"}
     </span>
+  </div>
+);
+
+interface ProfileInputProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+const ProfileInput: React.FC<ProfileInputProps> = ({
+  label,
+  name,
+  value,
+  onChange,
+}) => (
+  <div className="flex flex-col space-y-1">
+    <label
+      htmlFor={name}
+      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+    >
+      {label}
+    </label>
+    <Input
+      type="text"
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+    />
   </div>
 );
 export default Dashboard;
