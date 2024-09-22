@@ -1,4 +1,6 @@
 // utils/auth.js
+let globalUserId = null;
+
 
 export const isAuthenticated = () => {
     if (typeof document !== 'undefined') {

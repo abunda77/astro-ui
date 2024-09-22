@@ -223,10 +223,6 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  console.log("Dash Username:", username);
-  console.log("Dash Token dari Cookie:", tokenFromCookie);
-  console.log("Dash User ID dari Cookie:", userIdFromCookie);
-
   useEffect(() => {
     const initializeAuth = () => {
       const accessTokenFromCookie = getCookie("access_token");

@@ -1,8 +1,15 @@
 // Toggle option Light or Dark Mode
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+// import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+
+import dynamic from "next/dynamic";
+
+const Switch = dynamic(
+  () => import("@/components/ui/switch").then((mod) => mod.Switch),
+  { ssr: false }
+);
 
 export function ModeToggle() {
   const [theme, setThemeState] = React.useState<
