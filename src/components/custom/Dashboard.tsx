@@ -50,6 +50,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 import RefreshBrowser from "./RefreshBrowser";
 import { Loader, Placeholder } from "rsuite";
+import UserCredential from "./UserCredential";
 
 const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
@@ -228,6 +229,8 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editedProfile, setEditedProfile] = useState<UserProfile | null>(null);
+  const [showCreateProfileButton, setShowCreateProfileButton] = useState(false);
+  const [profileFetchCompleted, setProfileFetchCompleted] = useState(false);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -327,26 +330,37 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
     }
   };
 
-  const fetchUserProfile = async (token: string, userId: string) => {
+  const fetchUserProfile = async (userId: string, token: string) => {
     try {
-      const url = `${FASTAPI_LOGIN}/profile/${token}`;
-      console.log("Fetching user profile from URL:", url);
-      console.log("Token untuk mengambil profil pengguna:", userId);
-      const response = await fetch(url, {
+      const response = await fetch(`${FASTAPI_LOGIN}/profile/${userId}`, {
         headers: {
-          Authorization: `Bearer ${userId}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
+      if (response.status === 404) {
+        console.log("User profile not found, showing create profile button.");
+        setUserProfile(null);
+        setShowCreateProfileButton(true);
+      } else if (response.ok) {
+        const data = await response.json();
+        console.log("User profile data fetched:", data);
+        if (data === null) {
+          setUserProfile(null);
+          setShowCreateProfileButton(true);
+        } else {
+          setUserProfile(data);
+          setShowCreateProfileButton(false);
+        }
+      } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      const data = await response.json();
-      console.log("Data profil pengguna yang diambil:", data);
-      setUserProfile(data);
     } catch (error) {
       console.error("Error fetching user profile:", error);
+      setUserProfile(null);
+      setShowCreateProfileButton(true);
+    } finally {
+      setProfileFetchCompleted(true);
     }
   };
 
@@ -603,358 +617,231 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                         <AlertDescription>{alertInfo.message}</AlertDescription>
                       </Alert>
                     )}
-                    <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                      <div className="flex items-center justify-between mb-3 md:mb-4">
-                        <h3 className="text-base font-semibold text-blue-700 md:text-lg dark:text-blue-300">
-                          Informasi Pengguna
-                        </h3>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                          onClick={() => setIsEditing(!isEditing)}
-                        >
-                          {isEditing ? "Clear" : "Edit"}
-                        </Button>
-                      </div>
-                      <div className="grid gap-3 md:gap-4 md:grid-cols-2">
-                        <div className="space-y-3 md:space-y-4">
-                          <div className="flex justify-between text-xs md:text-sm">
-                            <span className="font-semibold text-gray-700 dark:text-gray-300">
-                              Email:
-                            </span>
-                            <span className="text-gray-600 break-all dark:text-gray-400">
-                              {userProfile.email}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-xs md:text-sm">
-                            <span className="font-semibold text-gray-700 dark:text-gray-300">
-                              Password:
-                            </span>
-                            {isEditing ? (
-                              <div className="space-y-2">
-                                <div className="relative">
-                                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Password Saat Ini
-                                  </label>
-                                  <Input
-                                    type={
-                                      showCurrentPassword ? "text" : "password"
-                                    }
-                                    className="pr-10 bg-gray-300"
-                                    placeholder="Kata sandi saat ini"
-                                    value={currentPassword}
-                                    onChange={(e) =>
-                                      setCurrentPassword(e.target.value)
-                                    }
-                                  />
-                                  <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6"
-                                    onClick={() =>
-                                      setShowCurrentPassword(
-                                        !showCurrentPassword
-                                      )
-                                    }
-                                  >
-                                    {showCurrentPassword ? (
-                                      <EyeOff className="w-5 h-5 text-gray-400" />
-                                    ) : (
-                                      <Eye className="w-5 h-5 text-gray-400" />
-                                    )}
-                                  </button>
-                                </div>
-                                <div className="relative">
-                                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Password Baru
-                                  </label>
-                                  <Input
-                                    type={showNewPassword ? "text" : "password"}
-                                    className="pr-10 bg-gray-300"
-                                    placeholder="Kata sandi baru"
-                                    value={newPassword}
-                                    onChange={(e) =>
-                                      setNewPassword(e.target.value)
-                                    }
-                                  />
-                                  <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6"
-                                    onClick={() =>
-                                      setShowNewPassword(!showNewPassword)
-                                    }
-                                  >
-                                    {showNewPassword ? (
-                                      <EyeOff className="w-5 h-5 text-gray-400" />
-                                    ) : (
-                                      <Eye className="w-5 h-5 text-gray-400" />
-                                    )}
-                                  </button>
-                                </div>
-                                {passwordError && (
-                                  <p className="text-xs text-red-500">
-                                    {passwordError}
-                                  </p>
-                                )}
-                                <div className="flex space-x-2">
-                                  <Button
-                                    onClick={handleSave}
-                                    className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                                    disabled={isSaving}
-                                  >
-                                    {isSaving ? (
-                                      <>
-                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                        Menyimpan...
-                                      </>
-                                    ) : (
-                                      "Simpan"
-                                    )}
-                                  </Button>
-                                  <Button
-                                    onClick={handleCancel}
-                                    variant="default"
-                                    className="text-xs"
-                                  >
-                                    Batal
-                                  </Button>
-                                </div>
-                              </div>
-                            ) : (
-                              <span className="text-gray-600 dark:text-gray-400">
-                                **********
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="space-y-3 md:space-y-4">
-                          <div className="flex justify-between text-xs md:text-sm">
-                            <span className="font-semibold text-gray-700 dark:text-gray-300">
-                              Peran:
-                            </span>
-                            <span className="text-gray-600 dark:text-gray-400">
-                              {userData?.role}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between text-xs md:text-sm">
-                            <span className="font-semibold text-gray-700 dark:text-gray-300">
-                              Status:
-                            </span>
-                            <Badge
-                              variant={
-                                userData?.is_active ? "default" : "secondary"
-                              }
-                              className={`text-xs md:text-sm ${
-                                userData?.is_active
-                                  ? "dark:text-white bg-green-500 dark:bg-green-700"
-                                  : "bg-gray-500 dark:bg-gray-700"
-                              }`}
-                            >
-                              {userData?.is_active ? "Aktif" : "Tidak Aktif"}
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
-                    <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                      <div className="flex items-center justify-between mb-3 md:mb-4">
-                        <h3 className="text-base font-semibold text-blue-700 md:text-lg dark:text-blue-300">
-                          Profil
-                        </h3>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                            onClick={
-                              isEditingProfile
-                                ? handleSaveProfile
-                                : handleEditProfile
-                            }
-                          >
-                            {isEditingProfile ? "Simpan" : "Edit"}
-                          </Button>
-                          {isEditingProfile && (
+                    {/* Kolom UserCredential */}
+                    <UserCredential
+                      userData={userData}
+                      isEditing={isEditing}
+                      showCurrentPassword={showCurrentPassword}
+                      showNewPassword={showNewPassword}
+                      currentPassword={currentPassword}
+                      newPassword={newPassword}
+                      passwordError={passwordError}
+                      isSaving={isSaving}
+                      setIsEditing={setIsEditing}
+                      setCurrentPassword={setCurrentPassword}
+                      setNewPassword={setNewPassword}
+                      setShowCurrentPassword={setShowCurrentPassword}
+                      setShowNewPassword={setShowNewPassword}
+                      handleSave={handleSave}
+                      handleCancel={handleCancel}
+                    />
+
+                    {profileFetchCompleted && !userProfile && (
+                      <Button className="mt-4 bg-red-500 hover:bg-blue-600 text-white">
+                        Buat Profil Baru
+                      </Button>
+                    )}
+
+                    {userProfile && (
+                      // Tampilkan informasi profil pengguna
+                      <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+                        <div className="flex items-center justify-between mb-3 md:mb-4">
+                          <h3 className="text-base font-semibold text-blue-700 md:text-lg dark:text-blue-300">
+                            Profil
+                          </h3>
+                          <div className="flex space-x-2">
                             <Button
                               variant="outline"
                               size="sm"
-                              className="text-xs text-white bg-red-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
-                              onClick={() => {
-                                setIsEditingProfile(false);
-                                setEditedProfile(null);
-                              }}
+                              className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                              onClick={
+                                isEditingProfile
+                                  ? handleSaveProfile
+                                  : handleEditProfile
+                              }
                             >
-                              Clear
+                              {isEditingProfile ? "Simpan" : "Edit"}
                             </Button>
-                          )}
+                            {isEditingProfile && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs text-white bg-red-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="grid gap-4 md:grid-cols-[0.5fr_1.25fr_1.25fr]">
-                        <div className="flex flex-col items-start">
-                          <Avatar className="w-20 h-20 mb-3 md:w-24 md:h-24 md:mb-4 ring-2 ring-blue-300 dark:ring-blue-600">
-                            <AvatarImage
-                              src={cleanUrl(userProfile.avatar)}
-                              alt={`${userProfile.first_name} ${userProfile.last_name}`}
-                            />
-                            <AvatarFallback className="text-blue-700 bg-blue-200 dark:bg-blue-700 dark:text-blue-200">
-                              {userProfile.first_name
-                                ? userProfile.first_name.charAt(0)
-                                : "U"}
-                            </AvatarFallback>
-                          </Avatar>
-                        </div>
-                        <div className="space-y-2 md:space-y-3">
-                          {isEditingProfile ? (
-                            <>
-                              <ProfileInput
-                                label="Nama Depan"
-                                name="first_name"
-                                value={editedProfile?.first_name || ""}
-                                onChange={handleInputChange}
+                        <div className="grid gap-4 md:grid-cols-[0.5fr_1.25fr_1.25fr]">
+                          <div className="flex flex-col items-start">
+                            <Avatar className="w-20 h-20 mb-3 md:w-24 md:h-24 md:mb-4 ring-2 ring-blue-300 dark:ring-blue-600">
+                              <AvatarImage
+                                src={cleanUrl(userProfile.avatar)}
+                                alt={`${userProfile.first_name} ${userProfile.last_name}`}
                               />
-                              <ProfileInput
-                                label="Nama Belakang"
-                                name="last_name"
-                                value={editedProfile?.last_name || ""}
-                                onChange={handleInputChange}
-                              />
-                              <ProfileInput
-                                label="Telepon"
-                                name="phone"
-                                value={editedProfile?.phone || ""}
-                                onChange={handleInputChange}
-                              />
-                              <ProfileInput
-                                label="Email"
-                                name="email"
-                                value={editedProfile?.email || ""}
-                                onChange={handleInputChange}
-                              />
-                              <ProfileInput
-                                label="WhatsApp"
-                                name="whatsapp"
-                                value={editedProfile?.whatsapp || ""}
-                                onChange={handleInputChange}
-                              />
-                              <ProfileInput
-                                label="Alamat"
-                                name="address"
-                                value={editedProfile?.address || ""}
-                                onChange={handleInputChange}
-                              />
-                              <ProfileInput
-                                label="Perusahaan"
-                                name="company_name"
-                                value={editedProfile?.company_name || ""}
-                                onChange={handleInputChange}
-                              />
-                              <ProfileInput
-                                label="Biodata Perusahaan"
-                                name="biodata_company"
-                                value={editedProfile?.biodata_company || ""}
-                                onChange={handleInputChange}
-                              />
-                              <ProfileInput
-                                label="Deskripsi Pekerjaan"
-                                name="jobdesk"
-                                value={editedProfile?.jobdesk || ""}
-                                onChange={handleInputChange}
-                              />
+                              <AvatarFallback className="text-blue-700 bg-blue-200 dark:bg-blue-700 dark:text-blue-200">
+                                {userProfile.first_name
+                                  ? userProfile.first_name.charAt(0)
+                                  : "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                          <div className="space-y-2 md:space-y-3">
+                            {isEditingProfile ? (
+                              <>
+                                <ProfileInput
+                                  label="Nama Depan"
+                                  name="first_name"
+                                  value={editedProfile?.first_name || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="Nama Belakang"
+                                  name="last_name"
+                                  value={editedProfile?.last_name || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="Telepon"
+                                  name="phone"
+                                  value={editedProfile?.phone || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="Email"
+                                  name="email"
+                                  value={editedProfile?.email || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="WhatsApp"
+                                  name="whatsapp"
+                                  value={editedProfile?.whatsapp || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="Alamat"
+                                  name="address"
+                                  value={editedProfile?.address || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="Perusahaan"
+                                  name="company_name"
+                                  value={editedProfile?.company_name || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="Biodata Perusahaan"
+                                  name="biodata_company"
+                                  value={editedProfile?.biodata_company || ""}
+                                  onChange={handleInputChange}
+                                />
+                                <ProfileInput
+                                  label="Deskripsi Pekerjaan"
+                                  name="jobdesk"
+                                  value={editedProfile?.jobdesk || ""}
+                                  onChange={handleInputChange}
+                                />
 
-                              {/* Option Select province, district, city,village */}
-                              <RegionSelector
-                                selectedProvince={
-                                  editedProfile?.province?.code || ""
-                                }
-                                selectedDistrict={
-                                  editedProfile?.district?.code || ""
-                                }
-                                selectedCity={editedProfile?.city?.code || ""}
-                                selectedVillage={
-                                  editedProfile?.village?.code || ""
-                                }
-                                onProvinceChange={handleRegionChange(
-                                  "province"
-                                )}
-                                onDistrictChange={handleRegionChange(
-                                  "district"
-                                )}
-                                onCityChange={handleRegionChange("city")}
-                                onVillageChange={handleRegionChange("village")}
-                              />
-                            </>
-                          ) : (
-                            <>
-                              <ProfileField
-                                label="Nama"
-                                value={`${userProfile.first_name || ""} ${userProfile.last_name || ""}`}
-                              />
-                              <ProfileField
-                                label="Telepon"
-                                value={userProfile.phone}
-                              />
-                              <ProfileField
-                                label="Email"
-                                value={userProfile.email}
-                              />
-                              <ProfileField
-                                label="WhatsApp"
-                                value={userProfile.whatsapp}
-                              />
-                              <ProfileField
-                                label="Alamat"
-                                value={userProfile.address}
-                              />
-                              <ProfileField
-                                label="Jenis Kelamin"
-                                value={
-                                  userProfile.gender === "man"
-                                    ? "Laki-laki"
-                                    : userProfile.gender === "woman"
-                                      ? "Perempuan"
-                                      : "-"
-                                }
-                              />
-                              <ProfileField
-                                label="Tanggal Lahir"
-                                value={userProfile.birthday || "-"}
-                              />
-                            </>
-                          )}
-                        </div>
-                        <div className="space-y-2 md:space-y-3">
-                          <ProfileField
-                            label="Perusahaan"
-                            value={userProfile.company_name}
-                          />
-                          <ProfileField
-                            label="Biodata Perusahaan"
-                            value={userProfile.biodata_company}
-                          />
-                          <ProfileField
-                            label="Deskripsi Pekerjaan"
-                            value={userProfile.jobdesk}
-                          />
-                          <ProfileField
-                            label="Provinsi"
-                            value={userProfile.province?.name || "-"}
-                          />
-                          <ProfileField
-                            label="Kabupaten"
-                            value={userProfile.district?.name || "-"}
-                          />
-                          <ProfileField
-                            label="Kota"
-                            value={userProfile.city?.name || "-"}
-                          />
-                          <ProfileField
-                            label="Desa"
-                            value={userProfile.village?.name || "-"}
-                          />
+                                {/* Option Select province, district, city,village */}
+                                <RegionSelector
+                                  selectedProvince={
+                                    editedProfile?.province?.code || ""
+                                  }
+                                  selectedDistrict={
+                                    editedProfile?.district?.code || ""
+                                  }
+                                  selectedCity={editedProfile?.city?.code || ""}
+                                  selectedVillage={
+                                    editedProfile?.village?.code || ""
+                                  }
+                                  onProvinceChange={handleRegionChange(
+                                    "province"
+                                  )}
+                                  onDistrictChange={handleRegionChange(
+                                    "district"
+                                  )}
+                                  onCityChange={handleRegionChange("city")}
+                                  onVillageChange={handleRegionChange(
+                                    "village"
+                                  )}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <ProfileField
+                                  label="Nama"
+                                  value={`${userProfile.first_name || ""} ${userProfile.last_name || ""}`}
+                                />
+                                <ProfileField
+                                  label="Telepon"
+                                  value={userProfile.phone}
+                                />
+                                <ProfileField
+                                  label="Email"
+                                  value={userProfile.email}
+                                />
+                                <ProfileField
+                                  label="WhatsApp"
+                                  value={userProfile.whatsapp}
+                                />
+                                <ProfileField
+                                  label="Alamat"
+                                  value={userProfile.address}
+                                />
+                                <ProfileField
+                                  label="Jenis Kelamin"
+                                  value={
+                                    userProfile.gender === "man"
+                                      ? "Laki-laki"
+                                      : userProfile.gender === "woman"
+                                        ? "Perempuan"
+                                        : "-"
+                                  }
+                                />
+                                <ProfileField
+                                  label="Tanggal Lahir"
+                                  value={userProfile.birthday || "-"}
+                                />
+                              </>
+                            )}
+                          </div>
+                          <div className="space-y-2 md:space-y-3">
+                            <ProfileField
+                              label="Perusahaan"
+                              value={userProfile.company_name}
+                            />
+                            <ProfileField
+                              label="Biodata Perusahaan"
+                              value={userProfile.biodata_company}
+                            />
+                            <ProfileField
+                              label="Deskripsi Pekerjaan"
+                              value={userProfile.jobdesk}
+                            />
+                            <ProfileField
+                              label="Provinsi"
+                              value={userProfile.province?.name || "-"}
+                            />
+                            <ProfileField
+                              label="Kabupaten"
+                              value={userProfile.district?.name || "-"}
+                            />
+                            <ProfileField
+                              label="Kota"
+                              value={userProfile.city?.name || "-"}
+                            />
+                            <ProfileField
+                              label="Desa"
+                              value={userProfile.village?.name || "-"}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </CardContent>
                 </Card>
               )}
