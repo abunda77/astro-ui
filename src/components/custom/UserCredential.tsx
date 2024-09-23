@@ -40,10 +40,10 @@ const UserCredential: React.FC<UserCredentialProps> = ({
   handleCancel,
 }) => {
   return (
-    <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+    <div className="p-4 rounded-lg shadow-md md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900 backdrop-blur-sm">
       <div className="flex items-center justify-between mb-3 md:mb-4">
         <h3 className="text-base font-semibold text-blue-700 md:text-lg dark:text-blue-300">
-          Informasi Pengguna
+          Credential
         </h3>
         <Button
           variant="outline"

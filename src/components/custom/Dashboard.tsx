@@ -544,8 +544,13 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
             )}
 
             <TabsContent value="profile">
-              {userProfile && (
-                <>
+              <Card className="mb-10">
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl lg:text-2xl">
+                    Informasi Pengguna
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   <UserCredential
                     userData={userData}
                     isEditing={isEditing}
@@ -563,6 +568,16 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                     handleSave={handleSave}
                     handleCancel={handleCancel}
                   />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl lg:text-2xl">
+                    Profil Pengguna
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   <UserProfile
                     userProfile={userProfile}
                     isEditingProfile={isEditingProfile}
@@ -575,8 +590,8 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                     profileFetchCompleted={profileFetchCompleted}
                     handleCancelEdit={handleCancelEdit} // Tambahkan properti ini
                   />
-                </>
-              )}
+                </CardContent>
+              </Card>
             </TabsContent>
             <TabsContent value="properties">
               <Card>
