@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "@/styles/globals.css";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -42,6 +42,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import PropertyList02 from "./PropertyList";
+import RegionSelector from "./Region";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -451,6 +452,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
       const token = getAccessToken();
       const userId = getUserId();
       const url = `${FASTAPI_LOGIN}/profile/${userId}`;
+      console.log("Mengirim permintaan pembaruan profil:", editedProfile);
       const response = await fetch(url, {
         method: "PUT",
         headers: {
@@ -466,10 +468,10 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
           phone: editedProfile.phone,
           whatsapp: editedProfile.whatsapp,
           address: editedProfile.address,
-          province_id: editedProfile.province_id,
-          district_id: editedProfile.district_id,
-          city_id: editedProfile.city_id,
-          village_id: editedProfile.village_id,
+          province_id: editedProfile.province?.code,
+          district_id: editedProfile.district?.code,
+          city_id: editedProfile.city?.code,
+          village_id: editedProfile.village?.code,
           gender: editedProfile.gender,
           birthday: editedProfile.birthday,
           avatar: editedProfile.avatar,
@@ -477,28 +479,29 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
           company_name: editedProfile.company_name,
           biodata_company: editedProfile.biodata_company,
           jobdesk: editedProfile.jobdesk,
-          social_media: editedProfile.social_media,
         }),
       });
+      console.log("Respon dari server:", response);
 
       if (response.ok) {
         const updatedProfile = await response.json();
+        console.log("JSON response:", JSON.stringify(updatedProfile, null, 2));
         setUserProfile(updatedProfile);
         setIsEditingProfile(false);
-        toast({
-          title: "Sukses",
-          description: "Profil berhasil diperbarui",
-          duration: 3000,
+        setAlertInfo({
+          type: "success",
+          message: "Profil berhasil diperbarui",
         });
       } else {
+        const errorData = await response.json();
+        console.log("Error JSON response:", JSON.stringify(errorData, null, 2));
         throw new Error("Gagal memperbarui profil");
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast({
-        title: "Error",
-        description: "Gagal memperbarui profil",
-        variant: "destructive",
+      setAlertInfo({
+        type: "error",
+        message: "Gagal memperbarui profil",
       });
     }
   };
@@ -507,11 +510,19 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
     setIsEditingProfile(false);
     setEditedProfile(null);
   };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedProfile((prev) => (prev ? { ...prev, [name]: value } : null));
   };
+
+  const handleRegionChange = useCallback(
+    (fieldName: string) => (code: string, name: string) => {
+      setEditedProfile((prev) =>
+        prev ? { ...prev, [fieldName]: { code, name } } : null
+      );
+    },
+    []
+  );
 
   return (
     <div className="container p-4 mx-auto">
@@ -832,7 +843,46 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                                 value={editedProfile?.address || ""}
                                 onChange={handleInputChange}
                               />
-                              {/* Tambahkan input lainnya sesuai kebutuhan */}
+                              <ProfileInput
+                                label="Perusahaan"
+                                name="company_name"
+                                value={editedProfile?.company_name || ""}
+                                onChange={handleInputChange}
+                              />
+                              <ProfileInput
+                                label="Biodata Perusahaan"
+                                name="biodata_company"
+                                value={editedProfile?.biodata_company || ""}
+                                onChange={handleInputChange}
+                              />
+                              <ProfileInput
+                                label="Deskripsi Pekerjaan"
+                                name="jobdesk"
+                                value={editedProfile?.jobdesk || ""}
+                                onChange={handleInputChange}
+                              />
+
+                              {/* Option Select province, district, city,village */}
+                              <RegionSelector
+                                selectedProvince={
+                                  editedProfile?.province?.code || ""
+                                }
+                                selectedDistrict={
+                                  editedProfile?.district?.code || ""
+                                }
+                                selectedCity={editedProfile?.city?.code || ""}
+                                selectedVillage={
+                                  editedProfile?.village?.code || ""
+                                }
+                                onProvinceChange={handleRegionChange(
+                                  "province"
+                                )}
+                                onDistrictChange={handleRegionChange(
+                                  "district"
+                                )}
+                                onCityChange={handleRegionChange("city")}
+                                onVillageChange={handleRegionChange("village")}
+                              />
                             </>
                           ) : (
                             <>

@@ -122,7 +122,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
             body: new URLSearchParams({
               username,
               password,
-              grant_type: "",
+              grant_type: "password",
               scope: "",
               client_id: "",
               client_secret: "",
