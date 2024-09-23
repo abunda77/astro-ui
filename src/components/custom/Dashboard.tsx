@@ -42,7 +42,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import PropertyList02 from "./PropertyList";
-import RegionSelector from "./Region";
+
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -51,65 +51,10 @@ import { Terminal } from "lucide-react";
 import RefreshBrowser from "./RefreshBrowser";
 import { Loader, Placeholder } from "rsuite";
 import UserCredential from "./UserCredential";
+import UserProfile from "./UserProfile";
 
 const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
-
-interface UserProfile {
-  user_id: number;
-  title: string;
-  first_name: string | null;
-  last_name: string | null;
-  email: string | null;
-  phone: string | null;
-  whatsapp: string | null;
-  address: string | null;
-  province_id: string | null;
-  district_id: string | null;
-  city_id: string | null;
-  village_id: string | null;
-  gender: "man" | "woman" | null;
-  birthday: string | null;
-  avatar: string | null;
-  remote_url: string | null;
-  company_name: string | null;
-  biodata_company: string | null;
-  jobdesk: string | null;
-  social_media: string | null;
-  // social_media: {
-  //   facebook: string | null;
-  //   twitter: string | null;
-  //   instagram: string | null;
-  //   linkedin: string | null;
-  //   youtube: string | null;
-  //   tiktok: string | null;
-  //   snapchat: string | null;
-  //   pinterest: string | null;
-  //   reddit: string | null;
-  //   zoom: string | null;
-  // };
-  id: number;
-  province: {
-    code: string;
-    name: string;
-    level: string;
-  } | null;
-  district: {
-    code: string;
-    name: string;
-    level: string;
-  } | null;
-  city: {
-    code: string;
-    name: string;
-    level: string;
-  } | null;
-  village: {
-    code: string;
-    name: string;
-    level: string;
-  } | null;
-}
 
 interface PropertyList {
   user_id: number | null;
@@ -231,6 +176,10 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
   const [editedProfile, setEditedProfile] = useState<UserProfile | null>(null);
   const [showCreateProfileButton, setShowCreateProfileButton] = useState(false);
   const [profileFetchCompleted, setProfileFetchCompleted] = useState(false);
+  const handleCancelEdit = () => {
+    setIsEditingProfile(false);
+    setEditedProfile(null);
+  };
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -520,10 +469,6 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
     }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditingProfile(false);
-    setEditedProfile(null);
-  };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedProfile((prev) => (prev ? { ...prev, [name]: value } : null));
@@ -540,7 +485,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
 
   return (
     <div className="container p-4 mx-auto">
-      <div className="flex justify-start mt-6 mb-10 space-x-4">
+      <div className="flex justify-between mt-6 mb-10 space-x-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -552,6 +497,17 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        <div className="flex items-center space-x-2">
+          <RefreshBrowser className="text-xs md:text-sm" />
+          <Button
+            variant="link"
+            size="sm"
+            className="text-xs md:text-sm"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </div>
       </div>
       <div className="flex flex-col md:flex-row">
         <Tabs defaultValue="profile" className="w-full">
@@ -571,279 +527,55 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
               Daftar Properti
             </TabsTrigger>
           </TabsList>
+
           <div className="w-full mt-4">
+            {alertInfo && (
+              <Alert
+                variant={
+                  alertInfo.type === "success" ? "success" : "destructive"
+                }
+              >
+                <Terminal className="w-4 h-4" />
+                <AlertTitle>
+                  {alertInfo.type === "success" ? "Berhasil!" : "Kesalahan!"}
+                </AlertTitle>
+                <AlertDescription>{alertInfo.message}</AlertDescription>
+              </Alert>
+            )}
+
             <TabsContent value="profile">
               {userProfile && (
-                <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
-                  <CardHeader className="mb-3 md:mb-6">
-                    <div className="flex flex-col items-start justify-between space-y-2 md:flex-row md:items-center md:space-y-0">
-                      <div>
-                        <CardTitle className="text-lg font-bold text-blue-800 md:text-2xl dark:text-blue-300">
-                          Profil Pengguna
-                        </CardTitle>
-                        <CardDescription className="text-base font-semibold text-blue-700 md:text-xl dark:text-blue-300">
-                          Selamat datang kembali, {userProfile.first_name}{" "}
-                          {userProfile.last_name}
-                        </CardDescription>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RefreshBrowser className="text-xs md:text-sm" />
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="text-xs md:text-sm"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4 md:space-y-6">
-                    {alertInfo && (
-                      <Alert
-                        variant={
-                          alertInfo.type === "success"
-                            ? "success"
-                            : "destructive"
-                        }
-                      >
-                        <Terminal className="w-4 h-4" />
-                        <AlertTitle>
-                          {alertInfo.type === "success"
-                            ? "Berhasil!"
-                            : "Kesalahan!"}
-                        </AlertTitle>
-                        <AlertDescription>{alertInfo.message}</AlertDescription>
-                      </Alert>
-                    )}
-
-                    {/* Kolom UserCredential */}
-                    <UserCredential
-                      userData={userData}
-                      isEditing={isEditing}
-                      showCurrentPassword={showCurrentPassword}
-                      showNewPassword={showNewPassword}
-                      currentPassword={currentPassword}
-                      newPassword={newPassword}
-                      passwordError={passwordError}
-                      isSaving={isSaving}
-                      setIsEditing={setIsEditing}
-                      setCurrentPassword={setCurrentPassword}
-                      setNewPassword={setNewPassword}
-                      setShowCurrentPassword={setShowCurrentPassword}
-                      setShowNewPassword={setShowNewPassword}
-                      handleSave={handleSave}
-                      handleCancel={handleCancel}
-                    />
-
-                    {profileFetchCompleted && !userProfile && (
-                      <Button className="mt-4 bg-red-500 hover:bg-blue-600 text-white">
-                        Buat Profil Baru
-                      </Button>
-                    )}
-
-                    {userProfile && (
-                      // Tampilkan informasi profil pengguna
-                      <div className="p-4 rounded-lg shadow-md md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                        <div className="flex items-center justify-between mb-3 md:mb-4">
-                          <h3 className="text-base font-semibold text-blue-700 md:text-lg dark:text-blue-300">
-                            Profil
-                          </h3>
-                          <div className="flex space-x-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-xs text-white bg-blue-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                              onClick={
-                                isEditingProfile
-                                  ? handleSaveProfile
-                                  : handleEditProfile
-                              }
-                            >
-                              {isEditingProfile ? "Simpan" : "Edit"}
-                            </Button>
-                            {isEditingProfile && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-xs text-white bg-red-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
-                              >
-                                Clear
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                        <div className="grid gap-4 md:grid-cols-[0.5fr_1.25fr_1.25fr]">
-                          <div className="flex flex-col items-start">
-                            <Avatar className="w-20 h-20 mb-3 md:w-24 md:h-24 md:mb-4 ring-2 ring-blue-300 dark:ring-blue-600">
-                              <AvatarImage
-                                src={cleanUrl(userProfile.avatar)}
-                                alt={`${userProfile.first_name} ${userProfile.last_name}`}
-                              />
-                              <AvatarFallback className="text-blue-700 bg-blue-200 dark:bg-blue-700 dark:text-blue-200">
-                                {userProfile.first_name
-                                  ? userProfile.first_name.charAt(0)
-                                  : "U"}
-                              </AvatarFallback>
-                            </Avatar>
-                          </div>
-                          <div className="space-y-2 md:space-y-3">
-                            {isEditingProfile ? (
-                              <>
-                                <ProfileInput
-                                  label="Nama Depan"
-                                  name="first_name"
-                                  value={editedProfile?.first_name || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="Nama Belakang"
-                                  name="last_name"
-                                  value={editedProfile?.last_name || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="Telepon"
-                                  name="phone"
-                                  value={editedProfile?.phone || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="Email"
-                                  name="email"
-                                  value={editedProfile?.email || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="WhatsApp"
-                                  name="whatsapp"
-                                  value={editedProfile?.whatsapp || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="Alamat"
-                                  name="address"
-                                  value={editedProfile?.address || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="Perusahaan"
-                                  name="company_name"
-                                  value={editedProfile?.company_name || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="Biodata Perusahaan"
-                                  name="biodata_company"
-                                  value={editedProfile?.biodata_company || ""}
-                                  onChange={handleInputChange}
-                                />
-                                <ProfileInput
-                                  label="Deskripsi Pekerjaan"
-                                  name="jobdesk"
-                                  value={editedProfile?.jobdesk || ""}
-                                  onChange={handleInputChange}
-                                />
-
-                                {/* Option Select province, district, city,village */}
-                                <RegionSelector
-                                  selectedProvince={
-                                    editedProfile?.province?.code || ""
-                                  }
-                                  selectedDistrict={
-                                    editedProfile?.district?.code || ""
-                                  }
-                                  selectedCity={editedProfile?.city?.code || ""}
-                                  selectedVillage={
-                                    editedProfile?.village?.code || ""
-                                  }
-                                  onProvinceChange={handleRegionChange(
-                                    "province"
-                                  )}
-                                  onDistrictChange={handleRegionChange(
-                                    "district"
-                                  )}
-                                  onCityChange={handleRegionChange("city")}
-                                  onVillageChange={handleRegionChange(
-                                    "village"
-                                  )}
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <ProfileField
-                                  label="Nama"
-                                  value={`${userProfile.first_name || ""} ${userProfile.last_name || ""}`}
-                                />
-                                <ProfileField
-                                  label="Telepon"
-                                  value={userProfile.phone}
-                                />
-                                <ProfileField
-                                  label="Email"
-                                  value={userProfile.email}
-                                />
-                                <ProfileField
-                                  label="WhatsApp"
-                                  value={userProfile.whatsapp}
-                                />
-                                <ProfileField
-                                  label="Alamat"
-                                  value={userProfile.address}
-                                />
-                                <ProfileField
-                                  label="Jenis Kelamin"
-                                  value={
-                                    userProfile.gender === "man"
-                                      ? "Laki-laki"
-                                      : userProfile.gender === "woman"
-                                        ? "Perempuan"
-                                        : "-"
-                                  }
-                                />
-                                <ProfileField
-                                  label="Tanggal Lahir"
-                                  value={userProfile.birthday || "-"}
-                                />
-                              </>
-                            )}
-                          </div>
-                          <div className="space-y-2 md:space-y-3">
-                            <ProfileField
-                              label="Perusahaan"
-                              value={userProfile.company_name}
-                            />
-                            <ProfileField
-                              label="Biodata Perusahaan"
-                              value={userProfile.biodata_company}
-                            />
-                            <ProfileField
-                              label="Deskripsi Pekerjaan"
-                              value={userProfile.jobdesk}
-                            />
-                            <ProfileField
-                              label="Provinsi"
-                              value={userProfile.province?.name || "-"}
-                            />
-                            <ProfileField
-                              label="Kabupaten"
-                              value={userProfile.district?.name || "-"}
-                            />
-                            <ProfileField
-                              label="Kota"
-                              value={userProfile.city?.name || "-"}
-                            />
-                            <ProfileField
-                              label="Desa"
-                              value={userProfile.village?.name || "-"}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                <>
+                  <UserCredential
+                    userData={userData}
+                    isEditing={isEditing}
+                    showCurrentPassword={showCurrentPassword}
+                    showNewPassword={showNewPassword}
+                    currentPassword={currentPassword}
+                    newPassword={newPassword}
+                    passwordError={passwordError}
+                    isSaving={isSaving}
+                    setIsEditing={setIsEditing}
+                    setCurrentPassword={setCurrentPassword}
+                    setNewPassword={setNewPassword}
+                    setShowCurrentPassword={setShowCurrentPassword}
+                    setShowNewPassword={setShowNewPassword}
+                    handleSave={handleSave}
+                    handleCancel={handleCancel}
+                  />
+                  <UserProfile
+                    userProfile={userProfile}
+                    isEditingProfile={isEditingProfile}
+                    editedProfile={editedProfile}
+                    handleEditProfile={handleEditProfile}
+                    handleSaveProfile={handleSaveProfile}
+                    handleInputChange={handleInputChange}
+                    handleRegionChange={handleRegionChange}
+                    cleanUrl={cleanUrl}
+                    profileFetchCompleted={profileFetchCompleted}
+                    handleCancelEdit={handleCancelEdit} // Tambahkan properti ini
+                  />
+                </>
               )}
             </TabsContent>
             <TabsContent value="properties">
