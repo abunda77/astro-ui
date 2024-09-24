@@ -54,8 +54,13 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
         if (parentCode) url.searchParams.append("filter[code]", parentCode);
         url.searchParams.append("include", "children");
         url.searchParams.append("per_page", "100");
-
-        const response = await fetch(url.toString());
+        const headers = new Headers({
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        });
+        const response = await fetch(url.toString(), {
+          headers: headers || {},
+        });
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
