@@ -14,6 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Progress } from "@material-tailwind/react";
+import { Loader2 } from "lucide-react";
+import { Uploader, Button as RsuiteButton } from "rsuite";
 
 interface UserProfile {
   user_id: number;
@@ -71,6 +74,7 @@ interface UserProfileProps {
   cleanUrl: (url: string | null) => string;
   profileFetchCompleted: boolean;
   handleCancelEdit: () => void; // Tambahkan properti handleCancelEdit
+  handleSaveAvatar: (file: File, remoteUrl: string) => Promise<void>;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({
@@ -86,6 +90,10 @@ const UserProfile: React.FC<UserProfileProps> = ({
   handleCancelEdit, // Tambahkan properti handleCancelEdit
 }) => {
   const [loading, setLoading] = useState(true);
+
+  const [title, setTitle] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [remoteUrl, setRemoteUrl] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -125,6 +133,59 @@ const UserProfile: React.FC<UserProfileProps> = ({
     );
   }
 
+  {
+    /* Save Avatar */
+  }
+  const handleSaveAvatar = async (file: File, remoteUrl: string) => {
+    const formData = new FormData();
+    formData.append("title", file.name);
+    formData.append("remote_url", remoteUrl);
+    formData.append("upload_url", file);
+
+    try {
+      console.log("Memulai proses unggah avatar");
+      const res = await fetch(
+        `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/test-uploads`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      console.log("Data yang dikirim:", Object.fromEntries(formData));
+      if (!res.ok) {
+        console.log("Respon server tidak berhasil: ");
+        const errorData = await res.json();
+        console.log("Data error:", errorData);
+        throw new Error("Respon server tidak berhasil");
+      }
+
+      const data = await res.json();
+      console.log("Data yang diterima:", JSON.stringify(data, null, 2));
+
+      // Mengambil nilai dari key upload_url di dalam objek data
+      const uploadUrl = data.data.upload_url;
+      if (data && data.data && data.data.upload_url) {
+        console.log("Upload URL ditemukan:", uploadUrl);
+        handleInputChange({
+          target: {
+            name: "avatar",
+            value: uploadUrl,
+          },
+        } as React.ChangeEvent<HTMLInputElement>);
+
+        // Update state editedProfile jika diperlukan
+        console.log("Avatar berhasil diperbarui");
+      } else {
+        console.log("Upload URL tidak ditemukan dalam data:", data);
+        console.error("Struktur data tidak sesuai yang diharapkan:", data);
+      }
+
+      console.log("Avatar berhasil diperbarui");
+    } catch (error) {
+      console.error("Error mengunggah:", error);
+    }
+  };
+
   return (
     <>
       {userProfile && (
@@ -149,7 +210,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                   variant="outline"
                   size="sm"
                   className="text-xs text-white bg-red-500 hover:text-gray-200 dark:text-gray-100 md:text-sm hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
-                  onClick={handleCancelEdit} // Tambahkan onClick untuk handleCancelEdit
+                  onClick={handleCancelEdit}
                 >
                   Clear
                 </Button>
@@ -157,7 +218,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
             </div>
           </div>
           <div className="grid gap-4 md:grid-cols-[0.5fr_1.25fr_1.25fr]">
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-center">
               <Avatar className="w-20 h-20 mb-3 md:w-24 md:h-24 md:mb-4 ring-2 ring-blue-300 dark:ring-blue-600">
                 <AvatarImage
                   src={cleanUrl(userProfile.avatar)}
@@ -169,10 +230,50 @@ const UserProfile: React.FC<UserProfileProps> = ({
                     : "U"}
                 </AvatarFallback>
               </Avatar>
+              {isEditingProfile && (
+                <div className="flex flex-col space-y-2">
+                  <Input
+                    type="file"
+                    id="avatar"
+                    name="avatar"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        await handleSaveAvatar(file, remoteUrl);
+                      }
+                    }}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                  {/* <Button
+                    onClick={async () => {
+                      if (file) {
+                        await handleSaveAvatar(file, remoteUrl);
+                      } else {
+                        await handleSaveProfile();
+                      }
+                    }}
+                    className="w-full"
+                  >
+                    Unggah Avatar
+                  </Button> */}
+                </div>
+              )}
             </div>
             <div className="space-y-2 md:space-y-3">
               {isEditingProfile ? (
                 <>
+                  {/* <Input
+                    name="avatar"
+                    value={editedProfile?.avatar || ""}
+                    // onChange={handleInputChange}
+                    // readOnly
+                  /> */}
+                  {/* <Input
+                    name="remote_url"
+                    value={editedProfile?.remote_url || ""}
+                    onChange={handleInputChange}
+                    readOnly
+                  /> */}
                   <ProfileInput
                     label="Nama Depan"
                     name="first_name"

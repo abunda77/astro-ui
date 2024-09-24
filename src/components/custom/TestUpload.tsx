@@ -38,7 +38,6 @@ const TestUpload: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [file]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -50,10 +49,13 @@ const TestUpload: React.FC = () => {
     formData.append("remote_url", remoteUrl);
 
     try {
-      const res = await fetch("http://localhost:8003/api/test-uploads", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/test-uploads`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       if (!res.ok) {
         throw new Error("Respon server tidak berhasil");
       }
