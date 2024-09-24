@@ -59,7 +59,9 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
           Accept: "application/json",
         });
         const response = await fetch(url.toString(), {
-          headers: headers || {},
+          method: "GET", // Pastikan metode sesuai
+          headers: headers,
+          // credentials: 'include', // Jika diperlukan
         });
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
