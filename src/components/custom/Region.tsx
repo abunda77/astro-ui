@@ -44,35 +44,40 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
     village: [],
   });
 
-  const homedomain = import.meta.env.PUBLIC_HOME_DOMAIN;
+  const apiEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 
   const fetchRegions = useCallback(
     async (level: Level, parentCode?: string) => {
       try {
-        const url = new URL(`${homedomain}/api/regions/`);
-        url.searchParams.append("filter[level]", level);
-        if (parentCode) url.searchParams.append("filter[code]", parentCode);
-        url.searchParams.append("include", "children");
-        url.searchParams.append("per_page", "100");
+        let url: string;
+        if (level === "province") {
+          url = `${apiEndpoint}/regions/allregions?level=${level}`;
+        } else {
+          url = `${apiEndpoint}/regions/regions/${parentCode}/children`;
+        }
+
         const headers = new Headers({
           "Content-Type": "application/json",
           Accept: "application/json",
+          "Cache-Control": "no-cache",
         });
-        const response = await fetch(url.toString(), {
-          method: "GET", // Pastikan metode sesuai
+
+        const response = await fetch(url, {
+          method: "GET",
           headers: headers,
-          // credentials: 'include', // Jika diperlukan
         });
+
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
+
         const data = await response.json();
-        setRegions((prev) => ({ ...prev, [level]: data.data }));
+
+        setRegions((prev) => ({ ...prev, [level]: data }));
       } catch (error) {
         console.error(`Kesalahan saat mengambil ${level}:`, error);
-        // Tambahkan logika untuk menangani error, misalnya menampilkan pesan error ke pengguna
       }
     },
-    [homedomain]
+    [apiEndpoint]
   );
 
   useEffect(() => {
