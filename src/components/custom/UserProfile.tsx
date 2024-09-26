@@ -119,7 +119,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
     );
   }
 
-  if (!userProfile) {
+  if (!userProfile || Object.keys(userProfile).length === 0) {
     return (
       <div className="flex items-center justify-center h-64 max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
         <Button

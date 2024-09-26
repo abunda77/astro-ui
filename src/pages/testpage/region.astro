@@ -1,0 +1,68 @@
+---
+import "@/styles/globals.css";
+import { RegionSelector } from "@/components/custom/Region";
+import { Input } from "@/components/ui/input";
+---
+
+<div class="space-y-4">
+  <Input type="text" placeholder="Masukkan nama" />
+  <RegionSelector
+    client:load
+    selectedProvince=""
+    selectedDistrict=""
+    selectedCity=""
+    selectedVillage=""
+    onProvinceChange={(code, name) => {
+      const changeHandlers = {
+        province: (code: string, name: string) =>
+          console.log("Provinsi dipilih:", code, name),
+        district: (code: string, name: string) =>
+          console.log("Kabupaten dipilih:", code, name),
+        city: (code: string, name: string) =>
+          console.log("Kota dipilih:", code, name),
+        village: (code: string, name: string) =>
+          console.log("Desa dipilih:", code, name),
+      };
+      changeHandlers["province"](code, name);
+    }}
+    onDistrictChange={(code, name) => {
+      const changeHandlers = {
+        province: (code: string, name: string) =>
+          console.log("Provinsi dipilih:", code, name),
+        district: (code: string, name: string) =>
+          console.log("Kabupaten dipilih:", code, name),
+        city: (code: string, name: string) =>
+          console.log("Kota dipilih:", code, name),
+        village: (code: string, name: string) =>
+          console.log("Desa dipilih:", code, name),
+      };
+      changeHandlers["district"](code, name);
+    }}
+    onCityChange={(code, name) => {
+      const changeHandlers = {
+        province: (code: string, name: string) =>
+          console.log("Provinsi dipilih:", code, name),
+        district: (code: string, name: string) =>
+          console.log("Kabupaten dipilih:", code, name),
+        city: (code: string, name: string) =>
+          console.log("Kota dipilih:", code, name),
+        village: (code: string, name: string) =>
+          console.log("Desa dipilih:", code, name),
+      };
+      changeHandlers["city"](code, name);
+    }}
+    onVillageChange={(code, name) => {
+      const changeHandlers = {
+        province: (code: string, name: string) =>
+          console.log("Provinsi dipilih:", code, name),
+        district: (code: string, name: string) =>
+          console.log("Kabupaten dipilih:", code, name),
+        city: (code: string, name: string) =>
+          console.log("Kota dipilih:", code, name),
+        village: (code: string, name: string) =>
+          console.log("Desa dipilih:", code, name),
+      };
+      changeHandlers["village"](code, name);
+    }}
+  />
+</div>

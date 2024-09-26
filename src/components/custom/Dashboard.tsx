@@ -220,64 +220,91 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
     initializeAuth();
   }, [toast]);
 
-  const fetchUserData = async (userId: string, token: string) => {
-    try {
-      const response = await fetch(`${FASTAPI_LOGIN}/users/${userId}`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  const fetchUserData = useCallback(
+    async (userId: string, token: string) => {
+      try {
+        const response = await fetch(`${FASTAPI_LOGIN}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch user data");
+        if (response.status === 401) {
+          // Jika status 401 (Unauthorized), redirect ke halaman login
+          toast({
+            title: "Sesi Berakhir",
+            description: "Silakan login kembali",
+            variant: "warning",
+          });
+          setTimeout(() => {
+            window.location.href = "/loginpage";
+          }, 2000);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const data = await response.json();
+        console.log("Data User yang diambil:", data);
+
+        // Cek apakah data user sudah ada dan sama dengan data yang baru diambil
+        if (JSON.stringify(data) !== JSON.stringify(userData)) {
+          setUserData(data);
+          setUserProfile(data.profile);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast({
+          title: "Error",
+          description: "Gagal mengambil data pengguna",
+          variant: "destructive",
+        });
       }
+    },
+    [toast, userData]
+  );
 
-      const data = await response.json();
-      console.log("Data User yang diambil:", data);
-      setUserData(data);
-      setUserProfile(data.profile);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      toast({
-        title: "Error",
-        description: "Gagal mengambil data pengguna",
-        variant: "destructive",
-      });
-    }
-  };
+  const fetchProperties = useCallback(
+    async (token: string, userId: string) => {
+      const url = `${FASTAPI_LOGIN}/properties/user/${userId}`;
+      console.log("Mengambil properti dari URL:", url);
 
-  const fetchProperties = async (token: string, userId: string) => {
-    const url = `${FASTAPI_LOGIN}/properties/user/${userId}`;
-    console.log("Mengambil properti dari URL:", url);
+      try {
+        const response = await fetch(url, {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    try {
-      const response = await fetch(url, {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        if (!response.ok) {
+          throw new Error(`Kesalahan HTTP! status: ${response.status}`);
+        }
 
-      if (!response.ok) {
-        throw new Error(`Kesalahan HTTP! status: ${response.status}`);
+        const data = await response.json();
+        console.log("Data properti yang diambil:", data);
+
+        // Cek apakah data properti sudah ada dan sama dengan data yang baru diambil
+        if (JSON.stringify(data) !== JSON.stringify(properties)) {
+          setProperties(data);
+        }
+      } catch (error) {
+        console.error("Kesalahan saat mengambil properti:", error);
+        toast({
+          title: "Error",
+          description: "Gagal mengambil data properti",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
       }
-
-      const data = await response.json();
-      console.log("Data properti yang diambil:", data);
-      setProperties(data);
-    } catch (error) {
-      console.error("Kesalahan saat mengambil properti:", error);
-      toast({
-        title: "Error",
-        description: "Gagal mengambil data properti",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [properties, toast]
+  );
 
   const fetchUserProfile = async (userId: string, token: string) => {
     try {
@@ -289,27 +316,37 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
 
       if (response.status === 404) {
         console.log("User profile not found, showing create profile button.");
-        setUserProfile(null);
-        setShowCreateProfileButton(true);
+        if (userProfile !== null) {
+          setUserProfile(null);
+          setShowCreateProfileButton(true);
+        }
       } else if (response.ok) {
         const data = await response.json();
         console.log("User profile data fetched:", data);
         if (data === null) {
-          setUserProfile(null);
-          setShowCreateProfileButton(true);
+          if (userProfile !== null) {
+            setUserProfile(null);
+            setShowCreateProfileButton(true);
+          }
         } else {
-          setUserProfile(data);
-          setShowCreateProfileButton(false);
+          if (JSON.stringify(userProfile) !== JSON.stringify(data)) {
+            setUserProfile(data);
+            setShowCreateProfileButton(false);
+          }
         }
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
-      setUserProfile(null);
-      setShowCreateProfileButton(true);
+      if (userProfile !== null) {
+        setUserProfile(null);
+        setShowCreateProfileButton(true);
+      }
     } finally {
-      setProfileFetchCompleted(true);
+      if (!profileFetchCompleted) {
+        setProfileFetchCompleted(true);
+      }
     }
   };
 
@@ -483,6 +520,56 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
     []
   );
 
+  const handleSaveAvatar = async (file: File, remoteUrl: string) => {
+    const formData = new FormData();
+    formData.append("title", file.name);
+    formData.append("remote_url", remoteUrl);
+    formData.append("upload_url", file);
+
+    try {
+      console.log("Memulai proses unggah avatar");
+      const res = await fetch(
+        `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/test-uploads`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      console.log("Data yang dikirim:", Object.fromEntries(formData));
+      if (!res.ok) {
+        console.log("Respon server tidak berhasil: ");
+        const errorData = await res.json();
+        console.log("Data error:", errorData);
+        throw new Error("Respon server tidak berhasil");
+      }
+
+      const data = await res.json();
+      console.log("Data yang diterima:", JSON.stringify(data, null, 2));
+
+      // Mengambil nilai dari key upload_url di dalam objek data
+      const uploadUrl = data.data.upload_url;
+      if (data && data.data && data.data.upload_url) {
+        console.log("Upload URL ditemukan:", uploadUrl);
+        handleInputChange({
+          target: {
+            name: "avatar",
+            value: uploadUrl,
+          },
+        } as React.ChangeEvent<HTMLInputElement>);
+
+        // Update state editedProfile jika diperlukan
+        console.log("Avatar berhasil diperbarui");
+      } else {
+        console.log("Upload URL tidak ditemukan dalam data:", data);
+        console.error("Struktur data tidak sesuai yang diharapkan:", data);
+      }
+
+      console.log("Avatar berhasil diperbarui");
+    } catch (error) {
+      console.error("Error mengunggah:", error);
+    }
+  };
+
   return (
     <div className="container p-4 mx-auto">
       <div className="flex justify-between mt-6 mb-10 space-x-4">
@@ -581,6 +668,7 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                   <UserProfile
                     userProfile={userProfile}
                     isEditingProfile={isEditingProfile}
+                    handleSaveAvatar={handleSaveAvatar}
                     editedProfile={editedProfile}
                     handleEditProfile={handleEditProfile}
                     handleSaveProfile={handleSaveProfile}
