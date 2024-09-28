@@ -4,29 +4,24 @@ import { Button } from "@/components/ui/button";
 
 interface RefreshBrowserProps {
   className?: string;
+  onRefresh: () => void;
 }
 
-const RefreshBrowser: React.FC<RefreshBrowserProps> = ({ className }) => {
+const RefreshBrowser: React.FC<RefreshBrowserProps> = ({
+  className,
+  onRefresh,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRefresh = () => {
     setIsLoading(true);
-    // Metode untuk me-refresh halaman setelah 2 detik
+    // Memanggil fungsi onRefresh yang diberikan oleh komponen induk
+    onRefresh();
+    // Mengembalikan status loading ke false setelah 2 detik
     setTimeout(() => {
-      window.location.reload();
+      setIsLoading(false);
     }, 2000);
   };
-
-  useEffect(() => {
-    if (isLoading) {
-      // Mengembalikan status loading ke false setelah 2 detik
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
 
   return (
     <Button
@@ -36,11 +31,11 @@ const RefreshBrowser: React.FC<RefreshBrowserProps> = ({ className }) => {
     >
       {isLoading ? (
         <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           Memuat...
         </>
       ) : (
-        <span className="text-white dark:text-gray-200">Refresh Halaman</span>
+        <span className="text-white dark:text-gray-200">Refresh Dashboard</span>
       )}
     </Button>
   );

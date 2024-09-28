@@ -585,7 +585,33 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
           </BreadcrumbList>
         </Breadcrumb>
         <div className="flex items-center space-x-2">
-          <RefreshBrowser className="text-xs md:text-sm" />
+          <RefreshBrowser
+            className="text-xs md:text-sm"
+            onRefresh={() => {
+              setIsLoading(true);
+              Promise.all([
+                fetchUserData(userIdFromCookie!, tokenFromCookie!),
+                fetchUserProfile(userIdFromCookie!, tokenFromCookie!),
+                fetchProperties(tokenFromCookie!, userIdFromCookie!),
+              ])
+                .then(() => {
+                  setIsLoading(false);
+                  toast({
+                    title: "Berhasil",
+                    description: "Data berhasil diperbarui",
+                  });
+                })
+                .catch((error) => {
+                  setIsLoading(false);
+                  console.error("Error refreshing data:", error);
+                  toast({
+                    title: "Error",
+                    description: "Gagal memperbarui data. Silakan coba lagi.",
+                    variant: "destructive",
+                  });
+                });
+            }}
+          />
           <Button
             variant="link"
             size="sm"
