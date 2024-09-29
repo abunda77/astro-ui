@@ -20,7 +20,7 @@ import { Uploader, Button as RsuiteButton } from "rsuite";
 
 interface UserProfile {
   user_id: number;
-  title: string;
+  title: "mr" | "mrs";
   first_name: string | null;
   last_name: string | null;
   email: string | null;
@@ -274,6 +274,33 @@ const UserProfile: React.FC<UserProfileProps> = ({
                     onChange={handleInputChange}
                     readOnly
                   /> */}
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="title"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                      Gelar
+                    </label>
+                    <Select
+                      value={editedProfile?.title || ""}
+                      onValueChange={(value) =>
+                        handleInputChange({
+                          target: { name: "title", value },
+                        } as React.ChangeEvent<HTMLInputElement>)
+                      }
+                    >
+                      <SelectTrigger className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <SelectValue placeholder="Pilih Gelar" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Pilih Gelar</SelectLabel>
+                          <SelectItem value="mr">Sdr.</SelectItem>
+                          <SelectItem value="mrs">Sdri.</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <ProfileInput
                     label="Nama Depan"
                     name="first_name"
@@ -381,7 +408,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                 <>
                   <ProfileField
                     label="Nama"
-                    value={`${userProfile.first_name || ""} ${userProfile.last_name || ""}`}
+                    value={`${userProfile.title === "mr" ? "Sdr." : userProfile.title === "mrs" ? "Sdri." : ""} ${userProfile.first_name || ""} ${userProfile.last_name || ""}`}
                   />
                   <ProfileField label="Telepon" value={userProfile.phone} />
                   <ProfileField label="Email" value={userProfile.email} />
