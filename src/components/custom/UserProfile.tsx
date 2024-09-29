@@ -17,6 +17,8 @@ import {
 import { Progress } from "@material-tailwind/react";
 import { Loader2 } from "lucide-react";
 import { Uploader, Button as RsuiteButton } from "rsuite";
+import { getAccessToken } from "@/utils/auth"; // Import getAccessToken
+import { getUserId } from "@/utils/auth"; // Import getUserId
 
 interface UserProfile {
   user_id: number;
@@ -94,6 +96,35 @@ const UserProfile: React.FC<UserProfileProps> = ({
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [remoteUrl, setRemoteUrl] = useState("");
+  const [isCreatingProfile, setIsCreatingProfile] = useState(false);
+
+  const [newProfile, setNewProfile] = useState<UserProfile>({
+    user_id: getUserId() || 0,
+    title: "mr",
+    first_name: null,
+    last_name: null,
+    email: null,
+    phone: null,
+    whatsapp: null,
+    address: null,
+    province_id: null,
+    district_id: null,
+    city_id: null,
+    village_id: null,
+    gender: null,
+    birthday: null,
+    avatar: null,
+    remote_url: null,
+    company_name: null,
+    biodata_company: null,
+    jobdesk: null,
+    social_media: null,
+    id: 0,
+    province: null,
+    district: null,
+    city: null,
+    village: null,
+  });
 
   useEffect(() => {
     const loadData = async () => {
@@ -119,16 +150,175 @@ const UserProfile: React.FC<UserProfileProps> = ({
     );
   }
 
+  const handleCreateProfile = () => {
+    setIsCreatingProfile(true);
+    console.log("Memulai pembuatan profil baru");
+  };
+
+  const handleNewProfileInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewProfile((prev) => ({ ...prev, [name]: value }));
+    console.log(`Input profil baru diubah: ${name} = ${value}`);
+  };
+
+  const handleNewProfileSave = async () => {
+    try {
+      console.log("Memulai penyimpanan profil baru");
+      const token = getAccessToken();
+      const userId = getUserId(); // Dapatkan user_id
+      console.log("Token yang digunakan:", token);
+      console.log("User ID yang digunakan:", userId);
+      const response = await fetch(
+        `${import.meta.env.PUBLIC_FASTAPI_ENDPOINT}/profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ ...newProfile, user_id: userId }), // Tambahkan user_id ke body request
+        }
+      );
+
+      if (!response.ok) {
+        console.log(
+          "Respon tidak berhasil:",
+          response.status,
+          response.statusText
+        );
+        throw new Error("Gagal menyimpan profil baru");
+      }
+
+      const savedProfile = await response.json();
+      console.log("Profil baru berhasil disimpan:", savedProfile);
+
+      // Reset state setelah menyimpan
+      setIsCreatingProfile(false);
+      console.log("State isCreatingProfile direset");
+      setNewProfile({
+        user_id: getUserId() || 0,
+        title: "mr",
+        first_name: null,
+        last_name: null,
+        email: null,
+        phone: null,
+        whatsapp: null,
+        address: null,
+        province_id: null,
+        district_id: null,
+        city_id: null,
+        village_id: null,
+        gender: null,
+        birthday: null,
+        avatar: null,
+        remote_url: null,
+        company_name: null,
+        biodata_company: null,
+        jobdesk: null,
+        social_media: null,
+        id: 0,
+        province: null,
+        district: null,
+        city: null,
+        village: null,
+      });
+      console.log("State newProfile direset");
+
+      // Tambahkan logika untuk memperbarui state userProfile jika diperlukan
+    } catch (error) {
+      console.error("Error menyimpan profil baru:", error);
+      console.log("Nilai dari newProfile:", newProfile);
+      console.log("Nilai dari userProfile:", userProfile);
+      console.log("Nilai dari isCreatingProfile:", isCreatingProfile);
+      // Tambahkan logika untuk menampilkan pesan error kepada pengguna
+    }
+  };
+
   if (!userProfile || Object.keys(userProfile).length === 0) {
     return (
       <div className="flex items-center justify-center h-64 max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
-        <Button
-          variant="outline"
-          size="lg"
-          className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-        >
-          Buat Profil Baru
-        </Button>
+        {isCreatingProfile ? (
+          <div className="w-full max-w-md p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+            <h2 className="text-2xl font-bold text-center text-blue-600 dark:text-blue-400">
+              Buat Profil Baru
+            </h2>
+            <Input
+              type="readonly"
+              name="user_id"
+              value={newProfile.user_id || ""}
+              onChange={handleNewProfileInputChange}
+            />
+            <Input
+              name="first_name"
+              placeholder="Nama Depan"
+              value={newProfile.first_name || ""}
+              onChange={handleNewProfileInputChange}
+            />
+            <Input
+              name="last_name"
+              placeholder="Nama Belakang"
+              value={newProfile.last_name || ""}
+              onChange={handleNewProfileInputChange}
+            />
+            <Select
+              onValueChange={(value) =>
+                setNewProfile((prev) => ({
+                  ...prev,
+                  gender: value as "man" | "woman",
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih Jenis Kelamin" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="man">Laki-laki</SelectItem>
+                <SelectItem value="woman">Perempuan</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              name="email"
+              placeholder="Email"
+              value={newProfile.email || ""}
+              onChange={handleNewProfileInputChange}
+            />
+            <Input
+              name="phone"
+              placeholder="Nomor Telepon"
+              value={newProfile.phone || ""}
+              onChange={handleNewProfileInputChange}
+            />
+            <Select
+              value={newProfile.title}
+              onValueChange={(value) =>
+                setNewProfile((prev) => ({
+                  ...prev,
+                  title: value as "mr" | "mrs",
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih Gelar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mr">Sdr.</SelectItem>
+                <SelectItem value="mrs">Sdri.</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={handleNewProfileSave}>Simpan Profil</Button>
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            size="lg"
+            className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+            onClick={handleCreateProfile}
+          >
+            Buat Profil Baru
+          </Button>
+        )}
       </div>
     );
   }
