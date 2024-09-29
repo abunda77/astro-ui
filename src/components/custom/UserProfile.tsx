@@ -3,7 +3,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import RegionSelector from "./Region";
+
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { DatePicker } from "rsuite";
 import {
   Select,
@@ -14,11 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Progress } from "@material-tailwind/react";
-import { Loader2 } from "lucide-react";
-import { Uploader, Button as RsuiteButton } from "rsuite";
-import { getAccessToken } from "@/utils/auth"; // Import getAccessToken
-import { getUserId } from "@/utils/auth"; // Import getUserId
+import { getAccessToken, getUserId } from "@/utils/auth";
 
 interface UserProfile {
   user_id: number;
@@ -63,6 +61,7 @@ interface UserProfile {
     level: string;
   } | null;
 }
+
 interface UserProfileProps {
   userProfile: UserProfile | null;
   isEditingProfile: boolean;
@@ -75,7 +74,7 @@ interface UserProfileProps {
   ) => (code: string, name: string) => void;
   cleanUrl: (url: string | null) => string;
   profileFetchCompleted: boolean;
-  handleCancelEdit: () => void; // Tambahkan properti handleCancelEdit
+  handleCancelEdit: () => void;
   handleSaveAvatar: (file: File, remoteUrl: string) => Promise<void>;
 }
 
@@ -89,16 +88,14 @@ const UserProfile: React.FC<UserProfileProps> = ({
   handleRegionChange,
   cleanUrl,
   profileFetchCompleted,
-  handleCancelEdit, // Tambahkan properti handleCancelEdit
+  handleCancelEdit,
 }) => {
   const [loading, setLoading] = useState(true);
-
-  const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [remoteUrl, setRemoteUrl] = useState("");
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
 
-  const [newProfile, setNewProfile] = useState<UserProfile>({
+  const initialProfileState: UserProfile = {
     user_id: getUserId() || 0,
     title: "mr",
     first_name: null,
@@ -124,22 +121,137 @@ const UserProfile: React.FC<UserProfileProps> = ({
     district: null,
     city: null,
     village: null,
-  });
+  };
+
+  const [newProfile, setNewProfile] =
+    useState<UserProfile>(initialProfileState);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Simulasikan pemuatan data
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setLoading(false);
       } catch (error) {
-        console.error("Error memuat data profil:", error);
+        console.error("Error loading profile data:", error);
         setLoading(false);
       }
     };
 
     loadData();
   }, []);
+
+  const handleCreateProfile = () => {
+    setIsCreatingProfile(true);
+    console.log("Starting new profile creation");
+  };
+
+  const handleNewProfileInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewProfile((prev) => ({ ...prev, [name]: value }));
+    console.log(`New profile input changed: ${name} = ${value}`);
+  };
+
+  const handleNewProfileRegionChange =
+    (fieldName: string) => (code: string, name: string) => {
+      setNewProfile((prev) => ({
+        ...prev,
+        [`${fieldName}_id`]: code,
+        [fieldName]: { code, name, level: "" },
+      }));
+      console.log(
+        `New profile region changed: ${fieldName} = ${code}, ${name}`
+      );
+    };
+
+  const handleNewProfileSave = async () => {
+    try {
+      console.log("Starting new profile save");
+      const token = getAccessToken();
+      const userId = getUserId();
+      console.log("Token used:", token);
+      console.log("User ID used:", userId);
+      const response = await fetch(
+        `${import.meta.env.PUBLIC_FASTAPI_ENDPOINT}/profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ ...newProfile, user_id: userId }),
+        }
+      );
+
+      if (!response.ok) {
+        console.log(
+          "Unsuccessful response:",
+          response.status,
+          response.statusText
+        );
+        throw new Error("Failed to save new profile");
+      }
+
+      const savedProfile = await response.json();
+      console.log("New profile saved successfully:", savedProfile);
+
+      setIsCreatingProfile(false);
+      setNewProfile(initialProfileState);
+      console.log("State reset after saving");
+    } catch (error) {
+      console.error("Error saving new profile:", error);
+      console.log("New profile state:", newProfile);
+      console.log("User profile state:", userProfile);
+      console.log("Is creating profile state:", isCreatingProfile);
+    }
+  };
+
+  const handleSaveAvatar = async (file: File, remoteUrl: string) => {
+    const formData = new FormData();
+    formData.append("title", file.name);
+    formData.append("remote_url", remoteUrl);
+    formData.append("upload_url", file);
+
+    try {
+      console.log("Starting avatar upload");
+      const res = await fetch(
+        `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/test-uploads`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      console.log("Data sent:", Object.fromEntries(formData));
+      if (!res.ok) {
+        console.log("Unsuccessful server response");
+        const errorData = await res.json();
+        console.log("Error data:", errorData);
+        throw new Error("Unsuccessful server response");
+      }
+
+      const data = await res.json();
+      console.log("Data received:", JSON.stringify(data, null, 2));
+
+      const uploadUrl = data.data.upload_url;
+      if (uploadUrl) {
+        console.log("Upload URL found:", uploadUrl);
+        handleInputChange({
+          target: {
+            name: "avatar",
+            value: uploadUrl,
+          },
+        } as React.ChangeEvent<HTMLInputElement>);
+
+        console.log("Avatar updated successfully");
+      } else {
+        console.log("Upload URL not found in data:", data);
+        console.error("Unexpected data structure:", data);
+      }
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -150,106 +262,16 @@ const UserProfile: React.FC<UserProfileProps> = ({
     );
   }
 
-  const handleCreateProfile = () => {
-    setIsCreatingProfile(true);
-    console.log("Memulai pembuatan profil baru");
-  };
-
-  const handleNewProfileInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
-    setNewProfile((prev) => ({ ...prev, [name]: value }));
-    console.log(`Input profil baru diubah: ${name} = ${value}`);
-  };
-
-  const handleNewProfileSave = async () => {
-    try {
-      console.log("Memulai penyimpanan profil baru");
-      const token = getAccessToken();
-      const userId = getUserId(); // Dapatkan user_id
-      console.log("Token yang digunakan:", token);
-      console.log("User ID yang digunakan:", userId);
-      const response = await fetch(
-        `${import.meta.env.PUBLIC_FASTAPI_ENDPOINT}/profile`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ ...newProfile, user_id: userId }), // Tambahkan user_id ke body request
-        }
-      );
-
-      if (!response.ok) {
-        console.log(
-          "Respon tidak berhasil:",
-          response.status,
-          response.statusText
-        );
-        throw new Error("Gagal menyimpan profil baru");
-      }
-
-      const savedProfile = await response.json();
-      console.log("Profil baru berhasil disimpan:", savedProfile);
-
-      // Reset state setelah menyimpan
-      setIsCreatingProfile(false);
-      console.log("State isCreatingProfile direset");
-      setNewProfile({
-        user_id: getUserId() || 0,
-        title: "mr",
-        first_name: null,
-        last_name: null,
-        email: null,
-        phone: null,
-        whatsapp: null,
-        address: null,
-        province_id: null,
-        district_id: null,
-        city_id: null,
-        village_id: null,
-        gender: null,
-        birthday: null,
-        avatar: null,
-        remote_url: null,
-        company_name: null,
-        biodata_company: null,
-        jobdesk: null,
-        social_media: null,
-        id: 0,
-        province: null,
-        district: null,
-        city: null,
-        village: null,
-      });
-      console.log("State newProfile direset");
-
-      // Tambahkan logika untuk memperbarui state userProfile jika diperlukan
-    } catch (error) {
-      console.error("Error menyimpan profil baru:", error);
-      console.log("Nilai dari newProfile:", newProfile);
-      console.log("Nilai dari userProfile:", userProfile);
-      console.log("Nilai dari isCreatingProfile:", isCreatingProfile);
-      // Tambahkan logika untuk menampilkan pesan error kepada pengguna
-    }
-  };
-
   if (!userProfile || Object.keys(userProfile).length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
-        {isCreatingProfile ? (
-          <div className="w-full max-w-md p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-            <h2 className="text-2xl font-bold text-center text-blue-600 dark:text-blue-400">
-              Buat Profil Baru
-            </h2>
-            <Input
-              type="readonly"
-              name="user_id"
-              value={newProfile.user_id || ""}
-              onChange={handleNewProfileInputChange}
-            />
+      <Card className="w-full max-w-4xl mx-auto bg-white shadow-xl dark:bg-gray-800">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center text-blue-600 dark:text-blue-400">
+            Buat Profil Baru
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
             <Input
               name="first_name"
               placeholder="Nama Depan"
@@ -262,6 +284,9 @@ const UserProfile: React.FC<UserProfileProps> = ({
               value={newProfile.last_name || ""}
               onChange={handleNewProfileInputChange}
             />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
             <Select
               onValueChange={(value) =>
                 setNewProfile((prev) => ({
@@ -278,9 +303,13 @@ const UserProfile: React.FC<UserProfileProps> = ({
                 <SelectItem value="woman">Perempuan</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
             <Input
               name="email"
               placeholder="Email"
+              type="email"
               value={newProfile.email || ""}
               onChange={handleNewProfileInputChange}
             />
@@ -290,91 +319,81 @@ const UserProfile: React.FC<UserProfileProps> = ({
               value={newProfile.phone || ""}
               onChange={handleNewProfileInputChange}
             />
-            <Select
-              value={newProfile.title}
-              onValueChange={(value) =>
-                setNewProfile((prev) => ({
-                  ...prev,
-                  title: value as "mr" | "mrs",
-                }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Pilih Gelar" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="mr">Sdr.</SelectItem>
-                <SelectItem value="mrs">Sdri.</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button onClick={handleNewProfileSave}>Simpan Profil</Button>
           </div>
-        ) : (
+
+          <Input
+            name="whatsapp"
+            placeholder="Nomor WhatsApp"
+            value={newProfile.whatsapp || ""}
+            onChange={handleNewProfileInputChange}
+          />
+
+          <Input
+            name="address"
+            placeholder="Alamat"
+            value={newProfile.address || ""}
+            onChange={handleNewProfileInputChange}
+          />
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Input
+              name="birthday"
+              type="date"
+              placeholder="Tanggal Lahir"
+              value={newProfile.birthday || ""}
+              onChange={handleNewProfileInputChange}
+            />
+            <Input
+              name="company_name"
+              placeholder="Nama Perusahaan"
+              value={newProfile.company_name || ""}
+              onChange={handleNewProfileInputChange}
+            />
+          </div>
+
+          <Input
+            name="biodata_company"
+            placeholder="Biodata Perusahaan"
+            value={newProfile.biodata_company || ""}
+            onChange={handleNewProfileInputChange}
+          />
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Input
+              name="jobdesk"
+              placeholder="Jobdesk"
+              value={newProfile.jobdesk || ""}
+              onChange={handleNewProfileInputChange}
+            />
+            <Input
+              name="social_media"
+              placeholder="Media Sosial"
+              value={newProfile.social_media || ""}
+              onChange={handleNewProfileInputChange}
+            />
+          </div>
+
+          <RegionSelector
+            selectedProvince={newProfile.province?.code || ""}
+            selectedDistrict={newProfile.district?.code || ""}
+            selectedCity={newProfile.city?.code || ""}
+            selectedVillage={newProfile.village?.code || ""}
+            onProvinceChange={handleNewProfileRegionChange("province")}
+            onDistrictChange={handleNewProfileRegionChange("district")}
+            onCityChange={handleNewProfileRegionChange("city")}
+            onVillageChange={handleNewProfileRegionChange("village")}
+          />
+
           <Button
-            variant="outline"
-            size="lg"
-            className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-            onClick={handleCreateProfile}
+            onClick={handleNewProfileSave}
+            className="w-full px-4 py-2 font-bold text-white transition duration-300 bg-blue-500 rounded hover:bg-blue-600"
           >
-            Buat Profil Baru
+            Simpan Profil
           </Button>
-        )}
-      </div>
+        </CardContent>
+      </Card>
     );
   }
-
-  {
-    /* Save Avatar */
-  }
-  const handleSaveAvatar = async (file: File, remoteUrl: string) => {
-    const formData = new FormData();
-    formData.append("title", file.name);
-    formData.append("remote_url", remoteUrl);
-    formData.append("upload_url", file);
-
-    try {
-      console.log("Memulai proses unggah avatar");
-      const res = await fetch(
-        `${import.meta.env.PUBLIC_HOME_DOMAIN}/api/test-uploads`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      console.log("Data yang dikirim:", Object.fromEntries(formData));
-      if (!res.ok) {
-        console.log("Respon server tidak berhasil: ");
-        const errorData = await res.json();
-        console.log("Data error:", errorData);
-        throw new Error("Respon server tidak berhasil");
-      }
-
-      const data = await res.json();
-      console.log("Data yang diterima:", JSON.stringify(data, null, 2));
-
-      // Mengambil nilai dari key upload_url di dalam objek data
-      const uploadUrl = data.data.upload_url;
-      if (data && data.data && data.data.upload_url) {
-        console.log("Upload URL ditemukan:", uploadUrl);
-        handleInputChange({
-          target: {
-            name: "avatar",
-            value: uploadUrl,
-          },
-        } as React.ChangeEvent<HTMLInputElement>);
-
-        // Update state editedProfile jika diperlukan
-        console.log("Avatar berhasil diperbarui");
-      } else {
-        console.log("Upload URL tidak ditemukan dalam data:", data);
-        console.error("Struktur data tidak sesuai yang diharapkan:", data);
-      }
-
-      console.log("Avatar berhasil diperbarui");
-    } catch (error) {
-      console.error("Error mengunggah:", error);
-    }
-  };
 
   return (
     <>
@@ -434,63 +453,18 @@ const UserProfile: React.FC<UserProfileProps> = ({
                     }}
                     className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
-                  {/* <Button
-                    onClick={async () => {
-                      if (file) {
-                        await handleSaveAvatar(file, remoteUrl);
-                      } else {
-                        await handleSaveProfile();
-                      }
-                    }}
-                    className="w-full"
-                  >
-                    Unggah Avatar
-                  </Button> */}
                 </div>
               )}
             </div>
             <div className="space-y-2 md:space-y-3">
               {isEditingProfile ? (
                 <>
-                  {/* <Input
-                    name="avatar"
-                    value={editedProfile?.avatar || ""}
-                    // onChange={handleInputChange}
-                    // readOnly
-                  /> */}
-                  {/* <Input
-                    name="remote_url"
-                    value={editedProfile?.remote_url || ""}
+                  <ProfileInput
+                    label="Gelar"
+                    name="title"
+                    value={editedProfile?.title || ""}
                     onChange={handleInputChange}
-                    readOnly
-                  /> */}
-                  <div className="flex flex-col space-y-1">
-                    <label
-                      htmlFor="title"
-                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                      Gelar
-                    </label>
-                    <Select
-                      value={editedProfile?.title || ""}
-                      onValueChange={(value) =>
-                        handleInputChange({
-                          target: { name: "title", value },
-                        } as React.ChangeEvent<HTMLInputElement>)
-                      }
-                    >
-                      <SelectTrigger className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <SelectValue placeholder="Pilih Gelar" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Pilih Gelar</SelectLabel>
-                          <SelectItem value="mr">Sdr.</SelectItem>
-                          <SelectItem value="mrs">Sdri.</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  />
                   <ProfileInput
                     label="Nama Depan"
                     name="first_name"
