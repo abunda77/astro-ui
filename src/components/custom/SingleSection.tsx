@@ -392,7 +392,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
   };
 
   return (
-    <section className="py-12 bg-gray-50 dark:bg-gray-900">
+    <section className="py-12 bg-gradient-to-t from-blue-200 via-blue-100 to-white dark:from-gray-800 dark:via-gray-700 dark:to-gray-600">
       <div className="container max-w-4xl px-4 mx-auto">
         <div className="flex flex-col items-center justify-between mb-4 md:flex-row">
           <Breadcrumb>
@@ -445,7 +445,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
           <CardTitle className="mb-5 text-5xl font-bold text-gray-600 md:text-7xl dark:text-gray-300">
             {property.title}
           </CardTitle>
-          <h3 className="mb-5 text-xl font-light dark:text-gray-300">
+          <h3 className="mb-5 text-xl font-light dark:text-gray-800">
             {property.short_desc || "Deskripsi singkat tidak tersedia"}
           </h3>
           <div className="text-center">
@@ -460,7 +460,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
 
       <div className="container max-w-6xl px-4 mx-auto">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <Card className="bg-gray-200">
+          <Card className="bg-gray-300 dark:bg-gray-800">
             <CardHeader>
               <CardTitle className="text-2xl font-semibold text-blue-600">
                 <Info className="inline-block w-6 h-6 mr-2" />
@@ -496,7 +496,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-200">
+          <Card className="bg-gray-300 dark:bg-gray-800">
             <CardHeader>
               <CardTitle className="text-2xl font-semibold text-blue-600">
                 <User className="inline-block w-6 h-6 mr-2" />
@@ -551,7 +551,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
       </div>
 
       <div className="container max-w-6xl px-4 mx-auto mt-8">
-        <Card className="bg-gray-200">
+        <Card className="bg-gray-300 dark:bg-gray-800">
           <CardHeader>
             <CardTitle className="text-xl font-semibold text-blue-600 sm:text-2xl">
               <FileText className="inline-block w-5 h-5 mr-2 sm:w-6 sm:h-6" />
@@ -559,7 +559,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-700 sm:text-base dark:text-gray-300">
+            <p className="text-sm text-gray-700 sm:text-base dark:text-gray-800">
               {renderValue(property.description) ||
                 "Tidak ada deskripsi tersedia"}
             </p>
@@ -569,7 +569,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
 
       <div className="container max-w-6xl px-4 mx-auto">
         <div className="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2">
-          <Card className="bg-gray-200">
+          <Card className="bg-gray-300 dark:bg-gray-800">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-blue-600 sm:text-2xl">
                 <List className="inline-block w-5 h-5 mr-2 sm:w-6 sm:h-6" />
@@ -622,7 +622,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-200">
+          <Card className="bg-gray-300 dark:bg-gray-800">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-blue-600 sm:text-2xl">
                 <Shield className="inline-block w-5 h-5 mr-2 sm:w-6 sm:h-6" />
@@ -672,7 +672,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
       </div>
 
       <div className="container max-w-6xl px-4 mx-auto mt-8">
-        <Card className="bg-gray-200">
+        <Card className="bg-gray-300 dark:bg-gray-800">
           <CardHeader>
             <CardTitle className="text-xl font-semibold text-blue-600 sm:text-2xl">
               <MapPin className="inline-block w-5 h-5 mr-2 sm:w-6 sm:h-6" />
@@ -699,7 +699,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
       </div>
 
       <div className="container max-w-6xl px-4 mx-auto mt-8">
-        <Card className="bg-gray-200">
+        <Card className="bg-gray-300 dark:bg-gray-800">
           <CardHeader>
             <CardTitle className="text-xl font-semibold text-blue-600 sm:text-2xl">
               <Map className="inline-block w-5 h-5 mr-2 sm:w-6 sm:h-6" />
@@ -728,7 +728,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
       </div>
 
       <div className="container max-w-6xl px-4 mx-auto mt-8">
-        <Card className="bg-gray-200">
+        <Card className="bg-gray-300 dark:bg-gray-800">
           <CardHeader>
             <CardTitle className="text-2xl font-semibold text-blue-600">
               <Phone className="inline-block w-6 h-6 mr-2" />
@@ -767,8 +767,10 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
             </div>
 
             {showDiv && (
-              <div className="p-4 mt-4 bg-green-100 rounded-lg">
-                <p className="mb-2">Chat WhatsApp pada Pemilik Properti:</p>
+              <div className="p-4 mt-4 bg-blue-100 rounded-lg">
+                <p className="mb-2 text-gray-800 dark:text-gray-800">
+                  Chat WhatsApp pada Pemilik Properti:
+                </p>
                 {window.innerWidth > 768 ? (
                   <Button
                     as="a"
@@ -803,9 +805,11 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
 
             {showDiv2 && (
               <div className="p-4 mt-4 bg-blue-100 rounded-lg">
-                <p className="mb-2">Nomor Telepon Pemilik Properti:</p>
+                <p className="mb-2 text-gray-800 dark:text-gray-800">
+                  Nomor Telepon Pemilik Properti:
+                </p>
                 {window.innerWidth > 768 ? (
-                  <span className="font-semibold">
+                  <span className="font-semibold text-gray-900 dark:text-gray-800">
                     {property.user?.profile?.phone || "Tidak tersedia"}
                   </span>
                 ) : (
@@ -824,10 +828,15 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
             )}
 
             {showDiv3 && (
-              <div className="p-4 mt-4 bg-gray-100 rounded-lg">
+              <div className="p-4 mt-4 bg-blue-100 rounded-lg">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Nama</Label>
+                    <Label
+                      htmlFor="name"
+                      className="text-gray-700 dark:text-gray-800"
+                    >
+                      Nama
+                    </Label>
                     <Input
                       id="name"
                       name="name"
@@ -836,10 +845,16 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
+                      className="text-gray-900 transition-colors duration-200 bg-white border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email</Label>
+                    <Label
+                      htmlFor="email"
+                      className="text-gray-700 dark:text-gray-800"
+                    >
+                      Email
+                    </Label>
                     <Input
                       id="email"
                       name="email"
@@ -848,10 +863,16 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      className="text-gray-900 transition-colors duration-200 bg-white border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="noWa">No. WhatsApp</Label>
+                    <Label
+                      htmlFor="noWa"
+                      className="text-gray-700 dark:text-gray-800"
+                    >
+                      No. WhatsApp
+                    </Label>
                     <Input
                       id="noWa"
                       name="noWa"
@@ -860,10 +881,16 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       value={noWa}
                       onChange={(e) => setNoWa(e.target.value)}
                       required
+                      className="text-gray-900 transition-colors duration-200 bg-white border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="message">Pesan</Label>
+                    <Label
+                      htmlFor="message"
+                      className="text-gray-700 dark:text-gray-800"
+                    >
+                      Pesan
+                    </Label>
                     <Textarea
                       id="message"
                       name="message"
@@ -871,10 +898,16 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       required
+                      className="text-gray-900 transition-colors duration-200 bg-white border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="captcha">Captcha</Label>
+                    <Label
+                      htmlFor="captcha"
+                      className="text-gray-700 dark:text-gray-800"
+                    >
+                      Captcha
+                    </Label>
                     <div className="flex items-center space-x-2">
                       <Input
                         id="captcha"
@@ -884,14 +917,15 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                         value={userCaptcha}
                         onChange={(e) => setUserCaptcha(e.target.value)}
                         required
+                        className="text-gray-900 transition-colors duration-200 bg-white border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
                       />
-                      <div className="p-2 font-bold text-green-600 bg-gray-200 rounded">
+                      <div className="p-2 font-bold text-green-600 transition-colors duration-200 bg-gray-300 rounded dark:bg-gray-800 dark:bg-gray-700 dark:text-green-400">
                         {captchaText}
                       </div>
                       <Button
                         type="button"
                         onClick={generateCaptcha}
-                        className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-300 dark:hover:bg-blue-500"
+                        className="text-white transition-colors duration-200 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
                       >
                         <RefreshCcw className="w-4 h-4" />
                       </Button>
@@ -902,7 +936,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       appearance="primary"
                       color="blue"
                       type="submit"
-                      className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline dark:bg-blue-700 dark:hover:bg-blue-800"
+                      className="w-full px-4 py-2 font-bold text-white transition-colors duration-200 bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline dark:bg-blue-600 dark:hover:bg-blue-700"
                       disabled={isLoading2}
                     >
                       {isLoading2 ? (
@@ -911,7 +945,14 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                       Kirim
                     </Button>
                   </div>
-                  {result && <div id="result">{result}</div>}
+                  {result && (
+                    <div
+                      id="result"
+                      className="text-gray-700 dark:text-gray-800"
+                    >
+                      {result}
+                    </div>
+                  )}
                 </form>
               </div>
             )}
