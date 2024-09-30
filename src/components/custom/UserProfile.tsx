@@ -2,7 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import RegionSelector from "./Region";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -94,6 +108,9 @@ const UserProfile: React.FC<UserProfileProps> = ({
   const [file, setFile] = useState<File | null>(null);
   const [remoteUrl, setRemoteUrl] = useState("");
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [alertInfo, setAlertInfo] = useState({ type: "", message: "" });
 
   const initialProfileState: UserProfile = {
     user_id: getUserId() || 0,
@@ -146,7 +163,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   };
 
   const handleNewProfileInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setNewProfile((prev) => ({ ...prev, [name]: value }));
@@ -165,13 +182,22 @@ const UserProfile: React.FC<UserProfileProps> = ({
       );
     };
 
+  const refreshBrowser = () => {
+    setIsSaving(true);
+    setTimeout(() => {
+      window.location.reload();
+      setIsSaving(false);
+    }, 2000);
+  };
+
   const handleNewProfileSave = async () => {
     try {
-      console.log("Starting new profile save");
+      console.log("Memulai penyimpanan profil baru");
       const token = getAccessToken();
       const userId = getUserId();
-      console.log("Token used:", token);
-      console.log("User ID used:", userId);
+      console.log("Token yang digunakan:", token);
+      console.log("ID Pengguna yang digunakan:", userId);
+
       const response = await fetch(
         `${import.meta.env.PUBLIC_FASTAPI_ENDPOINT}/profile`,
         {
@@ -185,25 +211,38 @@ const UserProfile: React.FC<UserProfileProps> = ({
       );
 
       if (!response.ok) {
-        console.log(
-          "Unsuccessful response:",
-          response.status,
-          response.statusText
-        );
-        throw new Error("Failed to save new profile");
+        throw new Error("Gagal menyimpan profil baru");
       }
 
       const savedProfile = await response.json();
-      console.log("New profile saved successfully:", savedProfile);
+      console.log("Profil baru berhasil disimpan:", savedProfile);
+
+      setAlertInfo({
+        type: "success",
+        message: "Profil berhasil disimpan",
+      });
 
       setIsCreatingProfile(false);
       setNewProfile(initialProfileState);
-      console.log("State reset after saving");
+      console.log("State direset setelah penyimpanan");
+
+      if (savedProfile) {
+        userProfile = savedProfile;
+        console.log("Profil pengguna diperbarui:", userProfile);
+        setShowSuccessAlert(true);
+        setTimeout(() => setShowSuccessAlert(false), 1000);
+        refreshBrowser();
+      }
     } catch (error) {
-      console.error("Error saving new profile:", error);
-      console.log("New profile state:", newProfile);
-      console.log("User profile state:", userProfile);
-      console.log("Is creating profile state:", isCreatingProfile);
+      console.error("Kesalahan saat menyimpan profil baru:", error);
+      setAlertInfo({
+        type: "error",
+        message: "Gagal membuat profil. Silakan coba lagi!",
+      });
+    } finally {
+      console.log("Status profil baru:", newProfile);
+      console.log("Status profil pengguna:", userProfile);
+      console.log("Status pembuatan profil:", isCreatingProfile);
     }
   };
 
@@ -264,132 +303,265 @@ const UserProfile: React.FC<UserProfileProps> = ({
 
   if (!userProfile || Object.keys(userProfile).length === 0) {
     return (
-      <Card className="w-full max-w-4xl mx-auto bg-white shadow-xl dark:bg-gray-800">
+      <Card className="w-full max-w-4xl mx-auto shadow-xl bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-600 dark:to-purple-900 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-blue-600 dark:text-blue-400">
             Buat Profil Baru
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          {showSuccessAlert && (
+            <Alert className="mb-4">
+              <AlertTitle>Sukses!</AlertTitle>
+              <AlertDescription>
+                Profil baru berhasil disimpan.
+              </AlertDescription>
+            </Alert>
+          )}
           <div className="grid gap-6 md:grid-cols-2">
-            <Input
-              name="first_name"
-              placeholder="Nama Depan"
-              value={newProfile.first_name || ""}
-              onChange={handleNewProfileInputChange}
-            />
-            <Input
-              name="last_name"
-              placeholder="Nama Belakang"
-              value={newProfile.last_name || ""}
-              onChange={handleNewProfileInputChange}
-            />
+            <div>
+              <label
+                htmlFor="first_name"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Nama Depan
+              </label>
+              <Input
+                id="first_name"
+                name="first_name"
+                placeholder="Nama Depan"
+                value={newProfile.first_name || ""}
+                onChange={handleNewProfileInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="last_name"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Nama Belakang
+              </label>
+              <Input
+                id="last_name"
+                name="last_name"
+                placeholder="Nama Belakang"
+                value={newProfile.last_name || ""}
+                onChange={handleNewProfileInputChange}
+                required
+              />
+            </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <Select
-              onValueChange={(value) =>
-                setNewProfile((prev) => ({
-                  ...prev,
-                  gender: value as "man" | "woman",
-                }))
-              }
+            <div>
+              <label
+                htmlFor="gender"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Jenis Kelamin
+              </label>
+              <Select
+                onValueChange={(value) =>
+                  setNewProfile((prev) => ({
+                    ...prev,
+                    gender: value as "man" | "woman",
+                  }))
+                }
+                required
+              >
+                <SelectTrigger id="gender">
+                  <SelectValue placeholder="Pilih Jenis Kelamin" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="man">Laki-laki</SelectItem>
+                  <SelectItem value="woman">Perempuan</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label
+                htmlFor="whatsapp"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Nomor WhatsApp
+              </label>
+              <Input
+                id="whatsapp"
+                name="whatsapp"
+                placeholder="e.g., +62 123-456-7890"
+                pattern="^\+\d{1,3}\s\d{1,4}-\d{1,4}-\d{4}$"
+                value={newProfile.whatsapp || ""}
+                className="appearance-none !border-t-red-500 placeholder:text-red-300 placeholder:opacity-100 focus:!border-t-red-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                onChange={handleNewProfileInputChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Email
+              </label>
+              <Input
+                id="email"
+                name="email"
+                placeholder="Email"
+                type="email"
+                value={newProfile.email || ""}
+                onChange={handleNewProfileInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="phone"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Nomor Telepon
+              </label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="e.g., +62 123-456-7890"
+                pattern="^\+\d{1,3}\s\d{1,4}-\d{1,4}-\d{4}$"
+                // placeholder="Nomor Telepon"
+                className="appearance-none !border-t-red-500 placeholder:text-red-300 placeholder:opacity-100 focus:!border-t-red-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                value={newProfile.phone || ""}
+                onChange={handleNewProfileInputChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="address"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Alamat
+              </label>
+              <Textarea
+                id="address"
+                name="address"
+                placeholder="Alamat"
+                value={newProfile.address || ""}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  handleNewProfileInputChange(e)
+                }
+              />
+            </div>
+            <div>
+              <RegionSelector
+                selectedProvince={newProfile.province?.code || ""}
+                selectedDistrict={newProfile.district?.code || ""}
+                selectedCity={newProfile.city?.code || ""}
+                selectedVillage={newProfile.village?.code || ""}
+                onProvinceChange={handleNewProfileRegionChange("province")}
+                onDistrictChange={handleNewProfileRegionChange("district")}
+                onCityChange={handleNewProfileRegionChange("city")}
+                onVillageChange={handleNewProfileRegionChange("village")}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="birthday"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Tanggal Lahir
+              </label>
+              <Input
+                id="birthday"
+                name="birthday"
+                type="date"
+                placeholder="Tanggal Lahir"
+                value={newProfile.birthday || ""}
+                onChange={handleNewProfileInputChange}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="company_name"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Nama Perusahaan
+              </label>
+              <Input
+                id="company_name"
+                name="company_name"
+                placeholder="Nama Perusahaan"
+                value={newProfile.company_name || ""}
+                onChange={handleNewProfileInputChange}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="biodata_company"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Biodata Perusahaan
+              </label>
+              <Input
+                id="biodata_company"
+                name="biodata_company"
+                placeholder="Biodata Perusahaan"
+                value={newProfile.biodata_company || ""}
+                onChange={handleNewProfileInputChange}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="jobdesk"
+                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Jobdesk
+              </label>
+              <Input
+                id="jobdesk"
+                name="jobdesk"
+                placeholder="Jobdesk"
+                value={newProfile.jobdesk || ""}
+                onChange={handleNewProfileInputChange}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col space-y-2">
+            <Button
+              onClick={() => {
+                handleNewProfileSave();
+                // refreshBrowser();
+              }}
+              className="w-full px-4 py-2 font-bold text-white transition duration-300 bg-blue-500 rounded hover:bg-blue-600"
+              disabled={isSaving}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Pilih Jenis Kelamin" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="man">Laki-laki</SelectItem>
-                <SelectItem value="woman">Perempuan</SelectItem>
-              </SelectContent>
-            </Select>
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                "Simpan Profil"
+              )}
+            </Button>
+            <Button
+              onClick={() => setNewProfile(initialProfileState)}
+              className="w-full px-4 py-2 font-bold text-blue-500 transition duration-300 bg-white border border-blue-500 rounded hover:bg-blue-100"
+            >
+              Reset Input
+            </Button>
           </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <Input
-              name="email"
-              placeholder="Email"
-              type="email"
-              value={newProfile.email || ""}
-              onChange={handleNewProfileInputChange}
-            />
-            <Input
-              name="phone"
-              placeholder="Nomor Telepon"
-              value={newProfile.phone || ""}
-              onChange={handleNewProfileInputChange}
-            />
-          </div>
-
-          <Input
-            name="whatsapp"
-            placeholder="Nomor WhatsApp"
-            value={newProfile.whatsapp || ""}
-            onChange={handleNewProfileInputChange}
-          />
-
-          <Input
-            name="address"
-            placeholder="Alamat"
-            value={newProfile.address || ""}
-            onChange={handleNewProfileInputChange}
-          />
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <Input
-              name="birthday"
-              type="date"
-              placeholder="Tanggal Lahir"
-              value={newProfile.birthday || ""}
-              onChange={handleNewProfileInputChange}
-            />
-            <Input
-              name="company_name"
-              placeholder="Nama Perusahaan"
-              value={newProfile.company_name || ""}
-              onChange={handleNewProfileInputChange}
-            />
-          </div>
-
-          <Input
-            name="biodata_company"
-            placeholder="Biodata Perusahaan"
-            value={newProfile.biodata_company || ""}
-            onChange={handleNewProfileInputChange}
-          />
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <Input
-              name="jobdesk"
-              placeholder="Jobdesk"
-              value={newProfile.jobdesk || ""}
-              onChange={handleNewProfileInputChange}
-            />
-            <Input
-              name="social_media"
-              placeholder="Media Sosial"
-              value={newProfile.social_media || ""}
-              onChange={handleNewProfileInputChange}
-            />
-          </div>
-
-          <RegionSelector
-            selectedProvince={newProfile.province?.code || ""}
-            selectedDistrict={newProfile.district?.code || ""}
-            selectedCity={newProfile.city?.code || ""}
-            selectedVillage={newProfile.village?.code || ""}
-            onProvinceChange={handleNewProfileRegionChange("province")}
-            onDistrictChange={handleNewProfileRegionChange("district")}
-            onCityChange={handleNewProfileRegionChange("city")}
-            onVillageChange={handleNewProfileRegionChange("village")}
-          />
-
-          <Button
-            onClick={handleNewProfileSave}
-            className="w-full px-4 py-2 font-bold text-white transition duration-300 bg-blue-500 rounded hover:bg-blue-600"
-          >
-            Simpan Profil
-          </Button>
         </CardContent>
       </Card>
     );
@@ -459,98 +631,104 @@ const UserProfile: React.FC<UserProfileProps> = ({
             <div className="space-y-2 md:space-y-3">
               {isEditingProfile ? (
                 <>
-                  <ProfileInput
+                  <ProfileSelect
                     label="Gelar"
                     name="title"
                     value={editedProfile?.title || ""}
-                    onChange={handleInputChange}
+                    onChange={(value) =>
+                      handleInputChange({
+                        target: {
+                          name: "title",
+                          value: value,
+                        },
+                      } as React.ChangeEvent<HTMLInputElement>)
+                    }
+                    options={[
+                      { value: "mr", label: "Tuan" },
+                      { value: "mrs", label: "Nyonya" },
+                    ]}
                   />
                   <ProfileInput
+                    type="text"
                     label="Nama Depan"
                     name="first_name"
                     value={editedProfile?.first_name || ""}
                     onChange={handleInputChange}
                   />
                   <ProfileInput
+                    type="text"
                     label="Nama Belakang"
                     name="last_name"
                     value={editedProfile?.last_name || ""}
                     onChange={handleInputChange}
                   />
                   <ProfileInput
+                    type="text"
                     label="Telepon"
                     name="phone"
                     value={editedProfile?.phone || ""}
                     onChange={handleInputChange}
                   />
                   <ProfileInput
+                    type="text"
                     label="Email"
                     name="email"
                     value={editedProfile?.email || ""}
                     onChange={handleInputChange}
                   />
                   <ProfileInput
+                    type="text"
                     label="WhatsApp"
                     name="whatsapp"
                     value={editedProfile?.whatsapp || ""}
                     onChange={handleInputChange}
                   />
                   <ProfileInput
+                    type="text"
                     label="Alamat"
                     name="address"
                     value={editedProfile?.address || ""}
                     onChange={handleInputChange}
                   />
 
-                  <DatePicker
-                    format="yyyy-MM-dd HH:mm:ss"
-                    value={
-                      editedProfile?.birthday
-                        ? new Date(editedProfile.birthday)
-                        : null
-                    }
-                    onChange={(value) =>
-                      handleInputChange({
-                        target: {
-                          name: "birthday",
-                          value: value ? value.toISOString() : "",
-                        },
-                      } as React.ChangeEvent<HTMLInputElement>)
-                    }
+                  <ProfileInput
+                    label="Tanggal Lahir"
+                    name="birthday"
+                    type="date"
+                    value={editedProfile?.birthday || ""}
+                    onChange={handleInputChange}
                   />
 
-                  <Select
+                  <ProfileSelect
+                    label="Jenis Kelamin"
+                    name="gender"
                     value={editedProfile?.gender || ""}
-                    onValueChange={(value) =>
+                    onChange={(value: string) =>
                       handleInputChange({
                         target: { name: "gender", value },
                       } as React.ChangeEvent<HTMLInputElement>)
                     }
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Pilih Jenis Kelamin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Jenis Kelamin</SelectLabel>
-                        <SelectItem value="man">Laki-laki</SelectItem>
-                        <SelectItem value="woman">Perempuan</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                    options={[
+                      { value: "man", label: "Laki-laki" },
+                      { value: "woman", label: "Perempuan" },
+                    ]}
+                  />
                   <ProfileInput
                     label="Perusahaan"
+                    type="text"
                     name="company_name"
                     value={editedProfile?.company_name || ""}
                     onChange={handleInputChange}
                   />
                   <ProfileInput
                     label="Biodata Perusahaan"
+                    type="text"
                     name="biodata_company"
                     value={editedProfile?.biodata_company || ""}
                     onChange={handleInputChange}
                   />
                   <ProfileInput
+                    type="text"
                     label="Deskripsi Pekerjaan"
                     name="jobdesk"
                     value={editedProfile?.jobdesk || ""}
@@ -636,6 +814,7 @@ interface ProfileFieldProps {
   label: string;
   value: string | null | undefined;
 }
+
 const ProfileField: React.FC<ProfileFieldProps> = ({ label, value }) => (
   <div className="flex justify-between text-xs md:text-sm">
     <span className="font-semibold text-gray-700 dark:text-gray-300">
@@ -651,12 +830,14 @@ interface ProfileInputProps {
   label: string;
   name: string;
   value: string;
+  type: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 const ProfileInput: React.FC<ProfileInputProps> = ({
   label,
   name,
   value,
+  type,
   onChange,
 }) => (
   <div className="flex flex-col space-y-1">
@@ -667,7 +848,7 @@ const ProfileInput: React.FC<ProfileInputProps> = ({
       {label}
     </label>
     <Input
-      type="text"
+      type={type}
       id={name}
       name={name}
       value={value}
@@ -676,4 +857,44 @@ const ProfileInput: React.FC<ProfileInputProps> = ({
     />
   </div>
 );
+
+interface ProfileSelectProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: { value: string; label: string }[];
+}
+
+const ProfileSelect: React.FC<ProfileSelectProps> = ({
+  label,
+  name,
+  value,
+  onChange,
+  options,
+}) => (
+  <div className="flex flex-col space-y-1">
+    <label
+      htmlFor={name}
+      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+    >
+      {label}
+    </label>
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+        <SelectValue placeholder={`Pilih ${label}`} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  </div>
+);
+
 export default UserProfile;
