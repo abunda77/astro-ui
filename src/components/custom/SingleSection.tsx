@@ -919,7 +919,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
                         required
                         className="text-gray-900 transition-colors duration-200 bg-white border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
                       />
-                      <div className="p-2 font-bold text-green-600 transition-colors duration-200 bg-gray-300 rounded dark:bg-gray-800 dark:bg-gray-700 dark:text-green-400">
+                      <div className="p-2 font-bold text-green-600 transition-colors duration-200 bg-gray-300 rounded dark:bg-gray-800 dark:text-green-400">
                         {captchaText}
                       </div>
                       <Button
