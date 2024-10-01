@@ -604,11 +604,11 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                 .catch((error) => {
                   setIsLoading(false);
                   console.error("Error refreshing data:", error);
-                  toast({
-                    title: "Error",
-                    description: "Gagal memperbarui data. Silakan coba lagi.",
-                    variant: "destructive",
-                  });
+                  // toast({
+                  //   title: "Error",
+                  //   description: "Gagal memperbarui data. Silakan coba lagi.",
+                  //   variant: "destructive",
+                  // });
                 });
             }}
           />

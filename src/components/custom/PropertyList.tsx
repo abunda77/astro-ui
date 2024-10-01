@@ -11,6 +11,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { badgeVariants } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import EditProperti from "./EditProperti";
 
 interface PropertyList {
   user_id: number | null;
@@ -88,6 +100,7 @@ interface PropertyList {
   };
 }
 
+const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 interface PropertyListProps {
   properties: PropertyList[] | null;
   isLoading: boolean;
@@ -104,6 +117,9 @@ const PropertyList: React.FC<PropertyListProps> = ({
     null
   );
   const [loadingPropertyId, setLoadingPropertyId] = useState<number | null>(
+    null
+  );
+  const [editingPropertyId, setEditingPropertyId] = useState<number | null>(
     null
   );
 
@@ -140,8 +156,6 @@ const PropertyList: React.FC<PropertyListProps> = ({
     return `${homedomain}/images/home_fallback.png`;
   };
 
-  const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
-
   const fetchPropertyDetails = async (propertyId: number) => {
     try {
       setLoadingPropertyId(propertyId);
@@ -155,6 +169,38 @@ const PropertyList: React.FC<PropertyListProps> = ({
       console.error("Error mengambil detail properti:", error);
     } finally {
       setLoadingPropertyId(null);
+    }
+  };
+
+  const handleEditProperty = (propertyId: number) => {
+    setEditingPropertyId(propertyId);
+  };
+
+  const handleSaveProperty = async (updatedProperty: Partial<PropertyList>) => {
+    try {
+      const response = await fetch(
+        `${FASTAPI_LOGIN}/properties/${updatedProperty.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProperty),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Gagal menyimpan perubahan properti");
+      }
+
+      // Refresh data properti setelah berhasil diupdate
+      const updatedProperties = properties?.map((prop) =>
+        prop.id === updatedProperty.id ? { ...prop, ...updatedProperty } : prop
+      );
+      // Asumsi ada fungsi untuk memperbarui daftar properti
+      // updateProperties(updatedProperties);
+    } catch (error) {
+      console.error("Error menyimpan perubahan properti:", error);
     }
   };
 
@@ -245,48 +291,217 @@ const PropertyList: React.FC<PropertyListProps> = ({
                 </p>
               </div>
               <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                  onClick={() =>
-                    property.id && fetchPropertyDetails(property.id)
-                  }
-                  disabled={loadingPropertyId === property.id}
-                >
-                  {loadingPropertyId === property.id ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : null}
-                  {loadingPropertyId === property.id ? "Memuat..." : "Detail"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                >
-                  Edit
-                </Button>
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                      onClick={() =>
+                        property.id && fetchPropertyDetails(property.id)
+                      }
+                    >
+                      {loadingPropertyId === property.id ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : null}
+                      {loadingPropertyId === property.id
+                        ? "Memuat..."
+                        : "Detail"}
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerContent className="sm:max-w-[800px] sm:h-[90vh] fixed left-1/2 transform -translate-x-1/2">
+                    <DrawerHeader className="pb-4 border-b">
+                      <DrawerTitle className="text-2xl font-bold text-blue-600">
+                        Detail Properti
+                      </DrawerTitle>
+                      <DrawerDescription className="text-gray-500">
+                        Informasi lengkap tentang properti Anda.
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <div className="p-6">
+                      <Tabs defaultValue="detail-info">
+                        <TabsList className="flex flex-row w-full p-2 mt-2 space-x-2 overflow-x-auto">
+                          <TabsTrigger value="detail-info">
+                            Detail Info
+                          </TabsTrigger>
+                          <TabsTrigger value="image">Image</TabsTrigger>
+                          <TabsTrigger value="specification">
+                            Specification
+                          </TabsTrigger>
+                          <TabsTrigger value="facility">Facility</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="detail-info">
+                          {selectedProperty && (
+                            <>
+                              <p className="text-gray-900 dark:text-gray-100">
+                                Judul: {selectedProperty.title}
+                              </p>
+                              <p className="text-gray-900 dark:text-gray-100">
+                                Harga: Rp{" "}
+                                {selectedProperty.price?.toLocaleString()}
+                              </p>
+                              <p className="text-gray-900 dark:text-gray-100">
+                                Alamat: {selectedProperty.address}
+                              </p>
+                              <p className="text-gray-900 dark:text-gray-100">
+                                Deskripsi: {selectedProperty.description}
+                              </p>
+                            </>
+                          )}
+                        </TabsContent>
+                        <TabsContent value="image">
+                          {selectedProperty && selectedProperty.images && (
+                            <div className="grid grid-cols-2 gap-4">
+                              {selectedProperty.images.map((image) => (
+                                <img
+                                  key={image.id}
+                                  src={getImageUrl({
+                                    ...selectedProperty,
+                                    images: [image],
+                                  })}
+                                  alt={`Properti ${selectedProperty.title}`}
+                                  className="object-cover w-full h-48 rounded-lg"
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </TabsContent>
+                        <TabsContent value="specification">
+                          {selectedProperty &&
+                            selectedProperty.specification && (
+                              <>
+                                <p>
+                                  Luas Tanah:{" "}
+                                  {selectedProperty.specification.land_size} m²
+                                </p>
+                                <p>
+                                  Luas Bangunan:{" "}
+                                  {selectedProperty.specification.building_size}{" "}
+                                  m²
+                                </p>
+                                <p>
+                                  Kamar Tidur:{" "}
+                                  {selectedProperty.specification.bedroom}
+                                </p>
+                                <p>
+                                  Kamar Mandi:{" "}
+                                  {selectedProperty.specification.bathroom}
+                                </p>
+                                <p>
+                                  Lantai:{" "}
+                                  {selectedProperty.specification.floors}
+                                </p>
+                              </>
+                            )}
+                        </TabsContent>
+                        <TabsContent value="facility">
+                          {selectedProperty && selectedProperty.facility && (
+                            <>
+                              <p>
+                                Sertifikat:{" "}
+                                {selectedProperty.facility.certificate}
+                              </p>
+                              <p>
+                                Listrik: {selectedProperty.facility.electricity}{" "}
+                                watt
+                              </p>
+                              <p>
+                                Internet: {selectedProperty.facility.internet}
+                              </p>
+                              <p>
+                                Sumber Air:{" "}
+                                {selectedProperty.facility.water_source}
+                              </p>
+                              <p>
+                                Keamanan: {selectedProperty.facility.security}
+                              </p>
+                            </>
+                          )}
+                        </TabsContent>
+                      </Tabs>
+                    </div>
+                    <DrawerFooter className="pt-4 border-t">
+                      <DrawerClose asChild>
+                        <Button variant="outline" className="w-full">
+                          Tutup
+                        </Button>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                      onClick={() =>
+                        property.id && handleEditProperty(property.id)
+                      }
+                    >
+                      Edit
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerContent className="w-full sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] sm:h-[95vh] fixed inset-0 m-auto overflow-hidden">
+                    <div className="flex flex-col h-full">
+                      <DrawerHeader className="flex-shrink-0 pb-4 border-b">
+                        <DrawerTitle className="text-2xl font-bold text-blue-600">
+                          Edit Properti
+                        </DrawerTitle>
+                        <DrawerDescription className="text-gray-500">
+                          Ubah detail properti Anda di sini.
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <div className="flex-grow p-6 overflow-y-auto">
+                        <Tabs
+                          defaultValue="detail-info"
+                          className="flex flex-col h-full"
+                        >
+                          <TabsList className="flex flex-row flex-shrink-0 w-full p-2 mt-2 space-x-2 overflow-x-auto">
+                            <TabsTrigger value="detail-info">
+                              Detail Info
+                            </TabsTrigger>
+                            <TabsTrigger value="image">Image</TabsTrigger>
+                            <TabsTrigger value="specification">
+                              Specification
+                            </TabsTrigger>
+                            <TabsTrigger value="facility">Facility</TabsTrigger>
+                          </TabsList>
+                          <div className="flex-grow overflow-y-auto">
+                            <TabsContent value="detail-info" className="h-full">
+                              {editingPropertyId === property.id && (
+                                <EditProperti
+                                  property={property}
+                                  onSave={handleSaveProperty}
+                                  onClose={() => setEditingPropertyId(null)}
+                                />
+                              )}
+                            </TabsContent>
+                            <TabsContent value="image">
+                              {/* Tambahkan konten untuk mengedit gambar */}
+                            </TabsContent>
+                            <TabsContent value="specification">
+                              {/* Tambahkan konten untuk mengedit spesifikasi */}
+                            </TabsContent>
+                            <TabsContent value="facility">
+                              {/* Tambahkan konten untuk mengedit fasilitas */}
+                            </TabsContent>
+                          </div>
+                        </Tabs>
+                      </div>
+                      <DrawerFooter className="flex-shrink-0 pt-4 border-t">
+                        <DrawerClose asChild>
+                          <Button variant="destructive" className="w-full">
+                            Tutup
+                          </Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
               </div>
             </div>
-            {selectedProperty && selectedProperty.id === property.id && (
-              <div className="p-4 mt-4 bg-white rounded-lg shadow-md dark:bg-gray-700">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Detail Properti</h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-white bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
-                    onClick={() => setSelectedProperty(null)}
-                  >
-                    Tutup
-                  </Button>
-                </div>
-                <p>Judul: {selectedProperty.title}</p>
-                <p>Harga: Rp {selectedProperty.price?.toLocaleString()}</p>
-                <p>Alamat: {selectedProperty.address}</p>
-                <p>Deskripsi: {selectedProperty.description}</p>
-              </div>
-            )}
           </div>
         ))}
       </CardContent>
