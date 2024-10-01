@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { badgeVariants } from "@/components/ui/badge";
+import { Loader2 } from "lucide-react";
 
 interface PropertyList {
   user_id: number | null;
@@ -99,11 +100,16 @@ const PropertyList: React.FC<PropertyListProps> = ({
   homedomain,
 }) => {
   const [loading, setLoading] = useState(true);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyList | null>(
+    null
+  );
+  const [loadingPropertyId, setLoadingPropertyId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Simulasikan pemuatan data
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setLoading(false);
       } catch (error) {
@@ -132,6 +138,24 @@ const PropertyList: React.FC<PropertyListProps> = ({
       }
     }
     return `${homedomain}/images/home_fallback.png`;
+  };
+
+  const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
+
+  const fetchPropertyDetails = async (propertyId: number) => {
+    try {
+      setLoadingPropertyId(propertyId);
+      const response = await fetch(`${FASTAPI_LOGIN}/properties/${propertyId}`);
+      if (!response.ok) {
+        throw new Error("Gagal mengambil detail properti");
+      }
+      const data = await response.json();
+      setSelectedProperty(data);
+    } catch (error) {
+      console.error("Error mengambil detail properti:", error);
+    } finally {
+      setLoadingPropertyId(null);
+    }
   };
 
   if (loading) {
@@ -204,28 +228,65 @@ const PropertyList: React.FC<PropertyListProps> = ({
         {properties.map((property) => (
           <div
             key={property.id}
-            className="flex items-center p-4 rounded-lg shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
+            className="flex flex-col p-4 rounded-lg shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
           >
-            <img
-              src={getImageUrl(property)}
-              alt={property.title || "Gambar Properti"}
-              className="object-cover w-16 h-16 mr-4 rounded-lg ring-2 ring-blue-300 dark:ring-blue-600"
-            />
-            <div className="flex-grow">
-              <h4 className="mb-1 text-lg font-semibold text-blue-800 dark:text-blue-300">
-                {property.title || "Tidak ada judul"}
-              </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {property.short_desc || "Tidak ada deskripsi singkat"}
-              </p>
+            <div className="flex items-center mb-4">
+              <img
+                src={getImageUrl(property)}
+                alt={property.title || "Gambar Properti"}
+                className="object-cover w-16 h-16 mr-4 rounded-lg ring-2 ring-blue-300 dark:ring-blue-600"
+              />
+              <div className="flex-grow">
+                <h4 className="mb-1 text-lg font-semibold text-blue-800 dark:text-blue-300">
+                  {property.title || "Tidak ada judul"}
+                </h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {property.short_desc || "Tidak ada deskripsi singkat"}
+                </p>
+              </div>
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                  onClick={() =>
+                    property.id && fetchPropertyDetails(property.id)
+                  }
+                  disabled={loadingPropertyId === property.id}
+                >
+                  {loadingPropertyId === property.id ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : null}
+                  {loadingPropertyId === property.id ? "Memuat..." : "Detail"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                >
+                  Edit
+                </Button>
+              </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-            >
-              Edit
-            </Button>
+            {selectedProperty && selectedProperty.id === property.id && (
+              <div className="p-4 mt-4 bg-white rounded-lg shadow-md dark:bg-gray-700">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Detail Properti</h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-white bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
+                    onClick={() => setSelectedProperty(null)}
+                  >
+                    Tutup
+                  </Button>
+                </div>
+                <p>Judul: {selectedProperty.title}</p>
+                <p>Harga: Rp {selectedProperty.price?.toLocaleString()}</p>
+                <p>Alamat: {selectedProperty.address}</p>
+                <p>Deskripsi: {selectedProperty.description}</p>
+              </div>
+            )}
           </div>
         ))}
       </CardContent>

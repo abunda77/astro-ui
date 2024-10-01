@@ -4,7 +4,6 @@ import "@/styles/globals.css";
 import Header01 from "@/layouts/Header01.astro";
 import SingleSection from "@/components/custom/SingleSection";
 import Footer01 from "@/layouts/Footer01.astro";
-// import toaster
 import { Toaster } from "@/components/ui/toaster";
 import { AstroSeo } from "@astrolib/seo";
 import { createUniqueSlug } from "@/lib/utils";
@@ -37,7 +36,7 @@ export async function getStaticPaths() {
 
       return {
         params: { slug },
-        props: { property },
+        props: { propertyId: property.id },
       };
     });
   } catch (error) {
@@ -45,6 +44,7 @@ export async function getStaticPaths() {
     return [];
   }
 }
+
 interface Property {
   user_id: number;
   category_id: number;
@@ -58,7 +58,7 @@ interface Property {
   district_id: string;
   city_id: string;
   village_id: string;
-  coordinates: string;
+  coordinates: string | null;
   nearby: string;
   ads: string;
   status: string;
@@ -83,10 +83,10 @@ interface Property {
     id: number;
   };
   specification: {
-    land_size: number | null;
+    land_size: number;
     building_size: number;
     bedroom: number;
-    carport: string | null;
+    carpot: string | null;
     bathroom: number;
     dining_room: string | null;
     living_room: string | null;
@@ -95,7 +95,7 @@ interface Property {
   };
   images: {
     image_url: string;
-    remote_image_url: string;
+    image_remote_url: string | null;
     is_primary: boolean;
     id: number;
   }[];
@@ -138,14 +138,28 @@ interface Property {
       avatar: string;
       remote_url: string;
       biodata_company: string;
-      jobdesk: string;
+      jobdesk: string | null;
     };
   };
 }
-const { property } = Astro.props as { property: Property };
-const uniqueSlug = createUniqueSlug(property.id, property.title);
 
-// Tambahkan fungsi untuk memvalidasi properti
+const { propertyId } = Astro.props;
+const urlEndpoint = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
+
+const response = await fetch(`${urlEndpoint}/properties/${propertyId}`, {
+  method: "GET",
+  headers: {
+    "Cache-Control": "no-cache",
+  },
+});
+
+if (!response.ok) {
+  return Astro.redirect("/404");
+}
+
+const property: Property = await response.json();
+
+// Fungsi untuk memvalidasi properti
 function isValidProperty(property: any): property is Property {
   return (
     property &&
@@ -159,6 +173,8 @@ function isValidProperty(property: any): property is Property {
 if (!isValidProperty(property)) {
   return Astro.redirect("/404");
 }
+
+const uniqueSlug = createUniqueSlug(property.id, property.title);
 ---
 
 <html lang="en">
@@ -200,16 +216,12 @@ if (!isValidProperty(property)) {
       }}
     />
   </head>
-  <body
-    class="min-h-screen transition-colors duration-300 bg-gradient-to-br from-blue-100 via-violet-100 to-indigo-300 dark:from-gray-900 dark:via-purple-900 dark:to-gray-950"
-  >
+  <body>
     <Header01 />
-    <SingleSection property={property} client:load />
+    <SingleSection property={property as any} client:load />
 
-    <!-- <RegisterForm client:load />-->
     <Toaster client:load />
     <Footer01 />
     <slot />
   </body>
 </html>
-<!-- <style is:global> -->

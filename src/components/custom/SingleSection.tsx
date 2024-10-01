@@ -559,7 +559,7 @@ const SingleSection: React.FC<SingleSectionProps> = ({ property }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-700 sm:text-base dark:text-gray-800">
+            <p className="text-sm text-gray-700 sm:text-base dark:text-gray-300">
               {renderValue(property.description) ||
                 "Tidak ada deskripsi tersedia"}
             </p>
