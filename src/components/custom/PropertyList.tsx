@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { badgeVariants } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { X } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -317,6 +318,15 @@ const PropertyList: React.FC<PropertyListProps> = ({
                       <DrawerDescription className="text-gray-500">
                         Informasi lengkap tentang properti Anda.
                       </DrawerDescription>
+                      <DrawerClose className="absolute top-2 right-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </DrawerClose>
                     </DrawerHeader>
                     <div className="p-6">
                       <Tabs defaultValue="detail-info">
@@ -420,13 +430,6 @@ const PropertyList: React.FC<PropertyListProps> = ({
                         </TabsContent>
                       </Tabs>
                     </div>
-                    <DrawerFooter className="pt-4 border-t">
-                      <DrawerClose asChild>
-                        <Button variant="outline" className="w-full">
-                          Tutup
-                        </Button>
-                      </DrawerClose>
-                    </DrawerFooter>
                   </DrawerContent>
                 </Drawer>
 
@@ -445,13 +448,22 @@ const PropertyList: React.FC<PropertyListProps> = ({
                   </DrawerTrigger>
                   <DrawerContent className="w-full sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] sm:h-[95vh] fixed inset-0 m-auto overflow-hidden">
                     <div className="flex flex-col h-full">
-                      <DrawerHeader className="flex-shrink-0 pb-4 border-b">
+                      <DrawerHeader className="relative flex-shrink-0 pb-4 border-b">
                         <DrawerTitle className="text-2xl font-bold text-blue-600">
                           Edit Properti
                         </DrawerTitle>
                         <DrawerDescription className="text-gray-500">
                           Ubah detail properti Anda di sini.
                         </DrawerDescription>
+                        <DrawerClose className="absolute top-2 right-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </DrawerClose>
                       </DrawerHeader>
                       <div className="flex-grow p-6 overflow-y-auto">
                         <Tabs
@@ -490,13 +502,6 @@ const PropertyList: React.FC<PropertyListProps> = ({
                           </div>
                         </Tabs>
                       </div>
-                      <DrawerFooter className="flex-shrink-0 pt-4 border-t">
-                        <DrawerClose asChild>
-                          <Button variant="destructive" className="w-full">
-                            Tutup
-                          </Button>
-                        </DrawerClose>
-                      </DrawerFooter>
                     </div>
                   </DrawerContent>
                 </Drawer>

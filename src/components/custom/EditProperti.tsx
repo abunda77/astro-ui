@@ -11,6 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
+import { Loader2 } from "lucide-react";
 
 interface ProfileInputProps {
   label: string;
@@ -61,6 +64,10 @@ const EditProperti: React.FC<EditPropertiProps> = ({
 }) => {
   const [editedProperty, setEditedProperty] =
     useState<Partial<PropertyList>>(property);
+  const [alertStatus, setAlertStatus] = useState<"success" | "error" | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -76,8 +83,17 @@ const EditProperti: React.FC<EditPropertiProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSave(editedProperty);
-    onClose();
+    setIsLoading(true);
+    try {
+      await onSave(editedProperty);
+      setAlertStatus("success");
+      // Refresh Drawer content
+      setEditedProperty({ ...editedProperty });
+    } catch (error) {
+      setAlertStatus("error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const categories = [
@@ -142,6 +158,24 @@ const EditProperti: React.FC<EditPropertiProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {alertStatus === "success" && (
+        <Alert variant="success">
+          <CheckCircledIcon className="w-4 h-4" />
+          <AlertTitle>Berhasil!</AlertTitle>
+          <AlertDescription>
+            Perubahan properti berhasil disimpan.
+          </AlertDescription>
+        </Alert>
+      )}
+      {alertStatus === "error" && (
+        <Alert variant="destructive">
+          <CrossCircledIcon className="w-4 h-4" />
+          <AlertTitle>Error!</AlertTitle>
+          <AlertDescription>
+            Terjadi kesalahan saat menyimpan perubahan.
+          </AlertDescription>
+        </Alert>
+      )}
       <div className="grid gap-8">
         {/* Informasi Utama */}
         <Card className="bg-gray-200 dark:bg-gray-800">
@@ -393,11 +427,29 @@ const EditProperti: React.FC<EditPropertiProps> = ({
         </Card>
       </div>
 
-      <div className="flex justify-end pt-6 space-x-4 border-t dark:border-gray-700">
-        <Button type="button" variant="outline" onClick={onClose}>
+      <div className="flex justify-center pt-6 space-x-4 border-t dark:border-gray-700">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          className="text-gray-900 bg-gray-200 hover:bg-gray-300 dark:text-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
+        >
           Batal
         </Button>
-        <Button type="submit">Simpan Perubahan</Button>
+        <Button
+          type="submit"
+          className="text-gray-900 bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Menyimpan...
+            </>
+          ) : (
+            "Simpan Perubahan"
+          )}
+        </Button>
       </div>
     </form>
   );
