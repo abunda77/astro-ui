@@ -14,6 +14,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
+import RegionSelector from "@/components/custom/Region";
 
 interface ProfileInputProps {
   label: string;
@@ -103,13 +104,24 @@ const EditProperti: React.FC<EditPropertiProps> = ({
     { key: 14, value: "Office" },
     { key: 15, value: "Warehouse" },
   ];
+  const ads = [
+    { key: "sell", value: "Dijual" },
+    { key: "rent", value: "Disewakan" },
+  ];
+
+  const status = [
+    { key: "active", value: "Aktif" },
+    { key: "sold", value: "Terjual" },
+    { key: "rented", value: "Disewakan" },
+    { key: "inactive", value: "Tidak Aktif" },
+  ];
 
   interface SelectInputProps {
     label: string;
     name: string;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    options: { key: number; value: string }[];
+    options: { key: string | number; value: string }[];
     placeholder?: string;
   }
 
@@ -141,7 +153,7 @@ const EditProperti: React.FC<EditPropertiProps> = ({
           </option>
         )}
         {options.map((option) => (
-          <option key={option.key} value={option.key.toString()}>
+          <option key={option.key.toString()} value={option.key.toString()}>
             {option.value}
           </option>
         ))}
@@ -155,6 +167,14 @@ const EditProperti: React.FC<EditPropertiProps> = ({
     { key: "yearly", value: "Tahunan" },
     { key: "weekly", value: "Mingguan" },
   ];
+
+  const handleRegionChange = (level: string, code: string, name: string) => {
+    setEditedProperty((prev) => ({
+      ...prev,
+      [`${level}_id`]: code,
+      [`${level}_name`]: name,
+    }));
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -230,6 +250,22 @@ const EditProperti: React.FC<EditPropertiProps> = ({
               </div>
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button
+              type="submit"
+              className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                "Simpan Perubahan"
+              )}
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Harga dan Periode */}
@@ -265,15 +301,28 @@ const EditProperti: React.FC<EditPropertiProps> = ({
                   name="period"
                   value={editedProperty.period || ""}
                   onChange={handleChange}
-                  options={periods.map((period) => ({
-                    key: parseInt(period.key, 10),
-                    value: period.value,
-                  }))}
+                  options={periods}
                   placeholder="Pilih periode"
                 />
               </div>
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button
+              type="submit"
+              className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                "Simpan Perubahan"
+              )}
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Lokasi */}
@@ -298,48 +347,50 @@ const EditProperti: React.FC<EditPropertiProps> = ({
                   placeholder="Alamat lengkap properti"
                 />
               </div>
-              <ProfileInput
-                label="Provinsi"
-                name="province_id"
-                value={editedProperty.province_id || ""}
-                onChange={handleChange}
-                type="text"
-                placeholder="ID Provinsi"
+              <RegionSelector
+                selectedProvince={editedProperty.province_id || ""}
+                selectedDistrict={editedProperty.district_id || ""}
+                selectedCity={editedProperty.city_id || ""}
+                selectedVillage={editedProperty.village_id || ""}
+                onProvinceChange={(code, name) =>
+                  handleRegionChange("province", code, name)
+                }
+                onDistrictChange={(code, name) =>
+                  handleRegionChange("district", code, name)
+                }
+                onCityChange={(code, name) =>
+                  handleRegionChange("city", code, name)
+                }
+                onVillageChange={(code, name) =>
+                  handleRegionChange("village", code, name)
+                }
               />
-              <ProfileInput
-                label="Kabupaten"
-                name="district_id"
-                value={editedProperty.district_id || ""}
-                onChange={handleChange}
-                type="text"
-                placeholder="ID Kabupaten"
-              />
-              <ProfileInput
-                label="Kota"
-                name="city_id"
-                value={editedProperty.city_id || ""}
-                onChange={handleChange}
-                type="text"
-                placeholder="ID Kota"
-              />
-              <ProfileInput
-                label="Desa"
-                name="village_id"
-                value={editedProperty.village_id || ""}
-                onChange={handleChange}
-                type="text"
-                placeholder="ID Desa"
-              />
-              <ProfileInput
+              {/* <ProfileInput
                 label="Koordinat"
                 name="coordinates"
                 value={editedProperty.coordinates || ""}
                 onChange={handleChange}
                 type="text"
                 placeholder="Koordinat lokasi"
-              />
+              /> */}
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button
+              type="submit"
+              className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                "Simpan Perubahan"
+              )}
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Informasi Tambahan */}
@@ -359,32 +410,68 @@ const EditProperti: React.FC<EditPropertiProps> = ({
                 type="text"
                 placeholder="Tempat terdekat"
               />
-              <ProfileInput
-                label="Iklan"
-                name="ads"
-                value={editedProperty.ads || ""}
-                onChange={handleChange}
-                type="text"
-                placeholder="Informasi iklan"
-              />
-              <ProfileInput
-                label="Status"
-                name="status"
-                value={editedProperty.status || ""}
-                onChange={handleChange}
-                type="text"
-                placeholder="Status properti"
-              />
-              <ProfileInput
-                label="Jumlah Dilihat"
-                name="views_count"
-                value={editedProperty.views_count?.toString() || ""}
-                onChange={handleChange}
-                type="number"
-                placeholder="Jumlah dilihat"
-              />
+              <div className="flex flex-col space-y-1">
+                <label
+                  htmlFor="ads"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Iklan
+                </label>
+                <select
+                  id="ads"
+                  name="ads"
+                  value={editedProperty.ads || ""}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                >
+                  <option value="">Pilih jenis iklan</option>
+                  {ads.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {option.value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <label
+                  htmlFor="status"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Status
+                </label>
+                <select
+                  id="status"
+                  name="status"
+                  value={editedProperty.status || ""}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                >
+                  <option value="">Pilih status</option>
+                  {status.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {option.value}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button
+              type="submit"
+              className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                "Simpan Perubahan"
+              )}
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* SEO */}
@@ -424,6 +511,22 @@ const EditProperti: React.FC<EditPropertiProps> = ({
               </div>
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button
+              type="submit"
+              className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                "Simpan Perubahan"
+              )}
+            </Button>
+          </CardFooter>
         </Card>
       </div>
 
@@ -435,20 +538,6 @@ const EditProperti: React.FC<EditPropertiProps> = ({
           className="text-gray-900 bg-gray-200 hover:bg-gray-300 dark:text-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
         >
           Batal
-        </Button>
-        <Button
-          type="submit"
-          className="text-gray-900 bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Menyimpan...
-            </>
-          ) : (
-            "Simpan Perubahan"
-          )}
         </Button>
       </div>
     </form>

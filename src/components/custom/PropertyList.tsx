@@ -23,7 +23,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EditProperti from "./EditProperti";
+import EditDetailProperti from "./EditDetailProperti";
+import EditSpecification from "./EditSpecificationProperti";
+import EditFacility from "./EditFacilityProperti";
+import { getCookie } from "@/utils/auth";
 
 interface PropertyList {
   user_id: number | null;
@@ -101,6 +104,105 @@ interface PropertyList {
   };
 }
 
+const categories = [
+  { key: 11, value: "Home" },
+  { key: 12, value: "Apartment" },
+  { key: 13, value: "Kavling" },
+  { key: 14, value: "Office" },
+  { key: 15, value: "Warehouse" },
+];
+const period = [
+  { key: "onetime", value: "Sekali Bayar" },
+  { key: "monthly", value: "Bulanan" },
+  { key: "yearly", value: "Tahunan" },
+  { key: "weekly", value: "Mingguan" },
+];
+
+const ads = [
+  { key: "sell", value: "Dijual" },
+  { key: "rent", value: "Disewakan" },
+];
+
+const status = [
+  { key: "active", value: "Aktif" },
+  { key: "sold", value: "Terjual" },
+  { key: "rented", value: "Disewakan" },
+  { key: "inactive", value: "Tidak Aktif" },
+];
+
+const certificates = [
+  { key: "shm", value: "SHM (Sertifikat Hak Milik)" },
+  { key: "shgb", value: "SHGB (Sertifikat Hak Guna Bangunan)" },
+  { key: "shp", value: "SHP (Sertifikat Hak Pakai)" },
+  { key: "shgu", value: "SHGU (Sertifikat Hak Guna Usaha)" },
+  {
+    key: "shmsrs",
+    value: "SHMSRS (Sertifikat Hak Milik atas Satuan Rumah Susun)",
+  },
+  { key: "sta", value: "STA (Sertifikat Tanah Adat)" },
+];
+
+const linePhoneOptions = [
+  { key: "yes", value: "Ya" },
+  { key: "no", value: "Tidak" },
+  { key: "progress", value: "Dalam Proses" },
+];
+
+const hookOptions = [
+  { key: "yes", value: "Ya" },
+  { key: "no", value: "Tidak" },
+];
+
+const conditionOptions = [
+  { key: "very_good", value: "Sangat Baik" },
+  { key: "good", value: "Baik" },
+  { key: "semi_good", value: "Cukup Baik" },
+  { key: "average", value: "Rata-rata" },
+  { key: "not_good", value: "Kurang Baik" },
+  { key: "bad", value: "Buruk" },
+  { key: "very_bad", value: "Sangat Buruk" },
+];
+
+const securityOptions = [
+  { key: "yes", value: "Ya" },
+  { key: "no", value: "Tidak" },
+];
+
+const wastafelOptions = [
+  { key: "yes", value: "Ya" },
+  { key: "no", value: "Tidak" },
+];
+const internetOptions = [
+  { key: "telkom_indihome", value: "Telkom IndiHome" },
+  { key: "firstmedia", value: "First Media" },
+  { key: "biznet", value: "Biznet" },
+  { key: "myrepublic", value: "MyRepublic" },
+  { key: "cbn", value: "CBN" },
+  { key: "mncplay", value: "MNC Play" },
+  { key: "xl_home", value: "XL Home" },
+  { key: "oxygen", value: "Oxygen.id" },
+  { key: "iconnet", value: "Icon+" },
+  { key: "transvision", value: "Transvision" },
+  { key: "megavision", value: "Megavision" },
+  { key: "other", value: "Lainnya" },
+];
+const waterSourceOptions = [
+  { key: "pam", value: "PAM (Perusahaan Air Minum)" },
+  { key: "pdam", value: "PDAM (Perusahaan Daerah Air Minum)" },
+  { key: "sumur_bor", value: "Sumur Bor" },
+  { key: "sumur_gali", value: "Sumur Gali" },
+  { key: "mata_air", value: "Mata Air" },
+  { key: "sungai", value: "Sungai" },
+  { key: "air_hujan", value: "Air Hujan" },
+  { key: "air_kemasan", value: "Air Kemasan" },
+  { key: "air_isi_ulang", value: "Air Isi Ulang" },
+  { key: "embung", value: "Embung" },
+  { key: "danau", value: "Danau" },
+  { key: "waduk", value: "Waduk" },
+  { key: "desalinasi", value: "Desalinasi Air Laut" },
+  { key: "lainnya", value: "Lainnya" },
+];
+
 const FASTAPI_LOGIN = import.meta.env.PUBLIC_FASTAPI_ENDPOINT;
 interface PropertyListProps {
   properties: PropertyList[] | null;
@@ -160,7 +262,15 @@ const PropertyList: React.FC<PropertyListProps> = ({
   const fetchPropertyDetails = async (propertyId: number) => {
     try {
       setLoadingPropertyId(propertyId);
-      const response = await fetch(`${FASTAPI_LOGIN}/properties/${propertyId}`);
+      const token = getCookie("access_token");
+      const response = await fetch(
+        `${FASTAPI_LOGIN}/properties/${propertyId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Gagal mengambil detail properti");
       }
@@ -179,12 +289,14 @@ const PropertyList: React.FC<PropertyListProps> = ({
 
   const handleSaveProperty = async (updatedProperty: Partial<PropertyList>) => {
     try {
+      const token = getCookie("access_token");
       const response = await fetch(
         `${FASTAPI_LOGIN}/properties/${updatedProperty.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(updatedProperty),
         }
@@ -202,6 +314,110 @@ const PropertyList: React.FC<PropertyListProps> = ({
       // updateProperties(updatedProperties);
     } catch (error) {
       console.error("Error menyimpan perubahan properti:", error);
+    }
+  };
+
+  const handleSaveFacility = async (
+    propertyId: number,
+    facilityId: number,
+    updatedFacility: Partial<PropertyList["facility"]>
+  ) => {
+    try {
+      console.log("Menyimpan perubahan fasilitas untuk properti:", propertyId);
+      console.log("ID Fasilitas:", facilityId);
+      console.log("Data Fasilitas yang Diperbarui:", updatedFacility);
+
+      const token = getCookie("access_token");
+      const response = await fetch(
+        `${FASTAPI_LOGIN}/properties/${propertyId}/facilities/${facilityId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedFacility),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Gagal menyimpan perubahan fasilitas");
+      }
+
+      // Refresh data fasilitas setelah berhasil diupdate
+      const updatedProperties = properties?.map((prop) =>
+        prop.id === propertyId
+          ? {
+              ...prop,
+              facility:
+                prop.facility?.id === facilityId
+                  ? { ...prop.facility, ...updatedFacility }
+                  : prop.facility,
+            }
+          : prop
+      );
+      // Asumsi ada fungsi untuk memperbarui daftar properti
+      // updateProperties(updatedProperties);
+    } catch (error) {
+      console.error("Error menyimpan perubahan fasilitas:", error);
+    }
+  };
+
+  const handleSaveSpecification = async (
+    propertyId: number,
+    specificationId: number,
+    updatedSpecification: Partial<PropertyList["specification"]>
+  ) => {
+    try {
+      console.log(
+        "Menyimpan perubahan spesifikasi untuk properti:",
+        propertyId
+      );
+      console.log("ID Spesifikasi:", specificationId);
+      console.log("Data Spesifikasi yang Diperbarui:", updatedSpecification);
+
+      const token = getCookie("access_token");
+      const response = await fetch(
+        `${FASTAPI_LOGIN}/properties/${propertyId}/specifications/${specificationId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            land_size: updatedSpecification.land_size || 0,
+            building_size: updatedSpecification.building_size || 0,
+            bedroom: updatedSpecification.bedroom || 0,
+            carpot: updatedSpecification.carport || 0,
+            bathroom: updatedSpecification.bathroom || 0,
+            dining_room: updatedSpecification.dining_room || 0,
+            living_room: updatedSpecification.living_room || 0,
+            floors: updatedSpecification.floors || 0,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Gagal menyimpan perubahan spesifikasi");
+      }
+
+      // Refresh data spesifikasi setelah berhasil diupdate
+      const updatedProperties = properties?.map((prop) =>
+        prop.id === propertyId
+          ? {
+              ...prop,
+              specification:
+                prop.specification?.id === specificationId
+                  ? { ...prop.specification, ...updatedSpecification }
+                  : prop.specification,
+            }
+          : prop
+      );
+      // Asumsi ada fungsi untuk memperbarui daftar properti
+      // updateProperties(updatedProperties);
+    } catch (error) {
+      console.error("Error menyimpan perubahan spesifikasi:", error);
     }
   };
 
@@ -265,9 +481,8 @@ const PropertyList: React.FC<PropertyListProps> = ({
             Properti Anda
           </h3>
           <Button
-            variant="outline"
             size="sm"
-            className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+            className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Tambah Properti
           </Button>
@@ -295,9 +510,8 @@ const PropertyList: React.FC<PropertyListProps> = ({
                 <Drawer>
                   <DrawerTrigger asChild>
                     <Button
-                      variant="outline"
                       size="sm"
-                      className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+                      className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
                       onClick={() =>
                         property.id && fetchPropertyDetails(property.id)
                       }
@@ -310,7 +524,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
                         : "Detail"}
                     </Button>
                   </DrawerTrigger>
-                  <DrawerContent className="sm:max-w-[800px] sm:h-[90vh] fixed left-1/2 transform -translate-x-1/2">
+                  <DrawerContent className="sm:max-w-[800px] sm:h-[100vh] fixed left-1/2 transform -translate-x-1/2">
                     <DrawerHeader className="pb-4 border-b">
                       <DrawerTitle className="text-2xl font-bold text-blue-600">
                         Detail Properti
@@ -320,9 +534,8 @@ const PropertyList: React.FC<PropertyListProps> = ({
                       </DrawerDescription>
                       <DrawerClose className="absolute top-2 right-2">
                         <Button
-                          variant="ghost"
                           size="icon"
-                          className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+                          className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
                         >
                           <X className="w-4 h-4" />
                         </Button>
@@ -331,34 +544,188 @@ const PropertyList: React.FC<PropertyListProps> = ({
                     <div className="p-6">
                       <Tabs defaultValue="detail-info">
                         <TabsList className="flex flex-row w-full p-2 mt-2 space-x-2 overflow-x-auto">
-                          <TabsTrigger value="detail-info">
+                          <TabsTrigger
+                            value="detail-info"
+                            className="data-[state=active]:text-blue-600"
+                          >
                             Detail Info
                           </TabsTrigger>
-                          <TabsTrigger value="image">Image</TabsTrigger>
-                          <TabsTrigger value="specification">
+                          <TabsTrigger
+                            value="image"
+                            className="data-[state=active]:text-blue-600"
+                          >
+                            Image
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="specification"
+                            className="data-[state=active]:text-blue-600"
+                          >
                             Specification
                           </TabsTrigger>
-                          <TabsTrigger value="facility">Facility</TabsTrigger>
+                          <TabsTrigger
+                            value="facility"
+                            className="data-[state=active]:text-blue-600"
+                          >
+                            Facility
+                          </TabsTrigger>
                         </TabsList>
+
                         <TabsContent value="detail-info">
                           {selectedProperty && (
                             <>
-                              <p className="text-gray-900 dark:text-gray-100">
-                                Judul: {selectedProperty.title}
-                              </p>
-                              <p className="text-gray-900 dark:text-gray-100">
-                                Harga: Rp{" "}
-                                {selectedProperty.price?.toLocaleString()}
-                              </p>
-                              <p className="text-gray-900 dark:text-gray-100">
-                                Alamat: {selectedProperty.address}
-                              </p>
-                              <p className="text-gray-900 dark:text-gray-100">
-                                Deskripsi: {selectedProperty.description}
-                              </p>
+                              <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
+                                <div className="flex flex-col space-y-2">
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Kategori:
+                                    </span>
+                                    <span>
+                                      {categories.find(
+                                        (cat) =>
+                                          cat.key ===
+                                          selectedProperty.category_id
+                                      )?.value || "Tidak diketahui"}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Judul:
+                                    </span>
+                                    <span>{selectedProperty.title}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Deskripsi Singkat:
+                                    </span>
+                                    <span>{selectedProperty.short_desc}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Harga:
+                                    </span>
+                                    <span>
+                                      Rp{" "}
+                                      {selectedProperty.price?.toLocaleString()}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Periode:
+                                    </span>
+                                    <span>
+                                      {period.find(
+                                        (p) => p.key === selectedProperty.period
+                                      )?.value || "Tidak diketahui"}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="flex flex-col space-y-2">
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Alamat:
+                                    </span>
+                                    <span>{selectedProperty.address}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Provinsi:
+                                    </span>
+                                    <span>
+                                      {selectedProperty.province.name}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Kabupaten:
+                                    </span>
+                                    <span>
+                                      {selectedProperty.district.name}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">Kota:</span>
+                                    <span>{selectedProperty.city.name}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">Desa:</span>
+                                    <span>{selectedProperty.village.name}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mt-4 text-sm">
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Koordinat:
+                                  </span>
+                                  <span>{selectedProperty.coordinates}</span>
+                                </div>
+                                {selectedProperty.coordinates ? (
+                                  <div className="mt-2 overflow-hidden rounded-lg aspect-video">
+                                    <iframe
+                                      width="100%"
+                                      height="80%"
+                                      frameBorder="1"
+                                      style={{ border: 0 }}
+                                      src={`https://www.google.com/maps?q=${selectedProperty.coordinates}&output=embed`}
+                                      allowFullScreen
+                                    ></iframe>
+                                  </div>
+                                ) : (
+                                  <p className="mt-2 text-xs italic text-gray-500">
+                                    Koordinat tidak tersedia
+                                  </p>
+                                )}
+                              </div>
+                              <div className="mt-1 space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Tempat Terdekat:
+                                  </span>
+                                  <span>{selectedProperty.nearby}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">Iklan:</span>
+                                  <span>
+                                    {ads.find(
+                                      (ad) => ad.key === selectedProperty.ads
+                                    )?.value || "Tidak diketahui"}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">Status:</span>
+                                  <span>
+                                    {status.find(
+                                      (s) => s.key === selectedProperty.status
+                                    )?.value || "Tidak diketahui"}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="mt-4 space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Meta Title:
+                                  </span>
+                                  <span>{selectedProperty.meta_title}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Meta Description:
+                                  </span>
+                                  <span>
+                                    {selectedProperty.meta_description}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Kata Kunci:
+                                  </span>
+                                  <span>{selectedProperty.keywords}</span>
+                                </div>
+                              </div>
                             </>
                           )}
                         </TabsContent>
+
                         <TabsContent value="image">
                           {selectedProperty && selectedProperty.images && (
                             <div className="grid grid-cols-2 gap-4">
@@ -376,55 +743,213 @@ const PropertyList: React.FC<PropertyListProps> = ({
                             </div>
                           )}
                         </TabsContent>
+
                         <TabsContent value="specification">
                           {selectedProperty &&
                             selectedProperty.specification && (
                               <>
-                                <p>
-                                  Luas Tanah:{" "}
-                                  {selectedProperty.specification.land_size} m²
-                                </p>
-                                <p>
-                                  Luas Bangunan:{" "}
-                                  {selectedProperty.specification.building_size}{" "}
-                                  m²
-                                </p>
-                                <p>
-                                  Kamar Tidur:{" "}
-                                  {selectedProperty.specification.bedroom}
-                                </p>
-                                <p>
-                                  Kamar Mandi:{" "}
-                                  {selectedProperty.specification.bathroom}
-                                </p>
-                                <p>
-                                  Lantai:{" "}
-                                  {selectedProperty.specification.floors}
-                                </p>
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Luas Tanah:
+                                    </span>
+                                    <span>
+                                      {selectedProperty.specification.land_size}{" "}
+                                      m²
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Luas Bangunan:
+                                    </span>
+                                    <span>
+                                      {
+                                        selectedProperty.specification
+                                          .building_size
+                                      }{" "}
+                                      m²
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Kamar Tidur:
+                                    </span>
+                                    <span>
+                                      {selectedProperty.specification.bedroom}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Carport:
+                                    </span>
+                                    <span>
+                                      {selectedProperty.specification.carport}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Kamar Mandi:
+                                    </span>
+                                    <span>
+                                      {selectedProperty.specification.bathroom}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Ruang Makan:
+                                    </span>
+                                    <span>
+                                      {
+                                        selectedProperty.specification
+                                          .dining_room
+                                      }
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Ruang Tamu:
+                                    </span>
+                                    <span>
+                                      {
+                                        selectedProperty.specification
+                                          .living_room
+                                      }
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Lantai:
+                                    </span>
+                                    <span>
+                                      {selectedProperty.specification.floors}
+                                    </span>
+                                  </div>
+                                </div>
                               </>
                             )}
                         </TabsContent>
                         <TabsContent value="facility">
                           {selectedProperty && selectedProperty.facility && (
                             <>
-                              <p>
-                                Sertifikat:{" "}
-                                {selectedProperty.facility.certificate}
-                              </p>
-                              <p>
-                                Listrik: {selectedProperty.facility.electricity}{" "}
-                                watt
-                              </p>
-                              <p>
-                                Internet: {selectedProperty.facility.internet}
-                              </p>
-                              <p>
-                                Sumber Air:{" "}
-                                {selectedProperty.facility.water_source}
-                              </p>
-                              <p>
-                                Keamanan: {selectedProperty.facility.security}
-                              </p>
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Sertifikat:
+                                  </span>
+                                  <span>
+                                    {certificates.find(
+                                      (cert) =>
+                                        cert.key ===
+                                        selectedProperty.facility.certificate
+                                    )?.value ||
+                                      selectedProperty.facility.certificate}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Listrik:
+                                  </span>
+                                  <span>
+                                    {selectedProperty.facility.electricity} watt
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Telepon:
+                                  </span>
+                                  <span>
+                                    {linePhoneOptions.find(
+                                      (opt) =>
+                                        opt.key ===
+                                        selectedProperty.facility.line_phone
+                                    )?.value ||
+                                      selectedProperty.facility.line_phone}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Internet:
+                                  </span>
+                                  <span>
+                                    {internetOptions.find(
+                                      (opt) =>
+                                        opt.key ===
+                                        selectedProperty.facility.internet
+                                    )?.value ||
+                                      selectedProperty.facility.internet}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Lebar Jalan:
+                                  </span>
+                                  <span>
+                                    {selectedProperty.facility.road_width}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Sumber Air:
+                                  </span>
+                                  <span>
+                                    {waterSourceOptions.find(
+                                      (opt) =>
+                                        opt.key ===
+                                        selectedProperty.facility.water_source
+                                    )?.value ||
+                                      selectedProperty.facility.water_source}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">Hook:</span>
+                                  <span>
+                                    {hookOptions.find(
+                                      (opt) =>
+                                        opt.key ===
+                                        selectedProperty.facility.hook
+                                    )?.value || selectedProperty.facility.hook}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Kondisi:
+                                  </span>
+                                  <span>
+                                    {conditionOptions.find(
+                                      (opt) =>
+                                        opt.key ===
+                                        selectedProperty.facility.condition
+                                    )?.value ||
+                                      selectedProperty.facility.condition}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Keamanan:
+                                  </span>
+                                  <span>
+                                    {securityOptions.find(
+                                      (opt) =>
+                                        opt.key ===
+                                        selectedProperty.facility.security
+                                    )?.value ||
+                                      selectedProperty.facility.security}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="font-semibold">
+                                    Wastafel:
+                                  </span>
+                                  <span>
+                                    {wastafelOptions.find(
+                                      (opt) =>
+                                        opt.key ===
+                                        selectedProperty.facility.wastafel
+                                    )?.value ||
+                                      selectedProperty.facility.wastafel}
+                                  </span>
+                                </div>
+                              </div>
                             </>
                           )}
                         </TabsContent>
@@ -471,33 +996,80 @@ const PropertyList: React.FC<PropertyListProps> = ({
                           className="flex flex-col h-full"
                         >
                           <TabsList className="flex flex-row flex-shrink-0 w-full p-2 mt-2 space-x-2 overflow-x-auto">
-                            <TabsTrigger value="detail-info">
+                            <TabsTrigger
+                              value="detail-info"
+                              className="data-[state=active]:text-blue-600"
+                            >
                               Detail Info
                             </TabsTrigger>
-                            <TabsTrigger value="image">Image</TabsTrigger>
-                            <TabsTrigger value="specification">
+                            <TabsTrigger
+                              value="image"
+                              className="data-[state=active]:text-blue-600"
+                            >
+                              Image
+                            </TabsTrigger>
+                            <TabsTrigger
+                              value="specification"
+                              className="data-[state=active]:text-blue-600"
+                            >
                               Specification
                             </TabsTrigger>
-                            <TabsTrigger value="facility">Facility</TabsTrigger>
+                            <TabsTrigger
+                              value="facility"
+                              className="data-[state=active]:text-blue-600"
+                            >
+                              Facility
+                            </TabsTrigger>
                           </TabsList>
+
+                          {/* Detail Content */}
+
                           <div className="flex-grow overflow-y-auto">
                             <TabsContent value="detail-info" className="h-full">
                               {editingPropertyId === property.id && (
-                                <EditProperti
+                                <EditDetailProperti
                                   property={property}
                                   onSave={handleSaveProperty}
                                   onClose={() => setEditingPropertyId(null)}
                                 />
                               )}
                             </TabsContent>
-                            <TabsContent value="image">
-                              {/* Tambahkan konten untuk mengedit gambar */}
-                            </TabsContent>
+
+                            {/* Tambahkan konten untuk mengedit gambar */}
+                            <TabsContent value="image"></TabsContent>
+
+                            {/* Tambahkan konten untuk mengedit Spesification */}
                             <TabsContent value="specification">
-                              {/* Tambahkan konten untuk mengedit spesifikasi */}
+                              {editingPropertyId === property.id && (
+                                <EditSpecification
+                                  specification={property.specification}
+                                  onSave={(updatedSpecification) =>
+                                    handleSaveSpecification(
+                                      property.id!,
+                                      property.specification.id!,
+                                      updatedSpecification
+                                    )
+                                  }
+                                  onClose={() => setEditingPropertyId(null)}
+                                />
+                              )}
                             </TabsContent>
+
+                            {/* Tambahkan konten untuk mengedit Facility */}
                             <TabsContent value="facility">
-                              {/* Tambahkan konten untuk mengedit fasilitas */}
+                              {editingPropertyId === property.id && (
+                                <EditFacility
+                                  facility={property.facility}
+                                  onSave={(updatedFacility) =>
+                                    handleSaveFacility(
+                                      property.id!,
+                                      property.facility.id!,
+                                      updatedFacility
+                                    )
+                                  }
+                                  onClose={() => setEditingPropertyId(null)}
+                                />
+                              )}
                             </TabsContent>
                           </div>
                         </Tabs>
