@@ -10,8 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { badgeVariants } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
-import { X } from "lucide-react";
+import { Loader2, X, Trash2 } from "lucide-react";
+
 import {
   Drawer,
   DrawerClose,
@@ -26,6 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditDetailProperti from "./EditDetailProperti";
 import EditSpecification from "./EditSpecificationProperti";
 import EditFacility from "./EditFacilityProperti";
+import EditImageProperti from "./EditImageProperti";
+import EditMapProperti from "./EditMapProperti";
 import { getCookie } from "@/utils/auth";
 
 interface PropertyList {
@@ -421,6 +423,75 @@ const PropertyList: React.FC<PropertyListProps> = ({
     }
   };
 
+  const handleSaveImage = async (
+    propertyId: number,
+    updatedImages: Array<{ id: number; image_url: string }>
+  ) => {
+    try {
+      console.log("ID Properti:", propertyId);
+      console.log("Gambar yang diperbarui:", updatedImages);
+
+      // Tidak perlu melakukan permintaan PUT ke server
+      // Gambar sudah diperbarui di komponen EditImageProperti
+
+      // Perbarui state lokal jika diperlukan
+      const updatedProperties = properties?.map((prop) =>
+        prop.id === propertyId
+          ? {
+              ...prop,
+              images: updatedImages,
+            }
+          : prop
+      );
+
+      // Jika ada fungsi untuk memperbarui daftar properti, panggil di sini
+      // updateProperties(updatedProperties);
+
+      console.log("Gambar properti berhasil diperbarui");
+    } catch (error) {
+      console.error("Error memperbarui gambar properti:", error);
+    }
+  };
+
+  // const handleSaveMap = async (
+  //   propertyId: number,
+  //   updatedCoordinates: string
+  // ) => {
+  //   try {
+  //     const token = getCookie("access_token");
+  //     const response = await fetch(
+  //       `${FASTAPI_LOGIN}/properties/${propertyId}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({
+  //           coordinates: updatedCoordinates,
+  //         }),
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("Gagal menyimpan perubahan koordinat");
+  //     }
+
+  //     // Refresh data properti setelah berhasil diupdate
+  //     const updatedProperties = properties?.map((prop) =>
+  //       prop.id === propertyId
+  //         ? { ...prop, coordinates: updatedCoordinates }
+  //         : prop
+  //     );
+  //     // Asumsi ada fungsi untuk memperbarui daftar properti
+  //     // updateProperties(updatedProperties);
+
+  //     console.log("Koordinat properti berhasil diperbarui");
+  //   } catch (error) {
+  //     console.error("Error memperbarui koordinat properti:", error);
+  //   }
+  // };
+
   if (loading) {
     return (
       <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
@@ -466,23 +537,23 @@ const PropertyList: React.FC<PropertyListProps> = ({
   }
 
   return (
-    <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
-      <CardHeader className="mb-4 md:mb-6">
-        <CardTitle className="text-xl font-bold text-blue-800 md:text-2xl dark:text-blue-300">
+    <Card className="w-full p-4 mx-auto rounded-lg shadow-lg max-w-7xl md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
+      <CardHeader className="mb-4 space-y-2 md:mb-6">
+        <CardTitle className="text-2xl font-bold text-blue-800 md:text-3xl lg:text-4xl dark:text-blue-300">
           Daftar Properti
         </CardTitle>
-        <CardDescription className="text-lg font-semibold text-blue-700 md:text-xl dark:text-blue-300">
+        <CardDescription className="text-lg font-semibold text-blue-700 md:text-xl lg:text-2xl dark:text-blue-300">
           Properti yang Anda miliki
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4 md:space-y-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+      <CardContent className="space-y-6">
+        <div className="flex flex-col items-start justify-between md:flex-row md:items-center">
+          <h3 className="mb-4 text-xl font-semibold text-blue-700 md:mb-0 dark:text-blue-300">
             Properti Anda
           </h3>
           <Button
-            size="sm"
-            className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+            size="lg"
+            className="w-full text-base text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800 md:w-auto"
           >
             Tambah Properti
           </Button>
@@ -490,238 +561,280 @@ const PropertyList: React.FC<PropertyListProps> = ({
         {properties.map((property) => (
           <div
             key={property.id}
-            className="flex flex-col p-4 rounded-lg shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
+            className="flex flex-col p-4 space-y-4 rounded-lg shadow-md md:space-y-0 md:flex-row md:items-center md:space-x-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
           >
-            <div className="flex items-center mb-4">
-              <img
-                src={getImageUrl(property)}
-                alt={property.title || "Gambar Properti"}
-                className="object-cover w-16 h-16 mr-4 rounded-lg ring-2 ring-blue-300 dark:ring-blue-600"
-              />
-              <div className="flex-grow">
-                <h4 className="mb-1 text-lg font-semibold text-blue-800 dark:text-blue-300">
-                  {property.title || "Tidak ada judul"}
-                </h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {property.short_desc || "Tidak ada deskripsi singkat"}
-                </p>
-              </div>
-              <div className="flex space-x-2">
-                <Drawer>
-                  <DrawerTrigger asChild>
-                    <Button
-                      size="sm"
-                      className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
-                      onClick={() =>
-                        property.id && fetchPropertyDetails(property.id)
-                      }
-                    >
-                      {loadingPropertyId === property.id ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : null}
-                      {loadingPropertyId === property.id
-                        ? "Memuat..."
-                        : "Detail"}
-                    </Button>
-                  </DrawerTrigger>
-                  <DrawerContent className="sm:max-w-[800px] sm:h-[100vh] fixed left-1/2 transform -translate-x-1/2">
-                    <DrawerHeader className="pb-4 border-b">
-                      <DrawerTitle className="text-2xl font-bold text-blue-600">
-                        Detail Properti
-                      </DrawerTitle>
-                      <DrawerDescription className="text-gray-500">
-                        Informasi lengkap tentang properti Anda.
-                      </DrawerDescription>
-                      <DrawerClose className="absolute top-2 right-2">
-                        <Button
-                          size="icon"
-                          className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+            <img
+              src={getImageUrl(property)}
+              alt={property.title || "Gambar Properti"}
+              className="object-cover w-full h-48 mb-4 rounded-lg md:w-48 md:h-32 md:mb-0 ring-2 ring-blue-300 dark:ring-blue-600"
+            />
+            <div className="flex-grow space-y-2">
+              <h4 className="text-xl font-semibold text-blue-800 dark:text-blue-300">
+                {property.title || "Tidak ada judul"}
+              </h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                {property.short_desc || "Tidak ada deskripsi singkat"}
+              </p>
+            </div>
+            <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    size="sm"
+                    className="w-full text-sm text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800 md:w-auto"
+                    onClick={() =>
+                      property.id && fetchPropertyDetails(property.id)
+                    }
+                  >
+                    {loadingPropertyId === property.id ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : null}
+                    {loadingPropertyId === property.id ? "Memuat..." : "Detail"}
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent className="sm:max-w-[90%] md:max-w-[80%] lg:max-w-[70%] xl:max-w-[60%] h-[90vh] sm:h-[95vh] mx-auto">
+                  <DrawerHeader className="pb-4 border-b">
+                    <DrawerTitle className="text-2xl font-bold text-blue-600">
+                      Detail Properti
+                    </DrawerTitle>
+                    <DrawerDescription className="text-gray-500">
+                      Informasi lengkap tentang properti Anda.
+                    </DrawerDescription>
+                    <DrawerClose className="absolute top-2 right-2">
+                      <Button
+                        size="icon"
+                        className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </DrawerClose>
+                  </DrawerHeader>
+                  <div className="p-6">
+                    <Tabs defaultValue="detail-info">
+                      <TabsList className="flex flex-row w-full p-2 mt-2 space-x-2 overflow-y-auto">
+                        <TabsTrigger
+                          value="detail-info"
+                          className="data-[state=active]:text-blue-600"
                         >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </DrawerClose>
-                    </DrawerHeader>
-                    <div className="p-6">
-                      <Tabs defaultValue="detail-info">
-                        <TabsList className="flex flex-row w-full p-2 mt-2 space-x-2 overflow-x-auto">
-                          <TabsTrigger
-                            value="detail-info"
-                            className="data-[state=active]:text-blue-600"
-                          >
-                            Detail Info
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="image"
-                            className="data-[state=active]:text-blue-600"
-                          >
-                            Image
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="specification"
-                            className="data-[state=active]:text-blue-600"
-                          >
-                            Specification
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="facility"
-                            className="data-[state=active]:text-blue-600"
-                          >
-                            Facility
-                          </TabsTrigger>
-                        </TabsList>
-
-                        <TabsContent value="detail-info">
+                          Detail Info
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="image"
+                          className="data-[state=active]:text-blue-600"
+                        >
+                          Image
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="specification"
+                          className="data-[state=active]:text-blue-600"
+                        >
+                          Specification
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="facility"
+                          className="data-[state=active]:text-blue-600"
+                        >
+                          Facility
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="map"
+                          className="data-[state=active]:text-blue-600"
+                        >
+                          Peta
+                        </TabsTrigger>
+                      </TabsList>
+                      <div className="flex-grow overflow-auto">
+                        <TabsContent value="detail-info" className="h-full">
                           {selectedProperty && (
                             <>
-                              <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
-                                <div className="flex flex-col space-y-2">
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Kategori:
-                                    </span>
-                                    <span>
-                                      {categories.find(
-                                        (cat) =>
-                                          cat.key ===
-                                          selectedProperty.category_id
-                                      )?.value || "Tidak diketahui"}
-                                    </span>
+                              <Card className="mb-4">
+                                <CardHeader>
+                                  <CardTitle className="text-lg sm:text-xl">
+                                    Informasi Umum
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <div className="space-y-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Kategori:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {categories.find(
+                                            (cat) =>
+                                              cat.key ===
+                                              selectedProperty.category_id
+                                          )?.value || "Tidak diketahui"}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Judul:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.title}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Deskripsi Singkat:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.short_desc}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Harga:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          Rp{" "}
+                                          {selectedProperty.price?.toLocaleString()}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Periode:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {period.find(
+                                            (p) =>
+                                              p.key === selectedProperty.period
+                                          )?.value || "Tidak diketahui"}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Alamat:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.address}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Provinsi:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.province.name}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Kabupaten:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.district.name}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Kota:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.city.name}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Desa:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.village.name}
+                                        </span>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Judul:
-                                    </span>
-                                    <span>{selectedProperty.title}</span>
+                                </CardContent>
+                              </Card>
+                              <Card className="mb-4">
+                                <CardHeader>
+                                  <CardTitle className="text-lg sm:text-xl">
+                                    Informasi Tambahan
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <div className="space-y-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Tempat Terdekat:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.nearby}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Iklan:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {ads.find(
+                                            (ad) =>
+                                              ad.key === selectedProperty.ads
+                                          )?.value || "Tidak diketahui"}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Status:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {status.find(
+                                            (s) =>
+                                              s.key === selectedProperty.status
+                                          )?.value || "Tidak diketahui"}
+                                        </span>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Deskripsi Singkat:
-                                    </span>
-                                    <span>{selectedProperty.short_desc}</span>
+                                </CardContent>
+                              </Card>
+
+                              <Card>
+                                <CardHeader>
+                                  <CardTitle className="text-lg sm:text-xl">
+                                    SEO
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <div className="space-y-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Meta Title:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.meta_title}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Meta Description:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.meta_description}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-sm font-semibold sm:text-base">
+                                          Kata Kunci:
+                                        </span>
+                                        <span className="text-sm sm:text-base">
+                                          {selectedProperty.keywords}
+                                        </span>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Harga:
-                                    </span>
-                                    <span>
-                                      Rp{" "}
-                                      {selectedProperty.price?.toLocaleString()}
-                                    </span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Periode:
-                                    </span>
-                                    <span>
-                                      {period.find(
-                                        (p) => p.key === selectedProperty.period
-                                      )?.value || "Tidak diketahui"}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="flex flex-col space-y-2">
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Alamat:
-                                    </span>
-                                    <span>{selectedProperty.address}</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Provinsi:
-                                    </span>
-                                    <span>
-                                      {selectedProperty.province.name}
-                                    </span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">
-                                      Kabupaten:
-                                    </span>
-                                    <span>
-                                      {selectedProperty.district.name}
-                                    </span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">Kota:</span>
-                                    <span>{selectedProperty.city.name}</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">Desa:</span>
-                                    <span>{selectedProperty.village.name}</span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="mt-4 text-sm">
-                                <div className="flex justify-between">
-                                  <span className="font-semibold">
-                                    Koordinat:
-                                  </span>
-                                  <span>{selectedProperty.coordinates}</span>
-                                </div>
-                                {selectedProperty.coordinates ? (
-                                  <div className="mt-2 overflow-hidden rounded-lg aspect-video">
-                                    <iframe
-                                      width="100%"
-                                      height="80%"
-                                      frameBorder="1"
-                                      style={{ border: 0 }}
-                                      src={`https://www.google.com/maps?q=${selectedProperty.coordinates}&output=embed`}
-                                      allowFullScreen
-                                    ></iframe>
-                                  </div>
-                                ) : (
-                                  <p className="mt-2 text-xs italic text-gray-500">
-                                    Koordinat tidak tersedia
-                                  </p>
-                                )}
-                              </div>
-                              <div className="mt-1 space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                  <span className="font-semibold">
-                                    Tempat Terdekat:
-                                  </span>
-                                  <span>{selectedProperty.nearby}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold">Iklan:</span>
-                                  <span>
-                                    {ads.find(
-                                      (ad) => ad.key === selectedProperty.ads
-                                    )?.value || "Tidak diketahui"}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold">Status:</span>
-                                  <span>
-                                    {status.find(
-                                      (s) => s.key === selectedProperty.status
-                                    )?.value || "Tidak diketahui"}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="mt-4 space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                  <span className="font-semibold">
-                                    Meta Title:
-                                  </span>
-                                  <span>{selectedProperty.meta_title}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold">
-                                    Meta Description:
-                                  </span>
-                                  <span>
-                                    {selectedProperty.meta_description}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="font-semibold">
-                                    Kata Kunci:
-                                  </span>
-                                  <span>{selectedProperty.keywords}</span>
-                                </div>
-                              </div>
+                                </CardContent>
+                              </Card>
                             </>
                           )}
                         </TabsContent>
@@ -953,131 +1066,204 @@ const PropertyList: React.FC<PropertyListProps> = ({
                             </>
                           )}
                         </TabsContent>
+                        <TabsContent value="map">
+                          {selectedProperty && (
+                            <Card className="mb-4">
+                              <CardHeader>
+                                <CardTitle>Lokasi</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="mt-4 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="font-semibold">
+                                      Koordinat:
+                                    </span>
+                                    <span>{selectedProperty.coordinates}</span>
+                                  </div>
+                                  {selectedProperty.coordinates ? (
+                                    <div className="mt-2 overflow-hidden rounded-lg aspect-video">
+                                      <iframe
+                                        width="100%"
+                                        height="80%"
+                                        frameBorder="1"
+                                        style={{ border: 0 }}
+                                        src={`https://www.google.com/maps?q=${selectedProperty.coordinates}&output=embed`}
+                                        allowFullScreen
+                                      ></iframe>
+                                    </div>
+                                  ) : (
+                                    <p className="mt-2 text-xs italic text-gray-500">
+                                      Koordinat tidak tersedia
+                                    </p>
+                                  )}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )}
+                        </TabsContent>
+                      </div>
+                    </Tabs>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="w-full text-sm text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800 md:w-auto"
+                    onClick={() =>
+                      property.id && handleEditProperty(property.id)
+                    }
+                  >
+                    Edit
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent className="w-full sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] sm:h-[95vh] mx-auto">
+                  <div className="flex flex-col h-full">
+                    <DrawerHeader className="relative flex-shrink-0 pb-4 border-b">
+                      <DrawerTitle className="text-2xl font-bold text-blue-600">
+                        Edit Properti
+                      </DrawerTitle>
+                      <DrawerDescription className="text-gray-500">
+                        Ubah detail properti Anda di sini.
+                      </DrawerDescription>
+                      <DrawerClose className="absolute top-2 right-2">
+                        <Button
+                          size="icon"
+                          className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </DrawerClose>
+                    </DrawerHeader>
+                    <div className="flex-grow p-6 overflow-y-auto">
+                      <Tabs
+                        defaultValue="detail-info"
+                        className="flex flex-col h-full"
+                      >
+                        <TabsList className="flex flex-row flex-shrink-0 w-full p-2 mt-2 space-x-2 overflow-x-auto">
+                          <TabsTrigger
+                            value="detail-info"
+                            className="data-[state=active]:text-blue-600"
+                          >
+                            Detail Info
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="image"
+                            className="data-[state=active]:text-blue-600"
+                          >
+                            Image
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="specification"
+                            className="data-[state=active]:text-blue-600"
+                          >
+                            Specification
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="facility"
+                            className="data-[state=active]:text-blue-600"
+                          >
+                            Facility
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="map"
+                            className="data-[state=active]:text-blue-600"
+                          >
+                            Peta
+                          </TabsTrigger>
+                        </TabsList>
+
+                        {/* Detail Content */}
+
+                        <div className="flex-grow overflow-auto">
+                          <TabsContent value="detail-info" className="h-full">
+                            {editingPropertyId === property.id && (
+                              <EditDetailProperti
+                                property={property}
+                                onSave={handleSaveProperty}
+                                onClose={() => setEditingPropertyId(null)}
+                              />
+                            )}
+                          </TabsContent>
+
+                          {/* Tambahkan konten untuk mengedit gambar */}
+                          <TabsContent value="image">
+                            {editingPropertyId === property.id && (
+                              <EditImageProperti
+                                propertyId={property.id!}
+                                images={property.images || []}
+                                onImageUpdate={(updatedImages) =>
+                                  handleSaveImage(property.id!, updatedImages)
+                                }
+                              />
+                            )}
+                          </TabsContent>
+
+                          {/* Tambahkan konten untuk mengedit Spesification */}
+                          <TabsContent value="specification">
+                            {editingPropertyId === property.id && (
+                              <EditSpecification
+                                specification={property.specification}
+                                onSave={(updatedSpecification) =>
+                                  handleSaveSpecification(
+                                    property.id!,
+                                    property.specification.id!,
+                                    updatedSpecification
+                                  )
+                                }
+                                onClose={() => setEditingPropertyId(null)}
+                              />
+                            )}
+                          </TabsContent>
+
+                          {/* Tambahkan konten untuk mengedit Facility */}
+                          <TabsContent value="facility">
+                            {editingPropertyId === property.id && (
+                              <EditFacility
+                                facility={property.facility}
+                                onSave={(updatedFacility) =>
+                                  handleSaveFacility(
+                                    property.id!,
+                                    property.facility.id!,
+                                    updatedFacility
+                                  )
+                                }
+                                onClose={() => setEditingPropertyId(null)}
+                              />
+                            )}
+                          </TabsContent>
+
+                          {/* Tambahkan konten untuk mengedit Map */}
+                          <TabsContent value="map">
+                            {editingPropertyId === property.id && (
+                              <EditMapProperti
+                                property={property}
+                                onSave={(updatedProperty) =>
+                                  handleSaveProperty(updatedProperty)
+                                }
+                                onClose={() => setEditingPropertyId(null)}
+                              />
+                            )}
+                          </TabsContent>
+                        </div>
                       </Tabs>
                     </div>
-                  </DrawerContent>
-                </Drawer>
+                  </div>
+                </DrawerContent>
+              </Drawer>
 
-                <Drawer>
-                  <DrawerTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-                      onClick={() =>
-                        property.id && handleEditProperty(property.id)
-                      }
-                    >
-                      Edit
-                    </Button>
-                  </DrawerTrigger>
-                  <DrawerContent className="w-full sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] sm:h-[95vh] fixed inset-0 m-auto overflow-hidden">
-                    <div className="flex flex-col h-full">
-                      <DrawerHeader className="relative flex-shrink-0 pb-4 border-b">
-                        <DrawerTitle className="text-2xl font-bold text-blue-600">
-                          Edit Properti
-                        </DrawerTitle>
-                        <DrawerDescription className="text-gray-500">
-                          Ubah detail properti Anda di sini.
-                        </DrawerDescription>
-                        <DrawerClose className="absolute top-2 right-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </DrawerClose>
-                      </DrawerHeader>
-                      <div className="flex-grow p-6 overflow-y-auto">
-                        <Tabs
-                          defaultValue="detail-info"
-                          className="flex flex-col h-full"
-                        >
-                          <TabsList className="flex flex-row flex-shrink-0 w-full p-2 mt-2 space-x-2 overflow-x-auto">
-                            <TabsTrigger
-                              value="detail-info"
-                              className="data-[state=active]:text-blue-600"
-                            >
-                              Detail Info
-                            </TabsTrigger>
-                            <TabsTrigger
-                              value="image"
-                              className="data-[state=active]:text-blue-600"
-                            >
-                              Image
-                            </TabsTrigger>
-                            <TabsTrigger
-                              value="specification"
-                              className="data-[state=active]:text-blue-600"
-                            >
-                              Specification
-                            </TabsTrigger>
-                            <TabsTrigger
-                              value="facility"
-                              className="data-[state=active]:text-blue-600"
-                            >
-                              Facility
-                            </TabsTrigger>
-                          </TabsList>
-
-                          {/* Detail Content */}
-
-                          <div className="flex-grow overflow-y-auto">
-                            <TabsContent value="detail-info" className="h-full">
-                              {editingPropertyId === property.id && (
-                                <EditDetailProperti
-                                  property={property}
-                                  onSave={handleSaveProperty}
-                                  onClose={() => setEditingPropertyId(null)}
-                                />
-                              )}
-                            </TabsContent>
-
-                            {/* Tambahkan konten untuk mengedit gambar */}
-                            <TabsContent value="image"></TabsContent>
-
-                            {/* Tambahkan konten untuk mengedit Spesification */}
-                            <TabsContent value="specification">
-                              {editingPropertyId === property.id && (
-                                <EditSpecification
-                                  specification={property.specification}
-                                  onSave={(updatedSpecification) =>
-                                    handleSaveSpecification(
-                                      property.id!,
-                                      property.specification.id!,
-                                      updatedSpecification
-                                    )
-                                  }
-                                  onClose={() => setEditingPropertyId(null)}
-                                />
-                              )}
-                            </TabsContent>
-
-                            {/* Tambahkan konten untuk mengedit Facility */}
-                            <TabsContent value="facility">
-                              {editingPropertyId === property.id && (
-                                <EditFacility
-                                  facility={property.facility}
-                                  onSave={(updatedFacility) =>
-                                    handleSaveFacility(
-                                      property.id!,
-                                      property.facility.id!,
-                                      updatedFacility
-                                    )
-                                  }
-                                  onClose={() => setEditingPropertyId(null)}
-                                />
-                              )}
-                            </TabsContent>
-                          </div>
-                        </Tabs>
-                      </div>
-                    </div>
-                  </DrawerContent>
-                </Drawer>
-              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="flex items-center justify-center w-full text-sm text-white bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800 md:w-auto"
+                // onClick={() => property.id && handleDeleteProperty(property.id)}
+              >
+                <Trash2 className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">Hapus</span>
+              </Button>
             </div>
           </div>
         ))}
