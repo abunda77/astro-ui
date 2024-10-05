@@ -59,100 +59,117 @@ const EditProperti: React.FC<EditPropertiProps> = ({
     null
   );
   const [isLoading, setIsLoading] = useState(false);
-  const autocompleteInputRef = useRef<HTMLInputElement>(null);
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const PUBLIC_GOOGLE_MAP = import.meta.env.PUBLIC_GOOGLE_MAP;
 
-  const initializeMap = useCallback(() => {
-    console.log("Initializing map...");
-    if (
-      !window.google ||
-      !autocompleteInputRef.current ||
-      !mapContainerRef.current ||
-      mapRef.current
-    ) {
-      console.log("Map initialization conditions not met");
-      return;
-    }
+  let map: google.maps.Map;
+  let marker: google.maps.marker.AdvancedMarkerElement;
+  let infoWindow: google.maps.InfoWindow;
 
-    const defaultLocation = { lat: -6.2088, lng: 106.8456 }; // Jakarta coordinates
-    console.log("Default location:", defaultLocation);
+  const initMap = useCallback(async () => {
+    const { Map } = (await google.maps.importLibrary(
+      "maps"
+    )) as google.maps.MapsLibrary;
+    const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+      "marker"
+    )) as google.maps.MarkerLibrary;
+    const { PlaceAutocompleteElement } = (await google.maps.importLibrary(
+      "places"
+    )) as google.maps.PlacesLibrary & { PlaceAutocompleteElement: any };
 
-    mapRef.current = new window.google.maps.Map(mapContainerRef.current, {
-      center: defaultLocation,
+    map = new Map(mapContainerRef.current as HTMLElement, {
+      center: { lat: -6.2088, lng: 106.8456 },
       zoom: 13,
+      mapId: "4504f8b37365c3d0",
+      mapTypeControl: false,
     });
-    console.log("Map created");
 
-    autocompleteRef.current = new window.google.maps.places.Autocomplete(
-      autocompleteInputRef.current,
-      {
-        types: ["address"],
-      }
-    );
-    console.log("Autocomplete initialized");
+    const placeAutocomplete = new PlaceAutocompleteElement();
+    placeAutocomplete.id = "place-autocomplete-input";
 
-    autocompleteRef.current.addListener("place_changed", () => {
-      console.log("Place changed event triggered");
-      const place = autocompleteRef.current?.getPlace();
-      if (place?.geometry?.location) {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        const coordinates = `${lat},${lng}`;
-        console.log("New coordinates:", coordinates);
+    const card = document.createElement("div");
+    card.id = "place-autocomplete-card";
+    card.appendChild(placeAutocomplete);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(card);
+
+    marker = new AdvancedMarkerElement({
+      map,
+    });
+
+    infoWindow = new google.maps.InfoWindow({});
+
+    placeAutocomplete.addEventListener(
+      "gmp-placeselect",
+      async ({ place }: { place: google.maps.places.Place }) => {
+        await place.fetchFields({
+          fields: ["displayName", "formattedAddress", "location"],
+        });
+
+        if (place.viewport) {
+          map.fitBounds(place.viewport);
+        } else if (place.location) {
+          map.setCenter(place.location);
+          map.setZoom(17);
+        }
+
+        let content =
+          '<div id="infowindow-content">' +
+          '<span id="place-displayname" class="title">' +
+          place.displayName +
+          "</span><br />" +
+          '<span id="place-address">' +
+          place.formattedAddress +
+          "</span>" +
+          "</div>";
+
+        if (place.location) {
+          updateInfoWindow(content, place.location);
+          marker.position = place.location;
+        }
 
         setEditedProperty((prev) => ({
           ...prev,
-          coordinates,
-          address: place.formatted_address || "",
+          coordinates: `${place.location?.lat},${place.location?.lng}`,
+          address: place.formattedAddress || "",
         }));
-        console.log("Updated edited property with new location");
-
-        mapRef.current?.setCenter({ lat, lng });
-        console.log("Map center updated");
-
-        if (markerRef.current) {
-          markerRef.current.setPosition({ lat, lng });
-          console.log("Existing marker position updated");
-        } else {
-          markerRef.current = new window.google.maps.Marker({
-            position: { lat, lng },
-            map: mapRef.current,
-          });
-          console.log("New marker created");
-        }
-      } else {
-        console.log("Place does not have valid geometry");
       }
-    });
+    );
   }, []);
 
   useEffect(() => {
-    console.log("useEffect for map initialization triggered");
-    if (window.google) {
-      console.log("Google Maps API already loaded");
-      initializeMap();
-    } else {
-      console.log("Loading Google Maps API script");
+    const loadGoogleMapsScript = () => {
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${PUBLIC_GOOGLE_MAP}&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${PUBLIC_GOOGLE_MAP}&libraries=places,marker&callback=initMap`;
       script.async = true;
       script.defer = true;
-      script.onload = () => {
-        console.log("Google Maps API script loaded");
-        initializeMap();
-      };
       document.head.appendChild(script);
+    };
 
-      return () => {
-        console.log("Cleaning up Google Maps API script");
-        document.head.removeChild(script);
-      };
+    if (!window.google) {
+      loadGoogleMapsScript();
+    } else {
+      initMap();
     }
-  }, [initializeMap, PUBLIC_GOOGLE_MAP]);
+
+    return () => {
+      const script = document.querySelector(
+        'script[src^="https://maps.googleapis.com/maps/api/js"]'
+      );
+      if (script) {
+        document.head.removeChild(script);
+      }
+    };
+  }, [initMap, PUBLIC_GOOGLE_MAP]);
+
+  const updateInfoWindow = (content: string, center: google.maps.LatLng) => {
+    infoWindow.setContent(content);
+    infoWindow.setPosition(center);
+    infoWindow.open({
+      map,
+      anchor: marker,
+      shouldFocus: false,
+    });
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -160,7 +177,6 @@ const EditProperti: React.FC<EditPropertiProps> = ({
     >
   ) => {
     const { name, value } = e.target;
-    console.log(`Handling change for ${name}: ${value}`);
     setEditedProperty((prev) => ({
       ...prev,
       [name]: value,
@@ -169,18 +185,15 @@ const EditProperti: React.FC<EditPropertiProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form...");
     setIsLoading(true);
     try {
       await onSave(editedProperty);
-      console.log("Property saved successfully");
       setAlertStatus("success");
     } catch (error) {
       console.error("Error saving property:", error);
       setAlertStatus("error");
     } finally {
       setIsLoading(false);
-      console.log("Form submission completed");
     }
   };
 
@@ -206,7 +219,6 @@ const EditProperti: React.FC<EditPropertiProps> = ({
       )}
 
       <div className="grid gap-8">
-        {/* Hidden inputs */}
         {Object.entries(editedProperty).map(([key, value]) => (
           <Input
             key={key}
@@ -217,7 +229,6 @@ const EditProperti: React.FC<EditPropertiProps> = ({
           />
         ))}
 
-        {/* Location Section */}
         <div className="relative p-6 rounded-lg dark:bg-gray-800">
           <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
             Lokasi
@@ -238,18 +249,6 @@ const EditProperti: React.FC<EditPropertiProps> = ({
           </Button>
 
           <div className="grid gap-4 mb-4">
-            <div className="flex flex-col space-y-1">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Cari Lokasi
-              </label>
-              <input
-                ref={autocompleteInputRef}
-                type="text"
-                placeholder="Masukkan alamat properti"
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
             <ProfileInput
               label="Koordinat"
               name="coordinates"
