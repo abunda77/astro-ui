@@ -34,8 +34,11 @@ interface ProfileInputProps {
   placeholder?: string;
 }
 
-interface EditPropertiProps {
-  property: PropertyList;
+interface EditMapPropertiProps {
+  property: {
+    coordinates: string;
+    address?: string;
+  };
   onSave: (updatedProperty: Partial<PropertyList>) => Promise<void>;
   onClose: () => void;
 }
@@ -90,7 +93,7 @@ const StatusAlert: React.FC<{ status: AlertStatus }> = ({ status }) => {
   );
 };
 
-const EditProperti: React.FC<EditPropertiProps> = ({
+const EditMapProperti: React.FC<EditMapPropertiProps> = ({
   property,
   onSave,
   onClose,
@@ -292,4 +295,4 @@ const EditProperti: React.FC<EditPropertiProps> = ({
   );
 };
 
-export default EditProperti;
+export default EditMapProperti;

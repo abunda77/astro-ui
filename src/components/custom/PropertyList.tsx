@@ -1240,7 +1240,10 @@ const PropertyList: React.FC<PropertyListProps> = ({
                           <TabsContent value="map">
                             {editingPropertyId === property.id && (
                               <EditMapProperti
-                                property={property}
+                                property={{
+                                  ...property,
+                                  coordinates: property.coordinates || "", // Pastikan coordinates selalu string
+                                }}
                                 onSave={(updatedProperty) =>
                                   handleSaveProperty(updatedProperty)
                                 }
