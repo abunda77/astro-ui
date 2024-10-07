@@ -12,6 +12,7 @@ const AutoCompleteMap: React.FC = () => {
     lat: -7.8185690999999995,
     lng: 110.39499769999999,
   });
+  const [formattedAddress, setFormattedAddress] = useState<string>("");
   const mapRef = useRef<google.maps.Map | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -21,6 +22,14 @@ const AutoCompleteMap: React.FC = () => {
     if (e.latLng) {
       const newPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
       setMarkerPosition(newPosition);
+
+      // Mendapatkan alamat berformat dari koordinat baru
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: newPosition }, (results, status) => {
+        if (status === "OK" && results?.[0]) {
+          setFormattedAddress(results[0].formatted_address);
+        }
+      });
     }
   }, []);
 
@@ -51,6 +60,7 @@ const AutoCompleteMap: React.FC = () => {
               lng: place.geometry.location.lng(),
             };
             setMarkerPosition(newPosition);
+            setFormattedAddress(place.formatted_address || "");
 
             if (mapRef.current) {
               mapRef.current.setCenter(newPosition);
@@ -66,15 +76,30 @@ const AutoCompleteMap: React.FC = () => {
     initAutocomplete();
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormattedAddress(value);
+  };
+
   return (
     <APIProvider apiKey={PUBLIC_GOOGLE_MAP}>
       <div className="flex flex-col h-screen">
-        <div className="p-4">
+        <div className="p-4 space-y-4">
           <Input
             type="text"
             id="place-autocomplete-input"
             placeholder="Cari lokasi..."
             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formattedAddress}
+            onChange={handleInputChange}
+          />
+          <Input
+            type="hidden"
+            placeholder="Alamat terformat..."
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formattedAddress}
+            onChange={handleInputChange}
+            readOnly
           />
         </div>
         <div className="flex-grow">
@@ -84,6 +109,7 @@ const AutoCompleteMap: React.FC = () => {
             mapId="4504f8b37365c3d0"
             gestureHandling="greedy"
             disableDefaultUI={true}
+            // onLoad={onMapLoad}
           >
             <Marker
               position={markerPosition}

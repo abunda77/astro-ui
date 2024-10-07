@@ -16,6 +16,7 @@
     "@astrojs/tailwind": "^5.1.0",
     "@astrolib/seo": "^1.0.0-beta.5",
     "@getbrevo/brevo": "^2.2.0",
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@iconify-json/mdi": "^1.1.68",
     "@material-tailwind/react": "^3.0.0-beta.18",
     "@radix-ui/react-accordion": "^1.2.0",
