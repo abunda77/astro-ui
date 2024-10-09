@@ -4,7 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
-import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
+import {
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  ControlPosition,
+  MapControl,
+} from "@vis.gl/react-google-maps";
 
 // Improved type definitions
 type AlertStatus = "success" | "error" | null;
@@ -20,56 +26,48 @@ interface PropertyList {
   [key: string]: string | undefined;
 }
 
-interface PlaceJSON {
-  formattedAddress: string;
-  location?: LatLng;
-}
-
-interface ProfileInputProps {
-  label: string;
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  type?: string;
-  placeholder?: string;
-}
-
 interface EditMapPropertiProps {
-  property: {
-    coordinates: string;
-    address?: string;
-  };
+  property: PropertyList;
   onSave: (updatedProperty: Partial<PropertyList>) => Promise<void>;
   onClose: () => void;
 }
 
-// Extracted to a separate component for better reusability
-const ProfileInput: React.FC<ProfileInputProps> = ({
-  label,
-  name,
-  value,
-  onChange,
-  type = "text",
-  placeholder,
-}) => (
-  <div className="flex flex-col space-y-1">
-    <label
-      htmlFor={name}
-      className="text-sm font-medium text-gray-700 dark:text-gray-300"
-    >
-      {label}
-    </label>
-    <Input
-      type={type}
-      id={name}
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-    />
-  </div>
-);
+type CustomZoomControlProps = {
+  controlPosition: ControlPosition;
+  zoom: number;
+  onZoomChange: (zoom: number) => void;
+};
+
+const CustomZoomControl = ({
+  controlPosition,
+  zoom,
+  onZoomChange,
+}: CustomZoomControlProps) => {
+  return (
+    <MapControl position={controlPosition}>
+      <div
+        style={{
+          margin: "10px",
+          padding: "1em",
+          background: "rgba(255,255,255,0.4)",
+          display: "flex",
+          flexFlow: "column nowrap",
+        }}
+      >
+        <label htmlFor={"zoom"}>Ini adalah kontrol zoom kustom!</label>
+        <input
+          id={"zoom"}
+          type={"range"}
+          min={1}
+          max={18}
+          step={"any"}
+          value={zoom}
+          onChange={(ev) => onZoomChange(ev.target.valueAsNumber)}
+        />
+      </div>
+    </MapControl>
+  );
+};
 
 // Extracted alert component for reusability
 const StatusAlert: React.FC<{ status: AlertStatus }> = ({ status }) => {
@@ -110,6 +108,10 @@ const EditMapProperti: React.FC<EditMapPropertiProps> = ({
       ? parseFloat(property.coordinates.split(",")[1])
       : 106.8456,
   }));
+  const [formattedAddress, setFormattedAddress] = useState<string>(
+    property.address || ""
+  );
+  const [zoom, setZoom] = useState<number>(13);
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -133,6 +135,15 @@ const EditMapProperti: React.FC<EditMapPropertiProps> = ({
         const newPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
         setMarkerPosition(newPosition);
         updateEditedProperty(newPosition);
+
+        // Mendapatkan alamat berformat dari koordinat baru
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ location: newPosition }, (results, status) => {
+          if (status === "OK" && results?.[0]) {
+            setFormattedAddress(results[0].formatted_address);
+            updateEditedProperty(newPosition, results[0].formatted_address);
+          }
+        });
       }
     },
     [updateEditedProperty]
@@ -153,6 +164,7 @@ const EditMapProperti: React.FC<EditMapPropertiProps> = ({
 
         const autocomplete = new google.maps.places.Autocomplete(input, {
           fields: ["formatted_address", "geometry"],
+          componentRestrictions: { country: "ID" }, // Menambahkan pembatasan untuk Indonesia
         });
 
         autocompleteRef.current = autocomplete;
@@ -165,11 +177,12 @@ const EditMapProperti: React.FC<EditMapPropertiProps> = ({
               lng: place.geometry.location.lng(),
             };
             setMarkerPosition(newPosition);
-            updateEditedProperty(newPosition, place.formatted_address);
+            setFormattedAddress(place.formatted_address || "");
 
             if (mapRef.current) {
               mapRef.current.setCenter(newPosition);
               mapRef.current.setZoom(17);
+              setZoom(17);
             }
           }
         });
@@ -179,19 +192,27 @@ const EditMapProperti: React.FC<EditMapPropertiProps> = ({
     };
 
     initAutocomplete();
-  }, [updateEditedProperty]);
+  }, []);
 
-  const handleChange = useCallback(
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >
-    ) => {
-      const { name, value } = e.target;
-      setEditedProperty((prev) => ({ ...prev, [name]: value }));
-    },
-    []
-  );
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    console.log(`Handling change for ${name}: ${value}`);
+    setEditedProperty((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleZoomChange = (newZoom: number) => {
+    setZoom(newZoom);
+    if (mapRef.current) {
+      mapRef.current.setZoom(newZoom);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,16 +234,6 @@ const EditMapProperti: React.FC<EditMapPropertiProps> = ({
         <StatusAlert status={alertStatus} />
 
         <div className="grid gap-8">
-          {Object.entries(editedProperty).map(([key, value]) => (
-            <Input
-              key={key}
-              type="hidden"
-              name={key}
-              value={value?.toString() || ""}
-              onChange={handleChange}
-            />
-          ))}
-
           <div className="relative p-6 rounded-lg dark:bg-gray-800">
             <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
               Lokasi
@@ -243,42 +254,64 @@ const EditMapProperti: React.FC<EditMapPropertiProps> = ({
             </Button>
 
             <div className="grid gap-4 mb-4">
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Cari Lokasi
-                </label>
-                <Input
-                  type="text"
-                  id="place-autocomplete-input"
-                  name="place-autocomplete"
-                  placeholder="Masukkan alamat atau nama tempat"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <ProfileInput
-                label="Koordinat"
+              <Input
+                type="text"
+                id="place-autocomplete-input"
+                placeholder="Cari lokasi..."
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={formattedAddress}
+                onChange={handleInputChange}
+              />
+              <Input
+                type="text"
+                name="address"
+                value={formattedAddress}
+                onChange={handleInputChange}
+                readOnly
+              />
+              <Input
+                type="text"
                 name="coordinates"
                 value={editedProperty.coordinates || ""}
-                onChange={handleChange}
-                placeholder="Koordinat akan terisi otomatis"
+                readOnly
               />
             </div>
 
-            <Map
-              zoom={13}
-              center={markerPosition}
-              mapId="4504f8b37365c3d0"
-              className="w-full h-[300px] rounded-lg"
-            >
-              <Marker
-                position={markerPosition}
-                draggable={true}
-                onDragEnd={handleMarkerDragEnd}
-              />
-            </Map>
+            <div className="flex-grow">
+              <Map
+                zoom={zoom}
+                center={markerPosition}
+                mapId="9e8e34d21ff12101"
+                gestureHandling="greedy"
+                disableDefaultUI={true}
+                // onLoad={onMapLoad}
+                className="w-full h-[300px] rounded-lg"
+              >
+                <AdvancedMarker
+                  position={markerPosition}
+                  draggable={true}
+                  onDragEnd={handleMarkerDragEnd}
+                />
+                <CustomZoomControl
+                  controlPosition={ControlPosition.TOP_LEFT}
+                  zoom={zoom}
+                  onZoomChange={handleZoomChange}
+                />
+              </Map>
+            </div>
           </div>
         </div>
+
+        {/* Hidden inputs */}
+        {Object.entries(editedProperty).map(([key, value]) => (
+          <Input
+            key={key}
+            type="hidden"
+            name={key}
+            value={value?.toString() || ""}
+            onChange={handleInputChange}
+          />
+        ))}
 
         <div className="flex justify-center pt-6 space-x-4 border-t dark:border-gray-700">
           <Button

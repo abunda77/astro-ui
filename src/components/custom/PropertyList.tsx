@@ -289,6 +289,10 @@ const PropertyList: React.FC<PropertyListProps> = ({
     setEditingPropertyId(propertyId);
   };
 
+  const handleAddProperty = () => {
+    setEditingPropertyId(0); // Menggunakan 0 atau nilai khusus untuk menandakan properti baru
+  };
+
   const handleSaveProperty = async (updatedProperty: Partial<PropertyList>) => {
     try {
       const token = getCookie("access_token");
@@ -525,13 +529,44 @@ const PropertyList: React.FC<PropertyListProps> = ({
   if (!properties || properties.length === 0) {
     return (
       <Card className="flex items-center justify-center h-64 max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
-        <Button
-          variant="outline"
-          size="lg"
-          className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
-        >
-          Buat Iklan Properti
-        </Button>
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+              onClick={() =>
+                document.getElementById("tambah-properti-button")?.click()
+              }
+            >
+              Buat Iklan Properti
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="w-full sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] sm:h-[95vh] mx-auto">
+            <div className="flex flex-col h-full">
+              <DrawerHeader className="relative flex-shrink-0 pb-4 border-b">
+                <DrawerTitle className="text-2xl font-bold text-blue-600">
+                  Tambah Properti Baru
+                </DrawerTitle>
+                <DrawerDescription className="text-gray-500">
+                  Tambahkan Properti Baru Anda di sini .
+                </DrawerDescription>
+                <DrawerClose className="absolute top-2 right-2">
+                  <Button
+                    size="icon"
+                    className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </DrawerClose>
+              </DrawerHeader>
+              <div className="flex-grow p-6 overflow-y-auto">
+                {/* Add your form for adding a new property here */}
+                {/* You can reuse components from EditDetailProperti, EditImageProperti, etc. */}
+              </div>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </Card>
     );
   }
@@ -551,12 +586,41 @@ const PropertyList: React.FC<PropertyListProps> = ({
           <h3 className="mb-4 text-xl font-semibold text-blue-700 md:mb-0 dark:text-blue-300">
             Properti Anda
           </h3>
-          <Button
-            size="lg"
-            className="w-full text-base text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800 md:w-auto"
-          >
-            Tambah Properti
-          </Button>
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button
+                id="tambah-properti-button"
+                size="lg"
+                className="w-full text-base text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800 md:w-auto"
+              >
+                Tambah Properti
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent className="w-full sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] sm:h-[95vh] mx-auto">
+              <div className="flex flex-col h-full">
+                <DrawerHeader className="relative flex-shrink-0 pb-4 border-b">
+                  <DrawerTitle className="text-2xl font-bold text-blue-600">
+                    Tambah Properti
+                  </DrawerTitle>
+                  <DrawerDescription className="text-gray-500">
+                    Tambahkan lagi data properti Anda di sini.
+                  </DrawerDescription>
+                  <DrawerClose className="absolute top-2 right-2">
+                    <Button
+                      size="icon"
+                      className="text-white bg-blue-500 hover:bg-blue-600 dark:text-gray-100 dark:bg-blue-700 dark:hover:bg-blue-800"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </DrawerClose>
+                </DrawerHeader>
+                <div className="flex-grow p-6 overflow-y-auto">
+                  {/* Add your form for adding a new property here */}
+                  {/* You can reuse components from EditDetailProperti, EditImageProperti, etc. */}
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
         </div>
         {properties.map((property) => (
           <div
@@ -1241,11 +1305,14 @@ const PropertyList: React.FC<PropertyListProps> = ({
                             {editingPropertyId === property.id && (
                               <EditMapProperti
                                 property={{
-                                  ...property,
-                                  coordinates: property.coordinates || "", // Pastikan coordinates selalu string
+                                  coordinates: property.coordinates ?? "",
+                                  address: property.address ?? "", // Menggunakan operator nullish coalescing
                                 }}
                                 onSave={(updatedProperty) =>
-                                  handleSaveProperty(updatedProperty)
+                                  handleSaveProperty({
+                                    ...property,
+                                    ...updatedProperty,
+                                  })
                                 }
                                 onClose={() => setEditingPropertyId(null)}
                               />

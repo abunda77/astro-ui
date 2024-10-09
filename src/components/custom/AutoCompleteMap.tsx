@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
+import {
+  APIProvider,
+  Map,
+  Marker,
+  ControlPosition,
+  MapControl,
+} from "@vis.gl/react-google-maps";
 import { Input } from "@/components/ui/input";
 
 interface LatLng {
@@ -7,12 +13,50 @@ interface LatLng {
   lng: number;
 }
 
+type CustomZoomControlProps = {
+  controlPosition: ControlPosition;
+  zoom: number;
+  onZoomChange: (zoom: number) => void;
+};
+
+const CustomZoomControl = ({
+  controlPosition,
+  zoom,
+  onZoomChange,
+}: CustomZoomControlProps) => {
+  return (
+    <MapControl position={controlPosition}>
+      <div
+        style={{
+          margin: "10px",
+          padding: "1em",
+          background: "rgba(255,255,255,0.4)",
+          display: "flex",
+          flexFlow: "column nowrap",
+        }}
+      >
+        <label htmlFor={"zoom"}>Ini adalah kontrol zoom kustom!</label>
+        <input
+          id={"zoom"}
+          type={"range"}
+          min={1}
+          max={18}
+          step={"any"}
+          value={zoom}
+          onChange={(ev) => onZoomChange(ev.target.valueAsNumber)}
+        />
+      </div>
+    </MapControl>
+  );
+};
+
 const AutoCompleteMap: React.FC = () => {
   const [markerPosition, setMarkerPosition] = useState<LatLng>({
     lat: -7.8185690999999995,
     lng: 110.39499769999999,
   });
   const [formattedAddress, setFormattedAddress] = useState<string>("");
+  const [zoom, setZoom] = useState<number>(13);
   const mapRef = useRef<google.maps.Map | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -65,6 +109,7 @@ const AutoCompleteMap: React.FC = () => {
             if (mapRef.current) {
               mapRef.current.setCenter(newPosition);
               mapRef.current.setZoom(17);
+              setZoom(17);
             }
           }
         });
@@ -79,6 +124,13 @@ const AutoCompleteMap: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFormattedAddress(value);
+  };
+
+  const handleZoomChange = (newZoom: number) => {
+    setZoom(newZoom);
+    if (mapRef.current) {
+      mapRef.current.setZoom(newZoom);
+    }
   };
 
   return (
@@ -104,9 +156,9 @@ const AutoCompleteMap: React.FC = () => {
         </div>
         <div className="flex-grow">
           <Map
-            zoom={13}
+            zoom={zoom}
             center={markerPosition}
-            mapId="4504f8b37365c3d0"
+            mapId="9e8e34d21ff12101"
             gestureHandling="greedy"
             disableDefaultUI={true}
             // onLoad={onMapLoad}
@@ -115,6 +167,11 @@ const AutoCompleteMap: React.FC = () => {
               position={markerPosition}
               draggable={true}
               onDragEnd={handleMarkerDragEnd}
+            />
+            <CustomZoomControl
+              controlPosition={ControlPosition.TOP_LEFT}
+              zoom={zoom}
+              onZoomChange={handleZoomChange}
             />
           </Map>
         </div>
