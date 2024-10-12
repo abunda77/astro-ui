@@ -116,25 +116,33 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
 
   const renderSelect = useCallback(
     (level: Level, value: string, disabled: boolean) => (
-      <Select
-        key={level}
-        onValueChange={handleChange(level)}
-        value={value}
-        disabled={disabled}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue
-            placeholder={`Pilih ${level.charAt(0).toUpperCase() + level.slice(1)}`}
-          />
-        </SelectTrigger>
-        <SelectContent>
-          {regions[level]?.map((region) => (
-            <SelectItem key={region.code} value={region.code}>
-              {region.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-col space-y-1">
+        <label
+          htmlFor={level}
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          {level.charAt(0).toUpperCase() + level.slice(1)}
+        </label>
+        <Select
+          key={level}
+          onValueChange={handleChange(level)}
+          value={value}
+          disabled={disabled}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue
+              placeholder={`Pilih ${level.charAt(0).toUpperCase() + level.slice(1)}`}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {regions[level]?.map((region) => (
+              <SelectItem key={region.code} value={region.code}>
+                {region.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     ),
     [regions, handleChange]
   );

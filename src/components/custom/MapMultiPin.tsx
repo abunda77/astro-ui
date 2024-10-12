@@ -141,10 +141,19 @@ const MapMultiPin: React.FC = () => {
               position={parseCoordinates(selectedProperty.coordinates)}
               onCloseClick={() => setSelectedProperty(null)}
             >
-              <div>
-                <h3 className="font-bold">{selectedProperty.title}</h3>
-                <p>{selectedProperty.address}</p>
-                <p>ID: {selectedProperty.id}</p>
+              <div className="w-64 sm:w-80 md:w-96">
+                <div className="flex items-center mb-2">
+                  <img
+                    src={`${import.meta.env.PUBLIC_HOME_DOMAIN}/images/logo.png`}
+                    alt="Logo"
+                    className="w-12 h-6 sm:w-16 sm:h-8 md:w-20 md:h-10 mr-2"
+                  />
+                  <h2 className="text-sm sm:text-base md:text-lg font-bold truncate">
+                    {selectedProperty.title}
+                  </h2>
+                </div>
+                <p className="text-xs sm:text-sm md:text-base">{selectedProperty.address}</p>
+                <p className="text-xs sm:text-sm md:text-base">ID: {selectedProperty.id}</p>
               </div>
             </InfoWindow>
           )}
