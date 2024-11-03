@@ -19,6 +19,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Highlight } from "rsuite";
 import { createUniqueSlug } from "@/lib/utils";
+import MapMultiPin from "./MapMultiPin";
+import MapSinglePin from "./MapSinglePin";
 
 interface Property {
   id: number;
@@ -34,6 +36,7 @@ interface Property {
   user: { name: string };
   images: { image_url: string; is_primary: boolean }[];
   created_at: string;
+  coordinates: string;
 }
 
 interface PropertyResponse {
@@ -134,16 +137,18 @@ const SearchResult: React.FC = () => {
         setNoResults(false);
         const url = `${urlendpoint}/properties/search/?page=${currentPage}&size=${pageSize}&keyword=${searchTerm}&location=${searchLocation}`;
         const response = await fetch(url);
-        console.log(response);
+        console.log("Response:", response);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: PropertyResponse = await response.json();
+        console.log("Data:", data);
         const sortedProperties = data.items.sort((a, b) => {
           return (
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           );
         });
+        console.log("Sorted Properties:", sortedProperties);
         if (sortedProperties.length === 0 && currentPage === 1) {
           setNoResults(true);
         }
@@ -328,6 +333,20 @@ const SearchResult: React.FC = () => {
           <h3 className="text-lg font-semibold text-center text-gray-800 dark:text-gray-200 sm:text-xl">
             Hasil Pencarian
           </h3>
+
+          {/* Tampilkan Map */}
+          <div className="w-full h-[400px] rounded-lg shadow-lg mb-8">
+            <MapSinglePin
+              properties={properties.map((property) => ({
+                id: property.id,
+                title: property.title,
+                price: property.price,
+                address: property.address,
+                coordinates: property.coordinates,
+              }))}
+            />
+          </div>
+
           <div className="flex flex-wrap justify-center p-4 ">
             {properties.map((property) => (
               <div
@@ -386,9 +405,14 @@ const SearchResult: React.FC = () => {
           <p>Loading...</p>
         </div>
       )}
+
       {/* Customer logos */}
       {properties.length === 0 && !loading && !noResults && (
-        <div className="flex flex-col items-center mt-8 mb-12">
+        <div className="flex flex-col items-center mt-8 mb-16">
+          <div className="w-full h-[400px] ounded-lg  shadow-lg mb-8">
+            <MapMultiPin />
+          </div>
+
           <p className="mb-12 text-2xl text-gray-500 dark:text-gray-400">
             As Seen on{" "}
           </p>

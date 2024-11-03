@@ -22,13 +22,25 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditDetailProperti from "./EditDetailProperti";
 import EditSpecification from "./EditSpecificationProperti";
 import EditFacility from "./EditFacilityProperti";
 import EditImageProperti from "./EditImageProperti";
 import EditMapProperti from "./EditMapProperti";
-import { getCookie } from "@/utils/auth";
+import AddDetailProperti from "./AddDetailProperti";
+import { getCookie, getUserId } from "@/utils/auth";
 
 interface PropertyList {
   user_id: number | null;
@@ -210,10 +222,11 @@ interface PropertyListProps {
   properties: PropertyList[] | null;
   isLoading: boolean;
   homedomain: string;
+  onRefresh: () => void; // Tambahkan ini
 }
 
 const PropertyList: React.FC<PropertyListProps> = ({
-  properties,
+  properties: initialProperties,
   isLoading,
   homedomain,
 }) => {
@@ -227,7 +240,37 @@ const PropertyList: React.FC<PropertyListProps> = ({
   const [editingPropertyId, setEditingPropertyId] = useState<number | null>(
     null
   );
+  const [properties, setProperties] = useState<PropertyList[] | null>(
+    initialProperties
+  );
 
+  const onRefresh = () => {
+    setLoading(true);
+    // Panggil fungsi untuk memuat ulang data properti
+    loadData();
+  };
+
+  const loadData = async () => {
+    try {
+      // Implementasi logika untuk memuat ulang data properti
+      // Misalnya, panggil API untuk mendapatkan data terbaru
+      const response = await fetch(`${FASTAPI_LOGIN}/properties`, {
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Gagal memuat data properti");
+      }
+      const data = await response.json();
+      // Perbarui state properties dengan data terbaru
+      setProperties(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error memuat ulang data properti:", error);
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -289,8 +332,57 @@ const PropertyList: React.FC<PropertyListProps> = ({
     setEditingPropertyId(propertyId);
   };
 
-  const handleAddProperty = () => {
-    setEditingPropertyId(0); // Menggunakan 0 atau nilai khusus untuk menandakan properti baru
+  const handleAddProperty = async (newProperty: Partial<PropertyList>) => {
+    try {
+      const token = getCookie("access_token");
+      const userId = getUserId(); // Mengambil userId dari fungsi di utils/auth.ts
+
+      if (!userId) {
+        throw new Error("User ID tidak ditemukan");
+      }
+
+      const response = await fetch(`${FASTAPI_LOGIN}/properties/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user_id: parseInt(userId),
+          title: newProperty.title || "",
+          short_desc: newProperty.short_desc || "",
+          description: newProperty.description || "",
+          price: newProperty.price || 0,
+          category_id: newProperty.category_id || categories[0].key,
+          ads: newProperty.ads || ads[0].key,
+          status: newProperty.status || status[0].key,
+          period: newProperty.period || period[0].key,
+          province_id: newProperty.province_id || "",
+          city_id: newProperty.city_id || "",
+          district_id: newProperty.district_id || "",
+          village_id: newProperty.village_id || "",
+          address: newProperty.address || "",
+          coordinates: newProperty.coordinates || "",
+          views_count: newProperty.views_count || 0,
+          meta_title: newProperty.meta_title || "",
+          meta_description: newProperty.meta_description || "",
+          keywords: newProperty.keywords || "",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal menambahkan properti baru");
+      }
+
+      const addnewProperty = await response.json();
+      console.log("Properti baru berhasil ditambahkan:", addnewProperty);
+
+      // Perbarui state atau lakukan tindakan lain sesuai kebutuhan
+      // Misalnya, memperbarui daftar properti atau menampilkan pesan sukses
+    } catch (error) {
+      console.error("Error menambahkan properti baru:", error);
+      // Tampilkan pesan error kepada pengguna
+    }
   };
 
   const handleSaveProperty = async (updatedProperty: Partial<PropertyList>) => {
@@ -496,6 +588,40 @@ const PropertyList: React.FC<PropertyListProps> = ({
   //   }
   // };
 
+  const handleDeleteProperty = async (propertyId: number) => {
+    try {
+      const token = getCookie("access_token");
+      const response = await fetch(
+        `${FASTAPI_LOGIN}/properties/${propertyId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            accept: "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Gagal menghapus properti");
+      }
+
+      // Hapus properti dari state lokal
+      const updatedProperties = properties?.filter(
+        (prop) => prop.id !== propertyId
+      );
+
+      // Refresh data properti setelah berhasil dihapus
+      setLoading(true);
+      await loadData(); // Menggunakan fungsi loadData yang sudah ada
+      setLoading(false);
+
+      console.log("Properti berhasil dihapus");
+    } catch (error) {
+      console.error("Error menghapus properti:", error);
+    }
+  };
+
   if (loading) {
     return (
       <Card className="max-w-full p-4 rounded-lg shadow-lg md:p-6 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-gray-800 dark:to-purple-900">
@@ -615,8 +741,29 @@ const PropertyList: React.FC<PropertyListProps> = ({
                   </DrawerClose>
                 </DrawerHeader>
                 <div className="flex-grow p-6 overflow-y-auto">
-                  {/* Add your form for adding a new property here */}
-                  {/* You can reuse components from EditDetailProperti, EditImageProperti, etc. */}
+                  <AddDetailProperti
+                    onSave={async (newProperty) => {
+                      try {
+                        await handleAddProperty(newProperty);
+                        console.log(
+                          "Properti baru berhasil ditambahkan:",
+                          newProperty
+                        );
+                        // Implementasi logika tambahan setelah properti berhasil ditambahkan
+                      } catch (error) {
+                        console.error(
+                          "Gagal menambahkan properti baru:",
+                          error
+                        );
+                        // Implementasi penanganan kesalahan
+                      }
+                    }}
+                    onClose={() => {
+                      // Implementasi logika penutupan drawer
+                      console.log("Menutup drawer");
+                      // Contoh: closeDrawer();
+                    }}
+                  />
                 </div>
               </div>
             </DrawerContent>
@@ -1325,15 +1472,39 @@ const PropertyList: React.FC<PropertyListProps> = ({
                 </DrawerContent>
               </Drawer>
 
-              <Button
-                variant="secondary"
-                size="sm"
-                className="flex items-center justify-center w-full text-sm text-white bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800 md:w-auto"
-                // onClick={() => property.id && handleDeleteProperty(property.id)}
-              >
-                <Trash2 className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">Hapus</span>
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="flex items-center justify-center w-full text-sm text-white bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800 md:w-auto"
+                  >
+                    <Trash2 className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">Hapus</span>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Apakah Anda yakin ingin menghapus properti ini?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Tindakan ini tidak dapat dibatalkan. Properti ini akan
+                      dihapus secara permanen dari sistem.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() =>
+                        property.id && handleDeleteProperty(property.id)
+                      }
+                    >
+                      Hapus
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         ))}

@@ -722,6 +722,10 @@ const Dashboard: React.FC<DashboardProps> = ({ accessToken, userId }) => {
                     properties={properties?.items || null}
                     isLoading={isLoading}
                     homedomain={homedomain}
+                    onRefresh={() => {
+                      setIsLoading(true);
+                      fetchProperties(tokenFromCookie!, userIdFromCookie!);
+                    }}
                   />
                 </CardContent>
               </Card>
